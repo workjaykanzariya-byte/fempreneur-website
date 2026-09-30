@@ -1,0 +1,483 @@
+FEMPRENEUR 2027
+
+WEBSITE AUDIT & CONTENT GAP ANALYSIS
+
+Prepared by cross-referencing the Fempreneur 2027 Partnership Proposal, the Fempreneur Website Architecture Report (05 June 2026), and the live Greenpreneur.in build — using the same audit framework used before Greenpreneur.in was built.
+
+September 2026
+
+Unlike the Greenpreneur audit — which had to reconstruct the brand's identity from external research because no proposal document existed yet — this audit starts from richer source material: a full 2027 partnership proposal (mission, pillars, award mechanics, sponsorship tiers, city strategy) and a prior website-architecture report that already defines the menu and page priorities. This document does three things: (1) confirms what's already strong enough to publish as-is, (2) maps what's missing against the same categories used in the Greenpreneur audit (pages, features, content, technical, opportunities), and (3) flags a handful of inconsistencies across the source documents that should be resolved before the site goes live.
+
+1. What Fempreneur Is — Current Core Identity (Keep These)
+
+Aspect
+
+What It Is
+
+Why It Should Stay / Lead
+
+Mission
+
+India's most comprehensive women-entrepreneurship platform — built on the belief that empowered women entrepreneurs shape the future of business, communities and India.
+
+Core purpose — keep as the homepage hero line, word-for-word or close to it.
+
+Main Program
+
+Fempreneur Awards — 6th edition in 2027, rated across 35–40+ categories, decided 50% by jury and 50% by public vote.
+
+Flagship program — keep Awards as the primary nav item and the primary CTA site-wide.
+
+Three Pillars
+
+Award (recognise women entrepreneurs) · Connect (structured community across 150+ business/industry categories) · Amplify (1,000 Stories Drive + Coffee Table Book).
+
+A clean three-part framework — strong candidate for organising both the nav and the homepage narrative, the way Greenpreneur uses its single flagship-award framing.
+
+Target Audience
+
+Women entrepreneurs, business leaders, mentors, sponsors, government bodies and industry partners — nationwide from 2027, not just Ahmedabad.
+
+Audience has broadened; site copy and imagery need to read as national, not regional.
+
+Key Output
+
+Fempreneur Coffee Table Book — Top 50 Women Entrepreneurs, premium hardbound, 5,000+ print copies and 5,00,000+ digital distribution.
+
+Major deliverable — keep a dedicated book page, matching Greenpreneur's book showcase + ordering flow.
+
+Organizers
+
+1 Million Entrepreneurs International Forum (1MEIF, NGO) + VyapaarJagat.com.
+
+Credibility source — keep organiser credits visible in the footer on every page, as Greenpreneur does.
+
+Location(s)
+
+2027 edition runs in two cities — Ahmedabad and Delhi NCR — expanded from Ahmedabad-only in 2022–2025.
+
+This is a structural change, not a footnote — the site needs to support two distinct city journeys, not one.
+
+Unique Mechanism
+
+50% jury evaluation + 50% public voting, with each nominee receiving a personal, shareable voting link.
+
+This is Fempreneur's single most differentiating — and most technically demanding — feature. No competitor page in the architecture report currently plans for it.
+
+Track Record
+
+6+ editions since 2022, 500+ entrepreneurs per event, 35–40+ categories, 10,000+ stories published, 60+ expert speakers, 5L+ digital reach per edition.
+
+Strong proof points — surface as an animated stats bar on the homepage, the way Greenpreneur's wireframe opens with its impact numbers.
+
+Data-consistency flags — resolve before build
+
+•  Category count is inconsistent across the proposal: the summary stat says "35+ Award Categories," the Connect pillar says "150+ Business and Industry Categories," and the printed list runs to 40 named categories. Confirm one number before it goes on the site.
+
+•  Two domains appear in the source documents — Fempreneur.in (used throughout the proposal and the architecture report) and Fempreneur.club (used on the proposal's closing page). Confirm the canonical domain before launch.
+
+•  The architecture report's Tier 3 list includes a "Why Gandhinagar" page, while the Event Hub menu and the proposal both use "Why Ahmedabad" / "Why Ahmedabad & Delhi NCR." This looks like a leftover from another project — recommend renaming it to match the proposal's actual two-city rationale (Section 11).
+
+2. What's Already Well-Defined (Ready to Port to the Website)
+
+The proposal document has already done the writing for several pages — this is content the site can use almost verbatim rather than starting from a blank page.
+
+1. Fair, transparent award process — Full jury criteria (7 weighted factors) and the public-voting mechanics are already scripted in Section 6 of the proposal — ready to drop into the Award Overview page.
+
+2. Sponsorship structure — Six full tiers with itemised benefits — Title (₹5,00,000), Powered By (₹3,00,000), Platinum (₹1,50,000), Gold (₹1,00,000), Silver (₹50,000), Category Sponsor (₹10,000) — ready for a Sponsorship Opportunities page and a tier-comparison table.
+
+3. Eight participation pathways — Nominate · Attend · Sponsor · Feature in the Book · Get a Story on VyapaarJagat · Join the Community · Exhibit · Speak — each already has a paragraph of copy in Section 8, and maps directly to eight distinct landing pages or CTA blocks.
+
+4. 35–40 award categories — Already named individually in Section 6 — ready for the Award Categories page once the category-count inconsistency above is resolved.
+
+5. SDG + Viksit Bharat @2047 alignment — A genuinely unique differentiator (SDG 5, 8, 9, 10, 17 plus a six-point Viksit Bharat narrative) that no competitor referenced in the architecture report has — ready to become its own page or homepage section.
+
+6. Why Ahmedabad & Delhi NCR — A seven-point side-by-side comparison table already exists in Section 11 — ready-made content for the "Why These Two Cities" page once retitled correctly (see flag above).
+
+7. Full event-day program — Nine named elements — Nominations, Felicitation, Book Launch, Keynotes & Panels, Exhibition Showcase, Masterclasses, Fireside Chats, Open Networking, Story Drive — ready for the Event Agenda page.
+
+3. What Needs to Be Added / Developed (Redesign Recommendations)
+
+3.1 Missing Core Pages (from the Architecture Report, with content-readiness noted)
+
+Page
+
+Priority
+
+Content Status
+
+Fempreneur 2027 Event Page
+
+Tier 1 — before 25 June
+
+Ready — Sections 2 & 3 of the proposal give overview, pillars and full agenda.
+
+Award Overview (Honorary vs Rated)
+
+Tier 1
+
+Ready — jury + voting mechanics exist; needs a clean visual explainer for the two-track system.
+
+Award Categories (all sectors)
+
+Tier 1
+
+Ready, pending the category-count fix flagged in Section 1.
+
+Jury Panel 2027
+
+Tier 1
+
+Not started — no juror names, photos or bios in either source document. Needs fresh content.
+
+Why Nominate
+
+Tier 1
+
+Partially ready — benefits are scattered across Sections 6 and 8 and need condensing into 5–6 punchy bullets.
+
+Why Attend (for delegates)
+
+Tier 2
+
+Ready — Section 8, pathway 02, plus the full agenda in Section 3.
+
+Speakers 2027
+
+Tier 2
+
+Not started — "60+ Expert Speakers" is a stat, not a roster. Needs names as they're confirmed.
+
+Sponsors & Partners
+
+Tier 2
+
+Ready — full six-tier benefit table exists; needs a logo wall once sponsors sign.
+
+FAQ
+
+Tier 2
+
+Not started — no FAQ content in either source document.
+
+Gallery 2025
+
+Tier 2
+
+Not started — depends on photo assets from the 2025 DevX Ahmedabad event.
+
+Coffee Table Book / Magazine
+
+Tier 3
+
+Ready — Section 4 gives full contents, distribution reach and sponsor-feature language.
+
+VyapaarJagat Story Drive
+
+Tier 3
+
+Ready — Section 5 gives the full for-entrepreneurs / for-sponsors / for-India value breakdown.
+
+Why Ahmedabad & Delhi NCR
+
+Tier 3
+
+Ready — see Section 2 above; just needs the page retitled to match the proposal.
+
+Associated Partners
+
+Tier 3
+
+Partially ready — CEED is named in the architecture report but not elaborated in the proposal; confirm the relationship before publishing.
+
+Newsroom / Press
+
+Tier 3
+
+Not started — no press assets referenced in either document yet.
+
+3.2 Features to Develop
+
+Feature
+
+Description
+
+Why It Matters
+
+Nomination + Public Voting System
+
+Online nomination form feeding a jury-scoring backend, plus a public voting portal with a personalised, shareable link per nominee and a live or gated vote tally.
+
+This is Fempreneur's core mechanic and its biggest technical build — nothing comparable exists on Greenpreneur, which is jury-only.
+
+Vote Integrity Controls
+
+One vote per verified user (OTP or social login), rate limiting, and bot/fraud detection on the voting portal.
+
+Public voting is only credible if it can't be gamed — this protects the 50% public-vote result.
+
+"Get Pass" Delegate Registration
+
+Event ticketing with a city selector (Ahmedabad vs Delhi NCR), capacity tracking, and payment gateway.
+
+Currently just a sticky CTA button in the architecture report with no backend defined.
+
+Sponsor / Partner Inquiry Flow
+
+Tier-selection form that auto-generates a proposal PDF or routes straight to the sales team.
+
+Turns the six-tier sponsorship table into a working lead-capture tool instead of a static page.
+
+Speaker & Masterclass Application
+
+Application form for experts wanting to speak or lead a masterclass, per pathway 08 in the proposal.
+
+Currently only described in prose — needs an actual form.
+
+Exhibitor Application
+
+Form for the 50 curated women-led businesses in the Exhibition Showcase, per pathway 07.
+
+Slots are described as limited — a form with a capacity counter creates urgency.
+
+Coffee Table Book Ordering
+
+E-commerce page to pre-order/purchase the book, with page previews and delivery info — mirrors Greenpreneur's book-ordering page.
+
+Converts a proof-point ("5,000+ print copies") into a revenue line and a shareable object.
+
+Story Submission Portal
+
+Intake form feeding the VyapaarJagat 1,000-story drive, cross-linked to VyapaarJagat.com.
+
+Currently the story drive is described but has no submission mechanism on either site.
+
+Winner Profile Pages
+
+Individual, filterable pages per winner across 2022–2025, by year, category and city.
+
+Fempreneur has 4+ prior editions of winners with no directory yet — high-value, low-effort SEO content.
+
+Membership / Community Portal
+
+Sign-up flow for the permanent Fempreneur community described in pathway 06, with any city-circle structure once defined.
+
+Converts a one-day event audience into a year-round list.
+
+3.3 Content to Add
+
+•  Jury bios & photos for the 2027 panel — currently zero names exist in either source document.
+
+•  Winner success stories and interviews from 2022–2025, to seed the Winners archive before 2027 launches.
+
+•  Testimonials from past sponsors, delegates and winners — none currently referenced.
+
+•  A visual SDG + Viksit Bharat @2047 explainer (icon set / infographic), turning Section 10's text table into something scannable.
+
+•  A side-by-side visual comparison of all six sponsorship tiers (the proposal's table is dense and text-only).
+
+•  FAQ content covering nomination, the 50/50 voting process, event logistics and sponsorship — Greenpreneur's audit notes this alone "reduces 80% of repeated queries" for IBDA.
+
+•  A press / media kit — logos, brand guidelines and past coverage, feeding the planned Newsroom page.
+
+•  City-specific content distinguishing the Ahmedabad legacy (2022–2025 history) from the Delhi NCR expansion story (Section 11).
+
+3.4 Technical Improvements Needed
+
+Issue
+
+Recommendation
+
+Mobile responsiveness
+
+Non-negotiable — India is mobile-first, and the voting portal specifically will see most of its traffic from nominees sharing links on WhatsApp.
+
+Fast loading during voting windows
+
+Optimise images and use a CDN; public-voting periods will create sharp traffic spikes as nominees push their links.
+
+SEO optimisation
+
+Target "women entrepreneur awards India," "women entrepreneurship platform India," "Fempreneur Awards 2027," plus city-modified variants for Ahmedabad and Delhi NCR.
+
+Accessibility
+
+Alt text, proper contrast, keyboard navigation — especially on the voting and nomination forms, which need to be usable by the widest possible public audience.
+
+SSL certificate
+
+Confirm HTTPS is properly configured, particularly given the site will process payments (passes, book orders) and personal data (nominations, votes).
+
+Multi-language support
+
+Hindi is worth prioritising given the national, two-city 2027 scope; Gujarati remains relevant for the Ahmedabad base.
+
+Voting-system security & scalability
+
+Specific to Fempreneur — the public-vote mechanic needs its own load-testing and abuse-prevention plan, not just general site hardening.
+
+3.5 New Opportunities to Explore
+
+Opportunity
+
+Description
+
+Mentor Connect Platform
+
+A structured mentor-matching feature for the Connect pillar, pairing established women entrepreneurs with emerging ones — a natural extension of the community pathway.
+
+Investor / Funding Connect
+
+Platform connecting women-led businesses with impact investors and funds focused on gender-lens investing.
+
+Fempreneur City Chapters
+
+Borrowing Greenpreneur's city-chapter model — local leads promoting the movement between annual events, especially useful as Fempreneur expands beyond Ahmedabad.
+
+Corporate CSR / Women-Empowerment Partnerships
+
+A dedicated track for companies funding awards or programs as part of CSR commitments to gender equality (SDG 5).
+
+"Fempreneur Stories" Podcast/Video Series
+
+Monthly interviews with winners, distributed on YouTube/Spotify — extends the Amplify pillar beyond the annual Coffee Table Book.
+
+Workshop Series
+
+Recurring online/offline sessions on funding, branding, leadership and scaling — free for members, paid for non-members, sponsorable by corporates.
+
+Fempreneur Mobile App
+
+Member login, event notifications, directory search and voting access in one place — most valuable once the voting portal and membership system exist.
+
+Annual Impact Report
+
+A yearly publication (winners, reach, SDG impact, financials) distributed to partners and media — builds the transparency case for future sponsors.
+
+4. Structural Principles Worth Stealing
+
+Carried over from the architecture report — these hold regardless of which pages get built first:
+
+From EntrepreneurIndia — Separate sub-journeys by visitor intent. Someone who wants to attend should never land on the same page as someone who wants to sponsor — build intent-based navigation, and route "Get Pass" and "Become a Partner" down genuinely different paths.
+
+From IBDA — Jury credibility is a trust multiplier. A dedicated, photo-led Jury Panel page matters more than its position in the nav suggests — people nominate when they respect the judges, and right now Fempreneur has zero juror content.
+
+From BW Merit Awards — A "Why Participate" bullet section converts. Add it to the Award Overview, Sponsorship, and Speaker/Exhibitor pages — not just once.
+
+From Greenpreneur.in (sibling brand, same organisers) — Reuse the homepage rhythm that's already proven for 1MEIF properties — stat bar near the top, program spotlight, winner spotlight, flagship-deliverable showcase, impact metrics, community CTA, newsletter — rather than inventing a new pattern for Fempreneur.
+
+5. Suggested Homepage Structure (Wireframe)
+
+Adapted from the Greenpreneur.in homepage rhythm, sequenced around Fempreneur's Award / Connect / Amplify pillars and its two-city 2027 expansion:
+
+┌─────────────────────────────────────────────────────────┐
+
+│ NAV (Sticky): Home | About | Awards 2027 | Speakers |     │
+
+│  Sponsors | Winners | Community      [Apply for Award]    │
+
+│                                       [Get Pass]           │
+
+├─────────────────────────────────────────────────────────┤
+
+│  HERO                                                      │
+
+│  "FEMPRENEUR 2027 — Women Entrepreneurs Redefining         │
+
+│   Success"  ·  Ahmedabad & Delhi NCR                       │
+
+│   [Nominate Now]   [Get Pass]   [Become a Sponsor]         │
+
+├─────────────────────────────────────────────────────────┤
+
+│  STATS BAR                                                  │
+
+│  6+ Editions | 500+ Entrepreneurs | 35+ Categories |        │
+
+│  10,000+ Stories Published                                 │
+
+├─────────────────────────────────────────────────────────┤
+
+│  THREE PILLARS                                              │
+
+│  AWARD — recognise   CONNECT — community   AMPLIFY — stories│
+
+├─────────────────────────────────────────────────────────┤
+
+│  AWARD CATEGORIES PREVIEW                                   │
+
+│  [grid of category icons]        [View All Categories]     │
+
+├─────────────────────────────────────────────────────────┤
+
+│  WHY NOMINATE / FAIR PROCESS                                │
+
+│  50% Jury Evaluation + 50% Public Vote   [How It Works]     │
+
+├─────────────────────────────────────────────────────────┤
+
+│  JURY PANEL 2027 (preview strip)                            │
+
+├─────────────────────────────────────────────────────────┤
+
+│  2025 WINNER SPOTLIGHT                                      │
+
+│  [Photo] [Photo] [Photo]           [View All Winners]       │
+
+├─────────────────────────────────────────────────────────┤
+
+│  FEMPRENEUR COFFEE TABLE BOOK — Top 50 Women Entrepreneurs  │
+
+│  [Preview Pages]  [Pre-Order Now]                           │
+
+├─────────────────────────────────────────────────────────┤
+
+│  SPONSORSHIP TIERS (preview strip, 6 tiers)                 │
+
+│  Title | Powered By | Platinum | Gold | Silver | Category   │
+
+│                                     [See Full Benefits]     │
+
+├─────────────────────────────────────────────────────────┤
+
+│  VYAPAARJAGAT 1,000 STORY DRIVE                             │
+
+│  "An event lasts one day. A story lasts forever."           │
+
+│                                     [Submit Your Story]     │
+
+├─────────────────────────────────────────────────────────┤
+
+│  WHY AHMEDABAD & DELHI NCR (two-city rationale)             │
+
+├─────────────────────────────────────────────────────────┤
+
+│  JOIN THE COMMUNITY                                          │
+
+│  [Become a Member]  [Start a City Chapter]                  │
+
+├─────────────────────────────────────────────────────────┤
+
+│  NEWSLETTER SIGNUP   [Email input]  [Subscribe]              │
+
+├─────────────────────────────────────────────────────────┤
+
+│  FOOTER: 1MEIF | VyapaarJagat.com | Greenpreneur.in |        │
+
+│  Social | Ahmedabad + Delhi NCR contact details              │
+
+└─────────────────────────────────────────────────────────┘
+
+6. Summary — Priority Order
+
+The site's biggest gap isn't content — most of the persuasive copy already exists in the proposal. The gap is (a) the five Tier 1 pages that still need fresh content (Jury Panel, Why Nominate condensed, FAQ, Speakers, Gallery), and (b) the nomination + public-voting system, which is the one feature with no equivalent on Greenpreneur.in and no head start in either source document.
+
+Immediate priorities
+
+•  Resolve the three data-consistency flags (category count, domain, Why Gandhinagar vs Why Ahmedabad/Delhi NCR) before writing final copy.
+
+•  Build the five Tier 1 pages before 25 June — Event Page, Award Overview, Award Categories, Jury Panel, Why Nominate.
+
+•  Scope the nomination + public-voting system early — it is the longest technical lead time of anything on this list and the feature most unique to Fempreneur.
+
+•  Port the already-written proposal content (sponsorship tiers, SDG/Viksit Bharat alignment, two-city rationale, story drive) directly into pages rather than rewriting it from scratch.

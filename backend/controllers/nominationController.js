@@ -1,0 +1,103 @@
+import { query } from '../config/db.js';
+import { successResponse, errorResponse } from '../utils/response.js';
+
+export const createNomination = async (req, res, next) => {
+  try {
+    const {
+      founderName,
+      ventureName,
+      designation,
+      email,
+      phone,
+      city,
+      state,
+      categoryCode,
+      categoryName,
+      pitch,
+      operationalYears,
+      impactSummary,
+      websiteUrl,
+    } = req.body;
+
+    if (!founderName || !ventureName || !email || !phone || !city || !categoryCode || !pitch) {
+      return errorResponse(res, 'Please provide all mandatory fields: founderName, ventureName, email, phone, city, categoryCode, and pitch.', 400);
+    }
+
+    const result = await query(`
+      INSERT INTO nominations (
+        founder_name, venture_name, designation, email, phone, city, state,
+        category_code, category_name, pitch, operational_years, impact_summary, website_url
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      RETURNING *
+    `, [
+      founderName.trim(),
+      ventureName.trim(),
+      designation || 'Founder',
+      email.toLowerCase().trim(),
+      phone.trim(),
+      city.trim(),
+      state || 'India',
+      categoryCode.trim(),
+      categoryName || categoryCode,
+      pitch.trim(),
+      operationalYears || '1-3 years',
+      impactSummary || null,
+      websiteUrl || null,
+    ]);
+
+    return successResponse(
+      res,
+      result.rows[0],
+      'Nomination submitted successfully with 100% free processing.',
+      201
+    );
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getNominations = async (req, res, next) => {
+  try {
+    const { category, city, status } = req.query;
+
+    let sql = 'SELECT * FROM nominations WHERE 1=1';
+    const params = [];
+
+    if (category) {
+      params.push(category);
+      sql += ` AND category_code = $${params.length}`;
+    }
+
+    if (city) {
+      params.push(`%${city}%`);
+      sql += ` AND city ILIKE $${params.length}`;
+    }
+
+    if (status) {
+      params.push(status);
+      sql += ` AND status = $${params.length}`;
+    }
+
+    sql += ' ORDER BY created_at DESC';
+
+    const result = await query(sql, params);
+    return successResponse(res, result.rows, 'Nominations retrieved successfully.');
+  } catch (err) {
+    next(err);
+  }
+};
+
+export const getNominationById = async (req, res, next) => {
+  try {
+    const { id } = req.params;
+    const result = await query('SELECT * FROM nominations WHERE id = $1', [id]);
+
+    if (result.rows.length === 0) {
+      return errorResponse(res, 'Nomination record not found.', 404);
+    }
+
+    return successResponse(res, result.rows[0], 'Nomination fetched successfully.');
+  } catch (err) {
+    next(err);
+  }
+};
