@@ -7,45 +7,40 @@ export default function Footer() {
   return (
     <footer className="fem-footer">
       <div className="container">
-        {/* Top Newsletter Strip (Light Card with Purple Accents) */}
+        {/* Top Newsletter Strip (Official Fempreneur Logo Purple #6A1B9A Gradient Card) */}
         <div
           style={{
-            background: '#FFFFFF',
-            border: '1.5px solid rgba(106, 27, 154, 0.16)',
-            borderRadius: 'var(--radius-xl)',
-            padding: '2.5rem',
+            background: 'linear-gradient(135deg, #4A126D 0%, #6A1B9A 55%, #7B1FA2 100%)',
+            border: '1.5px solid rgba(255, 255, 255, 0.22)',
+            borderRadius: 'var(--radius-2xl)',
+            padding: '2.75rem 2.5rem',
             marginBottom: '4rem',
-            boxShadow: '0 12px 32px rgba(106, 27, 154, 0.06)',
+            boxShadow: '0 20px 48px rgba(106, 27, 154, 0.32)',
           }}
         >
           <div className="grid grid-cols-2 gap-8 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
             <div>
               <span
+                className="badge badge-gold"
                 style={{
-                  display: 'inline-block',
-                  background: 'rgba(106, 27, 154, 0.08)',
-                  color: '#6A1B9A',
-                  border: '1px solid rgba(106, 27, 154, 0.2)',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  padding: '0.3rem 0.85rem',
-                  borderRadius: 'var(--radius-pill)',
+                  marginBottom: '0.85rem',
+                  letterSpacing: '0.08em',
                   textTransform: 'uppercase',
-                  letterSpacing: '0.05em',
-                  marginBottom: '0.75rem',
+                  fontWeight: 800,
+                  fontSize: '0.75rem',
                 }}
               >
                 Join the Movement
               </span>
-              <h3 style={{ color: '#4A126D', marginBottom: '0.5rem', fontWeight: 800, fontSize: '1.65rem' }}>
+              <h3 style={{ color: '#FFFFFF', marginBottom: '0.5rem', fontWeight: 800, fontSize: '1.65rem' }}>
                 Stay Informed on Fempreneur 2027
               </h3>
-              <p style={{ color: '#5C287A', fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.5 }}>
+              <p style={{ color: 'rgba(255, 255, 255, 0.92)', fontSize: '0.95rem', fontWeight: 500, lineHeight: 1.5 }}>
                 Receive award announcements, jury reveals, voting window dates, and Coffee Table Book launch notifications.
               </p>
             </div>
             <div>
-              <NewsletterForm inverted={false} />
+              <NewsletterForm inverted={false} subtextColor="rgba(255, 255, 255, 0.88)" />
             </div>
           </div>
         </div>
@@ -113,13 +108,13 @@ export default function Footer() {
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
                 <MapPin size={18} color="#6A1B9A" style={{ flexShrink: 0, marginTop: '2px' }} />
                 <span>
-                  <strong style={{ color: '#4A126D', fontWeight: 700 }}>Ahmedabad Hub:</strong> Ahmedabad Management Association (AMA), ATIRA Campus, Ahmedabad, Gujarat [Suite to be confirmed]
+                  <strong style={{ color: '#4A126D', fontWeight: 700 }}>Ahmedabad Hub:</strong> Ahmedabad Management Association (AMA), ATIRA Campus, Ahmedabad, Gujarat (Suite to be confirmed)
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
                 <MapPin size={18} color="#6A1B9A" style={{ flexShrink: 0, marginTop: '2px' }} />
                 <span>
-                  <strong style={{ color: '#4A126D', fontWeight: 700 }}>Delhi NCR Hub:</strong> [Delhi NCR Regional Office Address to be confirmed]
+                  <strong style={{ color: '#4A126D', fontWeight: 700 }}>Delhi NCR Hub:</strong> National Capital Regional Office, New Delhi (Address to be announced)
                 </span>
               </div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
@@ -132,42 +127,6 @@ export default function Footer() {
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Planned Features Notice Bar */}
-        <div
-          style={{
-            marginTop: '3rem',
-            padding: '1rem 1.25rem',
-            background: 'rgba(106, 27, 154, 0.04)',
-            border: '1.5px solid rgba(106, 27, 154, 0.14)',
-            borderRadius: 'var(--radius-md)',
-            fontSize: '0.82rem',
-            color: '#5C287A',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'space-between',
-            flexWrap: 'wrap',
-            gap: '0.5rem',
-          }}
-        >
-          <span>
-            <strong style={{ color: '#4A126D' }}>Planned &amp; Upcoming Platform Modules:</strong> Investor Connect Platform • Fempreneur Certified Badge • Workshop Series • Mobile App • Podcast Series • Annual Impact Report.
-          </span>
-          <span
-            style={{
-              fontSize: '0.68rem',
-              background: '#6A1B9A',
-              color: '#FFFFFF',
-              fontWeight: 700,
-              padding: '0.25rem 0.65rem',
-              borderRadius: 'var(--radius-pill)',
-              textTransform: 'uppercase',
-              letterSpacing: '0.04em',
-            }}
-          >
-            Coming Soon
-          </span>
         </div>
 
         {/* Bottom Copyright & Legal Links */}

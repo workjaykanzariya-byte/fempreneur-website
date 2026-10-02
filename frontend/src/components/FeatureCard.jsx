@@ -41,7 +41,7 @@ export default function FeatureCard({
               width: '52px',
               height: '52px',
               borderRadius: 'var(--radius-md)',
-              background: isPlum ? 'rgba(255, 255, 255, 0.15)' : 'rgba(109, 27, 68, 0.08)',
+              background: isPlum ? 'rgba(255, 255, 255, 0.15)' : 'rgba(106, 27, 154, 0.08)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

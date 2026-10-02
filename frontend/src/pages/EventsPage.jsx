@@ -82,14 +82,21 @@ export default function EventsPage() {
     <div>
       <PageHeader
         badge="Dual-City Showcase 2027"
+        badgeIcon={Sparkles}
         title="Fempreneur 2027"
         highlight="Event Hub & Passes"
         description="Experience 9 high-impact event-day program elements, 50 curated women-led exhibition stalls, masterclasses, and prestigious award felicitations."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Events Hub' }]}
         ctaText="Book Passes"
         ctaTo="#passes"
+        ctaIcon={null}
         secondaryCtaText="Nominate for Award"
         secondaryCtaTo="/nominate"
+        image="/images/events/events-pass-badge.png"
+        imageAlt="Fempreneur 2027 Event Pass & Lanyards"
+        imageFramed={false}
+        imageFilter="none"
+        imageMaxWidth="640px"
       />
 
       {/* Section 1: City Hub Selector */}

@@ -98,7 +98,7 @@ export default function MembershipCard({
                   width: '18px',
                   height: '18px',
                   borderRadius: '50%',
-                  background: 'rgba(109, 27, 68, 0.08)',
+                  background: 'rgba(106, 27, 154, 0.08)',
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',

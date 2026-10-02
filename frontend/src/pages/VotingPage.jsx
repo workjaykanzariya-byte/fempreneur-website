@@ -31,6 +31,7 @@ export default function VotingPage() {
       city: 'Ahmedabad, Gujarat',
       votes: 1420,
       pitch: 'Pioneering accessible modular architecture using locally sourced sustainable composites.',
+      photo: '/images/entrepreneurs/priyanshi-shah.jpg?v=2',
     },
     {
       id: 'nom-2',
@@ -41,6 +42,7 @@ export default function VotingPage() {
       city: 'Delhi NCR',
       votes: 1890,
       pitch: 'Developing early diagnostic screening kits tailored for women in Tier 2 and Tier 3 communities.',
+      photo: '/images/entrepreneurs/dr-ananya-sen.jpg?v=2',
     },
     {
       id: 'nom-3',
@@ -51,6 +53,7 @@ export default function VotingPage() {
       city: 'National / Kerala & Gujarat',
       votes: 1110,
       pitch: 'Connecting 1,200 rural female handloom artisans directly with premium global retail buyers.',
+      photo: '/images/entrepreneurs/radhika-menon.jpg',
     },
     {
       id: 'nom-4',
@@ -61,6 +64,7 @@ export default function VotingPage() {
       city: 'Ahmedabad Hub',
       votes: 980,
       pitch: 'Manufacturing biodegradable alternatives to single-use industrial plastics with 100% female staff.',
+      photo: '/images/entrepreneurs/sneha-patel.jpg',
     },
   ];
 
@@ -124,6 +128,11 @@ export default function VotingPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Awards', path: '/awards' }, { label: 'Public Voting' }]}
         ctaText="Nominate for Award"
         ctaTo="/nominate"
+        image="/images/voting/voting-public-support.jpg"
+        imageAlt="Vote for Your Fempreneur 2027 Community Support"
+        imageBadge="50% Verified Public Voting"
+        imageMaxWidth="560px"
+        imageMaxHeight="440px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>
@@ -166,29 +175,52 @@ export default function VotingPage() {
                     display: 'flex',
                     flexDirection: 'column',
                     height: '100%',
-                    padding: '2rem',
+                    padding: '1.75rem',
                     border: hasVoted ? '2px solid var(--color-gold)' : '1px solid var(--border-subtle)',
                   }}
                 >
-                  <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                    <div>
-                      <span className="badge badge-plum" style={{ fontSize: '0.72rem', marginBottom: '0.4rem' }}>
-                        {nom.category}
-                      </span>
-                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginTop: '0.2rem' }}>
-                        {nom.founderName}
-                      </h3>
-                      <div style={{ fontSize: '0.9rem', color: 'var(--color-burgundy)', fontWeight: 600 }}>
-                        {nom.companyName}
-                      </div>
-                    </div>
+                  {/* Top Bar: Category & Verified Votes */}
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.65rem', marginBottom: '1.25rem' }}>
+                    <span className="badge badge-plum" style={{ fontSize: '0.72rem', maxWidth: '65%', lineHeight: 1.3 }}>
+                      {nom.category}
+                    </span>
 
-                    <div style={{ textAlign: 'right' }}>
-                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1 }}>
+                    <div style={{ textAlign: 'right', flexShrink: 0, whiteSpace: 'nowrap' }}>
+                      <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1 }}>
                         {currentVoteCount.toLocaleString()}
                       </div>
-                      <div style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--color-gold-rich)', fontWeight: 700 }}>
+                      <div style={{ fontSize: '0.68rem', textTransform: 'uppercase', letterSpacing: '0.05em', color: 'var(--color-gold-rich)', fontWeight: 700, marginTop: '0.2rem' }}>
                         Verified Votes
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Woman Entrepreneur Photo + Details */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '1.1rem', marginBottom: '1.25rem' }}>
+                    <div style={{ position: 'relative', flexShrink: 0 }}>
+                      <img
+                        src={nom.photo}
+                        alt={`${nom.founderName} - ${nom.companyName}`}
+                        style={{
+                          width: '80px',
+                          height: '80px',
+                          borderRadius: '18px',
+                          objectFit: 'cover',
+                          border: '2.5px solid var(--color-burgundy)',
+                          boxShadow: '0 6px 18px rgba(106, 27, 154, 0.16)',
+                          display: 'block',
+                        }}
+                        onError={(e) => {
+                          e.target.style.display = 'none';
+                        }}
+                      />
+                    </div>
+                    <div style={{ minWidth: 0, flex: 1 }}>
+                      <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0, lineHeight: 1.25 }}>
+                        {nom.founderName}
+                      </h3>
+                      <div style={{ fontSize: '0.92rem', color: 'var(--color-burgundy)', fontWeight: 600, marginTop: '0.25rem' }}>
+                        {nom.companyName}
                       </div>
                     </div>
                   </div>
@@ -226,7 +258,7 @@ export default function VotingPage() {
                         type="button"
                         onClick={() => handleShare(nom, 'linkedin')}
                         title="Share on LinkedIn"
-                        style={{ padding: '0.45rem', borderRadius: '50%', background: 'rgba(10, 102, 194, 0.1)', color: '#0A66C2' }}
+                        style={{ padding: '0.45rem', borderRadius: '50%', background: 'rgba(106, 27, 154, 0.08)', color: '#0A66C2' }}
                       >
                         <Globe size={16} />
                       </button>
@@ -234,7 +266,7 @@ export default function VotingPage() {
                         type="button"
                         onClick={() => handleShare(nom, 'copy')}
                         title="Copy Shareable Link"
-                        style={{ padding: '0.45rem', borderRadius: '50%', background: 'rgba(109, 27, 68, 0.08)', color: 'var(--color-burgundy)' }}
+                        style={{ padding: '0.45rem', borderRadius: '50%', background: 'rgba(106, 27, 154, 0.08)', color: 'var(--color-burgundy)' }}
                       >
                         <Share2 size={16} />
                       </button>
@@ -276,9 +308,31 @@ export default function VotingPage() {
                 <span className="badge badge-gold" style={{ marginBottom: '0.5rem' }}>
                   Verify Vote
                 </span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
-                  Vote for {modalNominee.founderName}
-                </h3>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', margin: '0.75rem 0 1.25rem' }}>
+                  {modalNominee.photo && (
+                    <img
+                      src={modalNominee.photo}
+                      alt={modalNominee.founderName}
+                      style={{
+                        width: '60px',
+                        height: '60px',
+                        borderRadius: '14px',
+                        objectFit: 'cover',
+                        border: '2px solid var(--color-burgundy)',
+                        boxShadow: '0 4px 12px rgba(106, 27, 154, 0.15)',
+                        flexShrink: 0,
+                      }}
+                    />
+                  )}
+                  <div>
+                    <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0, lineHeight: 1.25 }}>
+                      Vote for {modalNominee.founderName}
+                    </h3>
+                    <div style={{ fontSize: '0.88rem', color: 'var(--color-burgundy)', fontWeight: 600, marginTop: '0.2rem' }}>
+                      {modalNominee.companyName}
+                    </div>
+                  </div>
+                </div>
                 <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
                   Please enter your email address to authenticate your vote. To prevent automated manipulation, each voter may cast one verified vote per nominee.
                 </p>

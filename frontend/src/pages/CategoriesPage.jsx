@@ -75,8 +75,14 @@ export default function CategoriesPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Award Categories' }]}
         ctaText="Start Free Nomination"
         ctaTo="/nominate"
+        ctaIcon={null}
         secondaryCtaText="Evaluation Process"
         secondaryCtaTo="/awards"
+        image="/images/categories/award-categories-leaders.jpg"
+        imageAlt="40 Verified Award Categories Leaders"
+        imageBadge="150+ Industry Sectors"
+        imageMaxWidth="560px"
+        imageMaxHeight="440px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>

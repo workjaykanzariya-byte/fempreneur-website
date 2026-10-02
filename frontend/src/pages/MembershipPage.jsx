@@ -85,18 +85,32 @@ export default function MembershipPage() {
     <div>
       <PageHeader
         badge="Community Portal"
+        badgeIcon={Sparkles}
         title="Fempreneur 365-Day"
         highlight="Membership Network"
         description="Connect with women leaders, scale your enterprise with growth masterclasses, and gain year-round access to capital and peer circles."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Membership' }]}
         ctaText="Explore Tiers"
         ctaTo="#tiers"
+        ctaIcon={null}
+        onCtaClick={(e) => {
+          if (e && e.preventDefault) e.preventDefault();
+          const el = document.getElementById('tiers');
+          if (el) {
+            el.scrollIntoView({ behavior: 'smooth' });
+          }
+        }}
         secondaryCtaText="Member Login"
         secondaryCtaTo="/login"
+        image="/images/membership/membership-hero-portal.png"
+        imageAlt="Fempreneur 365-Day Membership Network Portal"
+        imageFramed={false}
+        imageFilter="none"
+        imageMaxWidth="680px"
       />
 
       {/* Section 1: Three Membership Tiers */}
-      <section id="tiers" className="section-spacing" style={{ background: '#FFFFFF' }}>
+      <section id="tiers" className="section-spacing" style={{ background: '#FFFFFF', scrollMarginTop: '80px' }}>
         <div className="container">
           <SectionTitle
             badge="Membership Tiers"

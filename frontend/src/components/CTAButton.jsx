@@ -36,6 +36,22 @@ export default function CTAButton({
   );
 
   if (to) {
+    if (to.startsWith('#')) {
+      const handleAnchorClick = (e) => {
+        e.preventDefault();
+        const id = to.slice(1);
+        const element = document.getElementById(id);
+        if (element) {
+          element.scrollIntoView({ behavior: 'smooth' });
+        }
+        if (onClick) onClick(e);
+      };
+      return (
+        <a href={to} onClick={handleAnchorClick} className={combinedClasses} {...props}>
+          {content}
+        </a>
+      );
+    }
     return (
       <Link to={to} className={combinedClasses} {...props}>
         {content}

@@ -57,7 +57,17 @@ export default function ContactForm({ className = '' }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`fem-card ${className}`} style={{ padding: '2.5rem' }}>
+    <form
+      onSubmit={handleSubmit}
+      className={`fem-card ${className}`}
+      style={{
+        padding: '2.5rem',
+        background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+        border: '1.5px solid rgba(106, 27, 154, 0.2)',
+        boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+        borderRadius: 'var(--radius-2xl)',
+      }}
+    >
       <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
         Send an Official Inquiry
       </h3>

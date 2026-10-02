@@ -190,7 +190,7 @@ export default function Navbar() {
                 <CTAButton to="/nominate" variant="primary" size="sm" icon={Award}>
                   Nominate
                 </CTAButton>
-                <CTAButton to="/events" variant="secondary" size="sm" icon={Ticket}>
+                <CTAButton to="/events" variant="primary" size="sm" icon={Ticket}>
                   Get Pass
                 </CTAButton>
               </div>
@@ -293,7 +293,7 @@ export default function Navbar() {
               <CTAButton to="/nominate" variant="primary" block size="lg" icon={Award}>
                 Nominate for Award (Free)
               </CTAButton>
-              <CTAButton to="/events" variant="secondary" block size="lg" icon={Ticket}>
+              <CTAButton to="/events" variant="primary" block size="lg" icon={Ticket}>
                 Get Event Pass
               </CTAButton>
             </div>

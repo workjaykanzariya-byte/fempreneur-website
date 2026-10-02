@@ -12,6 +12,7 @@ export default function NominatePage() {
   const [submitted, setSubmitted] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [formData, setFormData] = useState({
     founderName: '',
@@ -32,19 +33,83 @@ export default function NominatePage() {
     agreement: false,
   });
 
+  const validateStep = (step) => {
+    const newErrors = {};
+
+    if (step === 1) {
+      if (!formData.founderName.trim()) {
+        newErrors.founderName = 'This field is required';
+      }
+      if (!formData.email.trim()) {
+        newErrors.email = 'This field is required';
+      } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email.trim())) {
+        newErrors.email = 'Please enter a valid email address';
+      }
+      if (!formData.phone.trim()) {
+        newErrors.phone = 'This field is required';
+      }
+      if (!formData.city.trim()) {
+        newErrors.city = 'This field is required';
+      }
+      if (!formData.state.trim()) {
+        newErrors.state = 'This field is required';
+      }
+    } else if (step === 2) {
+      if (!formData.companyName.trim()) {
+        newErrors.companyName = 'This field is required';
+      }
+    } else if (step === 3) {
+      if (!formData.primaryCategory) {
+        newErrors.primaryCategory = 'This field is required';
+      }
+    } else if (step === 4) {
+      if (!formData.executiveSummary.trim()) {
+        newErrors.executiveSummary = 'This field is required';
+      }
+    } else if (step === 5) {
+      if (!formData.agreement) {
+        newErrors.agreement = 'Please confirm the declaration to proceed';
+      }
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0;
+  };
+
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
     setFormData((prev) => ({
       ...prev,
       [name]: type === 'checkbox' ? checked : value,
     }));
+    if (errors[name]) {
+      setErrors((prev) => {
+        const next = { ...prev };
+        delete next[name];
+        return next;
+      });
+    }
   };
 
-  const nextStep = () => setCurrentStep((prev) => Math.min(prev + 1, 5));
-  const prevStep = () => setCurrentStep((prev) => Math.max(prev - 1, 1));
+  const nextStep = () => {
+    if (!validateStep(currentStep)) {
+      return;
+    }
+    setErrors({});
+    setCurrentStep((prev) => Math.min(prev + 1, 5));
+    window.scrollTo({ top: 350, behavior: 'smooth' });
+  };
+
+  const prevStep = () => {
+    setErrors({});
+    setCurrentStep((prev) => Math.max(prev - 1, 1));
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (!validateStep(5)) {
+      return;
+    }
     setIsSubmitting(true);
     setSubmitError(null);
 
@@ -178,6 +243,11 @@ export default function NominatePage() {
         highlight="Awards 2027"
         description="Submit your enterprise for India's premier women-entrepreneurship honors. Nomination is 100% free with zero entry fees."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Awards', path: '/awards' }, { label: 'Nomination Form' }]}
+        image="/images/nominate/nominate-awards-application.jpg"
+        imageAlt="Apply for Fempreneur Awards 2027"
+        imageBadge="100% Free Nomination"
+        imageMaxWidth="560px"
+        imageMaxHeight="440px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>
@@ -322,9 +392,15 @@ export default function NominatePage() {
                     required
                     value={formData.founderName}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.founderName ? 'has-error' : ''}`}
                     placeholder="e.g. Priyanshi Shah"
                   />
+                  {errors.founderName && (
+                    <div className="form-error">
+                      <AlertCircle size={14} />
+                      <span>{errors.founderName}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -337,9 +413,15 @@ export default function NominatePage() {
                       required
                       value={formData.email}
                       onChange={handleChange}
-                      className="form-input"
+                      className={`form-input ${errors.email ? 'has-error' : ''}`}
                       placeholder="priyanshi@company.com"
                     />
+                    {errors.email && (
+                      <div className="form-error">
+                        <AlertCircle size={14} />
+                        <span>{errors.email}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -351,9 +433,15 @@ export default function NominatePage() {
                       required
                       value={formData.phone}
                       onChange={handleChange}
-                      className="form-input"
+                      className={`form-input ${errors.phone ? 'has-error' : ''}`}
                       placeholder="+91-XXXXX-XXXXX"
                     />
+                    {errors.phone && (
+                      <div className="form-error">
+                        <AlertCircle size={14} />
+                        <span>{errors.phone}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -367,9 +455,15 @@ export default function NominatePage() {
                       required
                       value={formData.city}
                       onChange={handleChange}
-                      className="form-input"
+                      className={`form-input ${errors.city ? 'has-error' : ''}`}
                       placeholder="e.g. Ahmedabad, Delhi, Pune"
                     />
+                    {errors.city && (
+                      <div className="form-error">
+                        <AlertCircle size={14} />
+                        <span>{errors.city}</span>
+                      </div>
+                    )}
                   </div>
 
                   <div className="form-group">
@@ -381,9 +475,15 @@ export default function NominatePage() {
                       required
                       value={formData.state}
                       onChange={handleChange}
-                      className="form-input"
+                      className={`form-input ${errors.state ? 'has-error' : ''}`}
                       placeholder="e.g. Gujarat, Delhi, Maharashtra"
                     />
+                    {errors.state && (
+                      <div className="form-error">
+                        <AlertCircle size={14} />
+                        <span>{errors.state}</span>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
@@ -408,9 +508,15 @@ export default function NominatePage() {
                     required
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="form-input"
+                    className={`form-input ${errors.companyName ? 'has-error' : ''}`}
                     placeholder="e.g. Aarya BioHealth Innovations"
                   />
+                  {errors.companyName && (
+                    <div className="form-error">
+                      <AlertCircle size={14} />
+                      <span>{errors.companyName}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
@@ -497,7 +603,7 @@ export default function NominatePage() {
                     name="primaryCategory"
                     value={formData.primaryCategory}
                     onChange={handleChange}
-                    className="form-select"
+                    className={`form-select ${errors.primaryCategory ? 'has-error' : ''}`}
                     style={{ fontSize: '0.95rem', padding: '0.85rem 1rem' }}
                   >
                     <option value="Woman Entrepreneur of the Year">CAT-01: Woman Entrepreneur of the Year</option>
@@ -541,6 +647,12 @@ export default function NominatePage() {
                     <option value="Pride of India">CAT-39: Pride of India (Honorary)</option>
                     <option value="Sustainable & Eco-Conscious Brand">CAT-40: Sustainable &amp; Eco-Conscious Brand</option>
                   </select>
+                  {errors.primaryCategory && (
+                    <div className="form-error">
+                      <AlertCircle size={14} />
+                      <span>{errors.primaryCategory}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -579,9 +691,15 @@ export default function NominatePage() {
                     rows={4}
                     value={formData.executiveSummary}
                     onChange={handleChange}
-                    className="form-textarea"
+                    className={`form-textarea ${errors.executiveSummary ? 'has-error' : ''}`}
                     placeholder="Briefly describe what your enterprise does, customer problem solved, and your journey..."
                   />
+                  {errors.executiveSummary && (
+                    <div className="form-error">
+                      <AlertCircle size={14} />
+                      <span>{errors.executiveSummary}</span>
+                    </div>
+                  )}
                 </div>
 
                 <div className="form-group">
@@ -647,7 +765,7 @@ export default function NominatePage() {
                   <div><strong>Preferred Hub:</strong> {formData.hubPreference}</div>
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', marginBottom: '2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', marginBottom: '0.75rem' }}>
                   <input
                     id="agreement"
                     name="agreement"
@@ -657,10 +775,16 @@ export default function NominatePage() {
                     onChange={handleChange}
                     style={{ marginTop: '3px' }}
                   />
-                  <label htmlFor="agreement" style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
+                  <label htmlFor="agreement" style={{ fontSize: '0.88rem', color: errors.agreement ? '#DC2626' : 'var(--text-secondary)' }}>
                     I confirm that the details provided are accurate and agree to participate in the transparent 50% Jury Evaluation + 50% Public Voting evaluation process.
                   </label>
                 </div>
+                {errors.agreement && (
+                  <div className="form-error" style={{ marginBottom: '1.5rem' }}>
+                    <AlertCircle size={14} />
+                    <span>{errors.agreement}</span>
+                  </div>
+                )}
 
                 {submitError && (
                   <div

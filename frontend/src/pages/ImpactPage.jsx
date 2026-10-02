@@ -32,6 +32,9 @@ export default function ImpactPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Impact & Metrics' }]}
         ctaText="Nominate for 2027"
         ctaTo="/nominate"
+        image="/images/impact/impact-network-transparent.png"
+        imageAlt="Fempreneur Platform Impact & Metrics Network"
+        imageFramed={false}
       />
 
       {/* Section 1: Verified Impact Metrics Bar */}

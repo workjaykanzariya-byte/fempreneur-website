@@ -30,9 +30,9 @@ export default function WinnerCard({
       <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.2rem' }}>
         <div
           style={{
-            width: '60px',
-            height: '60px',
-            borderRadius: 'var(--radius-md)',
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
             background: 'var(--gradient-plum-berry)',
             color: '#FFFFFF',
             display: 'flex',
@@ -43,10 +43,12 @@ export default function WinnerCard({
             fontWeight: 800,
             flexShrink: 0,
             overflow: 'hidden',
+            border: '2px solid var(--color-burgundy, #6A1B9A)',
+            boxShadow: '0 4px 12px rgba(106, 27, 154, 0.12)',
           }}
         >
           {image ? (
-            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
           ) : (
             name?.charAt(0) || 'F'
           )}

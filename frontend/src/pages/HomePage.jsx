@@ -134,8 +134,8 @@ export default function HomePage() {
           background: 'linear-gradient(135deg, #2E0848 0%, #6A1B9A 100%)',
           padding: '2.5rem 1.5rem',
           color: '#FFFFFF',
-          borderTop: '1px solid rgba(222, 180, 89, 0.3)',
-          borderBottom: '1px solid rgba(222, 180, 89, 0.3)',
+          borderTop: '1px solid rgba(106, 27, 154, 0.35)',
+          borderBottom: '1px solid rgba(106, 27, 154, 0.35)',
         }}
       >
         <div className="container" style={{ textAlign: 'center' }}>
@@ -257,7 +257,7 @@ export default function HomePage() {
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', marginBottom: '2rem' }}>
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(109, 27, 68, 0.1)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontWeight: 'bold' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(106, 27, 154, 0.1)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontWeight: 'bold' }}>
                     1
                   </div>
                   <div>
@@ -267,7 +267,7 @@ export default function HomePage() {
                 </div>
 
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
-                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(197, 154, 63, 0.15)', color: 'var(--color-gold-rich)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontWeight: 'bold' }}>
+                  <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(106, 27, 154, 0.1)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0, marginTop: '2px', fontWeight: 'bold' }}>
                     2
                   </div>
                   <div>
@@ -289,7 +289,7 @@ export default function HomePage() {
 
             {/* Visual Formula Card */}
             <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
-              <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-gold-rich)', fontWeight: 800, marginBottom: '0.75rem' }}>
+              <div style={{ fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--color-burgundy)', fontWeight: 800, marginBottom: '0.75rem' }}>
                 Composite Scoring Model
               </div>
               <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '1.5rem' }}>
@@ -377,22 +377,24 @@ export default function HomePage() {
 
           <div className="grid grid-cols-2 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', marginBottom: '2.5rem' }}>
             <WinnerCard
-              name="Fempreneur Award Winner"
-              company="Exemplary Enterprise"
-              category="Woman Entrepreneur of the Year — Category & Year"
+              name="Priyanshi Shah"
+              company="Aarya Spatial Design Studio"
+              category="Woman Entrepreneur of the Year — Leadership"
               year="2025"
-              city="Ahmedabad"
-              highlight="Demonstrated exemplary commercial innovation, resilience, and leadership under the verified Fempreneur evaluation framework."
+              city="Ahmedabad Hub"
+              highlight="Demonstrated exemplary commercial innovation, sustainable architectural design, and community employment generation recognized by VyapaarJagat."
               storyUrl="https://vyapaarjagat.com"
+              image="/images/entrepreneurs/priyanshi-shah.jpg"
             />
             <WinnerCard
-              name="Women Entrepreneur"
-              company="Business / Category"
-              category="Innovation & Technology Leader — Business / Category"
+              name="Dr. Sunita Rao"
+              company="Nova BioCare Diagnostics"
+              category="Innovation & Technology Leader"
               year="2024"
               city="BSE Mumbai Edition"
-              highlight="Built a scalable tech solution creating jobs and serving enterprise clients across India."
+              highlight="Built a scalable digital diagnostics solution serving enterprise healthcare clients and over 1,00,000 patients across India."
               storyUrl="https://vyapaarjagat.com"
+              image="/images/entrepreneurs/dr-sunita-rao.jpg"
             />
           </div>
 
@@ -464,8 +466,8 @@ export default function HomePage() {
                   overflow: 'hidden',
                 }}
               >
-                <div style={{ border: '2px solid rgba(222, 180, 89, 0.4)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
-                  <span style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--color-gold-light)', fontWeight: 700 }}>
+                <div style={{ border: '2px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)', padding: '2rem' }}>
+                  <span style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#FFFFFF', fontWeight: 700 }}>
                     Hardbound Collector's Edition
                   </span>
                   <h3 style={{ fontFamily: 'var(--font-serif)', fontSize: '1.8rem', fontStyle: 'italic', margin: '1rem 0' }}>
@@ -564,15 +566,15 @@ export default function HomePage() {
                 </h4>
                 <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', fontSize: '0.9rem', opacity: 0.95 }}>
                   <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <CheckCircle2 size={16} color="var(--color-gold-light)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <CheckCircle2 size={16} color="#FFFFFF" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <span>Permanent digital footprint on VyapaarJagat.com with strong Google SEO ranking.</span>
                   </li>
                   <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <CheckCircle2 size={16} color="var(--color-gold-light)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <CheckCircle2 size={16} color="#FFFFFF" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <span>Consideration for the annual Fempreneur Coffee Table Book.</span>
                   </li>
                   <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                    <CheckCircle2 size={16} color="var(--color-gold-light)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                    <CheckCircle2 size={16} color="#FFFFFF" style={{ flexShrink: 0, marginTop: '2px' }} />
                     <span>National reach across 5,00,000+ founders, investors, and corporate readers.</span>
                   </li>
                 </ul>
@@ -597,7 +599,7 @@ export default function HomePage() {
             {/* Ahmedabad Hub */}
             <div className="fem-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1rem' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'rgba(109, 27, 68, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'rgba(106, 27, 154, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Building2 size={20} />
                 </div>
                 <div>
@@ -618,14 +620,14 @@ export default function HomePage() {
             {/* Delhi NCR Hub */}
             <div className="fem-card" style={{ padding: '2rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1rem' }}>
-                <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'rgba(197, 154, 63, 0.12)', color: 'var(--color-gold-rich)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '40px', height: '40px', borderRadius: 'var(--radius-md)', background: 'rgba(106, 27, 154, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Globe size={20} />
                 </div>
                 <div>
                   <h4 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-plum-deep)' }}>
                     Delhi NCR National Hub
                   </h4>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--color-gold-rich)', fontWeight: 600 }}>Capital, Policy &amp; Scale</span>
+                  <span style={{ fontSize: '0.78rem', color: 'var(--color-burgundy)', fontWeight: 600 }}>Capital, Policy &amp; Scale</span>
                 </div>
               </div>
               <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>

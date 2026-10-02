@@ -50,12 +50,18 @@ export default function BlogPage() {
     <div>
       <PageHeader
         badge="Editorial & Media"
+        badgeIcon={Mic}
         title="Fempreneur News,"
         highlight="Stories & Insights"
         description="Inspiring founder narratives, business growth playbooks, and official updates from the 1MEIF and VyapaarJagat.com newsroom."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Blog & News' }]}
         ctaText="Submit Your Story"
         ctaTo="/story-drive"
+        image="/images/blog/blog-hero-showcase.jpg"
+        imageAlt="Fempreneur News, Stories & Founder Insights Broadcast"
+        imageBadge="Fempreneur News & Storyroom"
+        imageMaxWidth="100%"
+        imageMaxHeight="500px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>

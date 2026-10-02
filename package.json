@@ -4,7 +4,7 @@
   "private": true,
   "description": "Fempreneur 2027 Full-Stack Platform",
   "scripts": {
-    "dev": "npm --prefix frontend run dev",
+    "dev": "node dev.js",
     "dev:frontend": "npm --prefix frontend run dev",
     "dev:backend": "npm --prefix backend run dev",
     "start:backend": "npm --prefix backend start",

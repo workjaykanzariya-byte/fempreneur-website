@@ -20,6 +20,7 @@ export default function BookPage() {
     <div>
       <PageHeader
         badge="Annual Hardbound Volume"
+        badgeIcon={BookOpen}
         title="Fempreneur Coffee Table Book —"
         highlight="Top 50 Women Entrepreneurs"
         description="A collector's volume celebrating 50 visionary female founders. Distributed to corporate leaders, institutional libraries, Chambers of Commerce, and 5,00,000+ digital readers."
@@ -28,6 +29,11 @@ export default function BookPage() {
         ctaTo="#order"
         secondaryCtaText="Apply to Be Featured"
         secondaryCtaTo="#apply-feature"
+        image="/images/coffee-table-book/coffee-table-book-hero.png"
+        imageAlt="Fempreneur Top 50 Women Entrepreneurs Coffee Table Book"
+        imageFramed={false}
+        imageFilter="none"
+        imageMaxWidth="700px"
       />
 
       {/* Section 1: Book Specifications */}
@@ -38,7 +44,7 @@ export default function BookPage() {
             <div
               className="fem-card"
               style={{
-                background: 'linear-gradient(135deg, #2E0848 0%, #6A1B9A 60%, #C59A3F 100%)',
+                background: 'linear-gradient(135deg, #2E0848 0%, #4A126D 50%, #6A1B9A 100%)',
                 color: '#FFFFFF',
                 padding: '4rem 3rem',
                 textAlign: 'center',
@@ -46,14 +52,14 @@ export default function BookPage() {
                 borderRadius: 'var(--radius-xl)',
               }}
             >
-              <div style={{ border: '2px solid rgba(222, 180, 89, 0.45)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 1.5rem' }}>
+              <div style={{ border: '2px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 1.5rem' }}>
                 <span className="badge badge-gold" style={{ marginBottom: '1.25rem' }}>
                   2027 Edition • Hardbound
                 </span>
                 <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', fontStyle: 'italic', marginBottom: '1rem', color: '#FFFFFF' }}>
                   "Women Entrepreneurs Redefining Success"
                 </h2>
-                <div style={{ fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: 'var(--color-gold-light)', fontWeight: 700 }}>
+                <div style={{ fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#FFFFFF', fontWeight: 700 }}>
                   Top 50 Women Entrepreneurs
                 </div>
                 <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '1.5rem' }}>
@@ -102,12 +108,21 @@ export default function BookPage() {
       </section>
 
       {/* Section 2: Pre-Order E-Commerce Form */}
-      <section id="order" className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
+      <section id="order" className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container-narrow">
-          <div className="fem-card fem-card-gold" style={{ padding: '3rem 2.5rem' }}>
+          <div
+            className="fem-card"
+            style={{
+              padding: '3rem 2.5rem',
+              background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+              border: '1.5px solid rgba(106, 27, 154, 0.2)',
+              boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+              borderRadius: 'var(--radius-2xl)',
+            }}
+          >
             <SectionTitle
               badge="Pre-Order Hardbound Copy"
-              badgeVariant="gold"
+              badgeVariant="plum"
               title="Reserve Your"
               highlight="Collector's Edition"
               subtitle="Pre-order copies for your office library, executive reception, or personal collection."
@@ -244,7 +259,16 @@ export default function BookPage() {
       {/* Section 3: Apply to Be Featured (Pathway 04) */}
       <section id="apply-feature" className="section-spacing" style={{ background: '#FFFFFF' }}>
         <div className="container-narrow">
-          <div className="fem-card" style={{ padding: '3rem 2.5rem' }}>
+          <div
+            className="fem-card"
+            style={{
+              padding: '3rem 2.5rem',
+              background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+              border: '1.5px solid rgba(106, 27, 154, 0.2)',
+              boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+              borderRadius: 'var(--radius-2xl)',
+            }}
+          >
             <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
               Pathway 04: Feature Opportunity
             </span>

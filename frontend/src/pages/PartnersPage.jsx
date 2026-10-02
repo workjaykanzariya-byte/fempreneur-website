@@ -97,12 +97,17 @@ export default function PartnersPage() {
     <div>
       <PageHeader
         badge="Corporate Partnerships 2027"
+        badgeIcon={Handshake}
         title="Partner with India's"
         highlight="Women-Led Movement"
         description="Connect your organization with 500+ female business leaders, MSME owners, and innovators across Ahmedabad & Delhi NCR. Packages from ₹10,000 to ₹5,00,000."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Partners & Sponsors' }]}
         ctaText="Inquire for Sponsorship"
         ctaTo="#inquire"
+        image="/images/partners/partners-hero-showcase.jpg"
+        imageAlt="Strategic Corporate Partnerships & Sponsorships Summit"
+        imageBadge="Strategic Corporate Alliances"
+        imageMaxWidth="580px"
       />
 
       {/* Section 1: 6 Tiers Detailed Grid */}
@@ -173,8 +178,17 @@ export default function PartnersPage() {
 
           {/* Section 2: Sponsorship Inquiry Form */}
           <div id="inquire" className="container-narrow">
-            <div className="fem-card fem-card-gold" style={{ padding: '3rem 2.5rem' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
+            <div
+              className="fem-card"
+              style={{
+                padding: '3rem 2.5rem',
+                background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+                border: '1.5px solid rgba(106, 27, 154, 0.2)',
+                boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+                borderRadius: 'var(--radius-2xl)',
+              }}
+            >
+              <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
                 Corporate Desk
               </span>
               <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
@@ -185,8 +199,8 @@ export default function PartnersPage() {
               </p>
 
               {submitted ? (
-                <div style={{ padding: '2rem', background: '#FFFFFF', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                  <CheckCircle2 size={42} color="var(--color-gold-rich)" style={{ margin: '0 auto 0.75rem' }} />
+                <div style={{ padding: '2rem', background: '#FFFFFF', borderRadius: 'var(--radius-md)', textAlign: 'center', border: '1px solid rgba(106, 27, 154, 0.15)' }}>
+                  <CheckCircle2 size={42} color="var(--color-burgundy)" style={{ margin: '0 auto 0.75rem' }} />
                   <h4 style={{ fontSize: '1.25rem', color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>Partnership Request Logged</h4>
                   <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                     Our corporate relations desk has received your request for <strong>{selectedTier}</strong> and will share the proposal deck shortly.
@@ -225,6 +239,7 @@ export default function PartnersPage() {
                         onChange={(e) => setPartnerData({ ...partnerData, company: e.target.value })}
                         className="form-input"
                         placeholder="e.g. Tata Trusts / Reliance Foundation"
+                        style={{ background: '#FFFFFF', borderColor: 'rgba(106, 27, 154, 0.2)' }}
                       />
                     </div>
                     <div className="form-group">
@@ -237,6 +252,7 @@ export default function PartnersPage() {
                         onChange={(e) => setPartnerData({ ...partnerData, contactPerson: e.target.value })}
                         className="form-input"
                         placeholder="e.g. Ritesh Kapoor"
+                        style={{ background: '#FFFFFF', borderColor: 'rgba(106, 27, 154, 0.2)' }}
                       />
                     </div>
                   </div>
@@ -252,6 +268,7 @@ export default function PartnersPage() {
                         onChange={(e) => setPartnerData({ ...partnerData, email: e.target.value })}
                         className="form-input"
                         placeholder="ritesh@company.com"
+                        style={{ background: '#FFFFFF', borderColor: 'rgba(106, 27, 154, 0.2)' }}
                       />
                     </div>
                     <div className="form-group">
@@ -264,6 +281,7 @@ export default function PartnersPage() {
                         onChange={(e) => setPartnerData({ ...partnerData, phone: e.target.value })}
                         className="form-input"
                         placeholder="+91-XXXXX-XXXXX"
+                        style={{ background: '#FFFFFF', borderColor: 'rgba(106, 27, 154, 0.2)' }}
                       />
                     </div>
                   </div>
@@ -275,6 +293,7 @@ export default function PartnersPage() {
                       value={selectedTier}
                       onChange={(e) => setSelectedTier(e.target.value)}
                       className="form-select"
+                      style={{ background: '#FFFFFF', borderColor: 'rgba(106, 27, 154, 0.2)' }}
                     >
                       <option value="Title Sponsor (₹5,00,000)">Title Sponsor (₹5,00,000)</option>
                       <option value="Powered By (₹3,00,000)">Powered By Sponsor (₹3,00,000)</option>

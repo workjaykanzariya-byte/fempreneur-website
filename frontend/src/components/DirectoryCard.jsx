@@ -1,5 +1,5 @@
 import React from 'react';
-import { User, MapPin, Globe, CheckCircle, Sparkles } from 'lucide-react';
+import { User, MapPin, CheckCircle, Sparkles } from 'lucide-react';
 
 /**
  * DirectoryCard Component
@@ -144,60 +144,10 @@ export default function DirectoryCard({
 
       {/* Description */}
       {description && (
-        <p style={{ fontSize: '0.9rem', color: '#4B5563', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+        <p style={{ fontSize: '0.9rem', color: '#4B5563', lineHeight: 1.6, margin: 0 }}>
           {description}
         </p>
       )}
-
-      {/* Website & Actions */}
-      <div
-        style={{
-          marginTop: 'auto',
-          paddingTop: '0.85rem',
-          borderTop: '1px solid rgba(106, 27, 154, 0.1)',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-        }}
-      >
-        {websiteUrl ? (
-          <a
-            href={websiteUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.4rem',
-              fontSize: '0.85rem',
-              fontWeight: 700,
-              color: '#6A1B9A',
-              textDecoration: 'none',
-              transition: 'color 0.2s',
-            }}
-            onMouseEnter={(e) => (e.currentTarget.style.color = '#E91E63')}
-            onMouseLeave={(e) => (e.currentTarget.style.color = '#6A1B9A')}
-          >
-            <Globe size={14} color="currentColor" />
-            <span>Visit Website</span>
-          </a>
-        ) : (
-          <span style={{ fontSize: '0.8rem', color: '#5C287A' }}>Verified Business</span>
-        )}
-
-        <span
-          style={{
-            fontSize: '0.76rem',
-            color: '#6A1B9A',
-            fontWeight: 700,
-            background: 'rgba(106, 27, 154, 0.08)',
-            padding: '0.2rem 0.65rem',
-            borderRadius: 'var(--radius-pill)',
-          }}
-        >
-          150+ Network
-        </span>
-      </div>
     </div>
   );
 }

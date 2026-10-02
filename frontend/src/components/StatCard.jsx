@@ -30,7 +30,7 @@ export default function StatCard({
               width: '48px',
               height: '48px',
               borderRadius: 'var(--radius-md)',
-              background: 'rgba(109, 27, 68, 0.06)',
+              background: 'rgba(106, 27, 154, 0.06)',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',

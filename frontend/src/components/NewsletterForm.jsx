@@ -7,7 +7,12 @@ import { subscribeNewsletter } from '../services/api';
  * NewsletterForm Component
  * Inline or standalone email capture with inverted dark/light mode support.
  */
-export default function NewsletterForm({ inverted = false, placeholder = "Enter your email address...", className = '' }) {
+export default function NewsletterForm({ 
+  inverted = false, 
+  placeholder = "Enter your email address...", 
+  className = '',
+  subtextColor = null
+}) {
   const [email, setEmail] = useState('');
   const [subscribed, setSubscribed] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -58,11 +63,11 @@ export default function NewsletterForm({ inverted = false, placeholder = "Enter 
           display: 'flex',
           alignItems: 'center',
           background: inverted ? 'rgba(255, 255, 255, 0.12)' : '#FFFFFF',
-          border: inverted ? '1.5px solid rgba(255, 255, 255, 0.2)' : '1.5px solid var(--border-light)',
+          border: inverted ? '1.5px solid rgba(255, 255, 255, 0.2)' : '1.5px solid rgba(106, 27, 154, 0.2)',
           borderRadius: 'var(--radius-pill)',
           padding: '0.35rem 0.35rem 0.35rem 1rem',
           transition: 'all var(--transition-fast)',
-          boxShadow: inverted ? 'none' : 'var(--shadow-xs)',
+          boxShadow: inverted ? 'none' : '0 2px 10px rgba(106, 27, 154, 0.06)',
         }}
       >
         <Mail size={18} color={inverted ? 'rgba(255, 255, 255, 0.6)' : 'var(--text-light)'} style={{ flexShrink: 0, marginRight: '0.5rem' }} />
@@ -91,7 +96,14 @@ export default function NewsletterForm({ inverted = false, placeholder = "Enter 
           {loading ? 'Subscribing...' : 'Subscribe'}
         </CTAButton>
       </div>
-      <div style={{ fontSize: '0.75rem', color: inverted ? 'rgba(255, 255, 255, 0.6)' : 'var(--text-muted)', marginTop: '0.5rem', paddingLeft: '0.5rem' }}>
+      <div
+        style={{
+          fontSize: '0.75rem',
+          color: subtextColor || (inverted ? 'rgba(255, 255, 255, 0.85)' : 'var(--text-muted)'),
+          marginTop: '0.5rem',
+          paddingLeft: '0.5rem',
+        }}
+      >
         No spam. Unsubscribe anytime.
       </div>
     </form>

@@ -24,6 +24,7 @@ export default function SpeakersPage() {
     <div>
       <PageHeader
         badge="60+ Expert Speakers Track Record"
+        badgeIcon={Mic}
         title="Speakers, Keynotes &amp;"
         highlight="Masterclass Leaders"
         description="Learn directly from seasoned investors, successful women founders, and corporate policymakers during our 2027 sessions."
@@ -32,6 +33,11 @@ export default function SpeakersPage() {
         ctaTo="#apply-speak"
         secondaryCtaText="Event Schedule"
         secondaryCtaTo="/events"
+        image="/images/speakers/speakers-hero-showcase.jpg"
+        imageAlt="Fempreneur 60+ Expert Speakers & Masterclass Leaders Keynote"
+        imageBadge="Keynote & Masterclasses"
+        imageMaxWidth="100%"
+        imageMaxHeight="500px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>
@@ -68,8 +74,17 @@ export default function SpeakersPage() {
 
           {/* Pathway 08: Speaker Application Form */}
           <div id="apply-speak" className="container-narrow">
-            <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
+            <div
+              className="fem-card"
+              style={{
+                padding: '2.5rem',
+                background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+                border: '1.5px solid rgba(106, 27, 154, 0.2)',
+                boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+                borderRadius: 'var(--radius-2xl)',
+              }}
+            >
+              <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
                 Pathway 08: Share Your Expertise
               </span>
               <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.75rem' }}>

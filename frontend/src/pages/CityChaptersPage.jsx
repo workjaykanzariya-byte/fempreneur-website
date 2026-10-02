@@ -36,12 +36,18 @@ export default function CityChaptersPage() {
     <div>
       <PageHeader
         badge="Community Hubs"
+        badgeIcon={MapPin}
         title="Fempreneur City"
         highlight="Chapters Movement"
         description="Local regional nodes connecting women founders between annual conventions through monthly roundtables, mentorship circles, and business collaborations."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'City Chapters' }]}
         ctaText="Apply to Lead Chapter"
         ctaTo="#lead-chapter"
+        image="/images/chapters/city-chapters-network.png"
+        imageAlt="Fempreneur City Chapters Network Map"
+        imageFramed={false}
+        imageFilter="none"
+        imageMaxWidth="680px"
       />
 
       {/* Section 1: What is a City Chapter? */}
@@ -82,8 +88,17 @@ export default function CityChaptersPage() {
 
           {/* Section 2: Chapter Leader Application */}
           <div id="lead-chapter" className="container-narrow">
-            <div className="fem-card fem-card-gold" style={{ padding: '3rem 2.5rem' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
+            <div
+              className="fem-card"
+              style={{
+                padding: '3rem 2.5rem',
+                background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
+                border: '1.5px solid rgba(106, 27, 154, 0.2)',
+                boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
+                borderRadius: 'var(--radius-2xl)',
+              }}
+            >
+              <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
                 Chapter Leadership
               </span>
               <h3 style={{ fontSize: '1.8rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>

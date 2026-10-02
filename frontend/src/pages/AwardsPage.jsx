@@ -35,14 +35,21 @@ export default function AwardsPage() {
     <div>
       <PageHeader
         badge="Awards 2027"
+        badgeIcon={Trophy}
         title="Fempreneur Awards 2027 —"
         highlight="Fair, Transparent & Prestigious"
         description="The 6th edition honors women founders across 35–40+ categories through our dual evaluation engine: 50% Independent Jury Review + 50% Verified Public Voting."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Awards Overview' }]}
         ctaText="Start Free Nomination"
         ctaTo="/nominate"
+        ctaIcon={null}
         secondaryCtaText="Explore Categories"
         secondaryCtaTo="/categories"
+        image="/images/awards/awards-stage-winners-clean.png"
+        imageAlt="Fempreneur Award Winners Stage Felicitation"
+        imageBadge="Honoring Women Excellence"
+        imageMaxWidth="560px"
+        imageMaxHeight="440px"
       />
 
       {/* Section 1: The 50/50 Dual Engine */}
@@ -60,7 +67,7 @@ export default function AwardsPage() {
             {/* 50% Jury Evaluation */}
             <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: 'rgba(109, 27, 68, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: 'rgba(106, 27, 154, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <ShieldCheck size={22} />
                 </div>
                 <div>
@@ -83,7 +90,7 @@ export default function AwardsPage() {
             {/* 50% Public Voting */}
             <div className="fem-card" style={{ padding: '2.5rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', marginBottom: '1.25rem' }}>
-                <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: 'rgba(197, 154, 63, 0.12)', color: 'var(--color-gold-rich)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: 'rgba(106, 27, 154, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
                   <Vote size={22} />
                 </div>
                 <div>
@@ -121,7 +128,7 @@ export default function AwardsPage() {
             {criteria.map((item, idx) => (
               <div key={idx} className="fem-card" style={{ padding: '1.75rem' }}>
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
-                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-gold-rich)', letterSpacing: '0.06em' }}>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-burgundy)', letterSpacing: '0.06em' }}>
                     FACTOR 0{idx + 1}
                   </span>
                   <span className="badge badge-plum" style={{ fontSize: '0.72rem' }}>

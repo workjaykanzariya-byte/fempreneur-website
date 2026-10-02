@@ -1,5 +1,5 @@
 import React from 'react';
-import { Mail, Phone, MapPin, Award, Handshake, Clock, ShieldCheck } from 'lucide-react';
+import { Mail, Phone, MapPin, Award, Handshake, Clock, ShieldCheck, Sparkles } from 'lucide-react';
 import { PageHeader, ContactForm, SectionTitle } from '../components';
 
 export default function ContactPage() {
@@ -28,10 +28,16 @@ export default function ContactPage() {
     <div>
       <PageHeader
         badge="Official Secretariat"
+        badgeIcon={Sparkles}
         title="Get in Touch with"
         highlight="Fempreneur Team"
         description="Connect with our specialized coordination desks in Ahmedabad and Delhi NCR. We respond within 24–48 business hours."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Contact Us' }]}
+        image="/images/contact/contact-hero-collage.png"
+        imageAlt="Fempreneur Secretariat Coordination Desks"
+        imageFramed={false}
+        imageFilter="none"
+        imageMaxWidth="640px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>
@@ -41,8 +47,30 @@ export default function ContactPage() {
             {desks.map((d, idx) => {
               const Icon = d.icon;
               return (
-                <div key={idx} className="fem-card" style={{ padding: '2rem' }}>
-                  <div style={{ width: '44px', height: '44px', borderRadius: 'var(--radius-md)', background: 'rgba(109, 27, 68, 0.08)', color: 'var(--color-burgundy)', display: 'flex', alignItems: 'center', justifyContent: 'center', marginBottom: '1rem' }}>
+                <div
+                  key={idx}
+                  className="fem-card"
+                  style={{
+                    padding: '2rem',
+                    background: '#FFFFFF',
+                    border: '1.5px solid rgba(106, 27, 154, 0.12)',
+                    boxShadow: '0 6px 20px rgba(46, 8, 72, 0.04)',
+                  }}
+                >
+                  <div
+                    style={{
+                      width: '46px',
+                      height: '46px',
+                      borderRadius: 'var(--radius-md)',
+                      background: 'rgba(106, 27, 154, 0.08)',
+                      border: '1px solid rgba(106, 27, 154, 0.15)',
+                      color: 'var(--color-burgundy)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      marginBottom: '1rem',
+                    }}
+                  >
                     <Icon size={22} />
                   </div>
                   <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.4rem' }}>
@@ -72,8 +100,16 @@ export default function ContactPage() {
             {/* Regional Hub Office Containers */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               {/* Ahmedabad Anchor Office */}
-              <div className="fem-card fem-card-gold" style={{ padding: '2rem' }}>
-                <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
+              <div
+                className="fem-card"
+                style={{
+                  padding: '2rem',
+                  background: '#FFFFFF',
+                  border: '1.5px solid rgba(106, 27, 154, 0.15)',
+                  boxShadow: '0 8px 24px rgba(46, 8, 72, 0.05)',
+                }}
+              >
+                <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
                   Anchor Secretariat
                 </span>
                 <h4 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
@@ -82,7 +118,7 @@ export default function ContactPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1rem' }}>
                   <MapPin size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <div>
-                    Ahmedabad Management Association (AMA), ATIRA Campus, Dr. Vikram Sarabhai Marg, Vastrapur, Ahmedabad, Gujarat [Suite to be confirmed]
+                    Ahmedabad Management Association (AMA), ATIRA Campus, Dr. Vikram Sarabhai Marg, Vastrapur, Ahmedabad, Gujarat (Suite to be confirmed)
                   </div>
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
@@ -91,7 +127,15 @@ export default function ContactPage() {
               </div>
 
               {/* Delhi NCR Regional Hub */}
-              <div className="fem-card" style={{ padding: '2rem' }}>
+              <div
+                className="fem-card"
+                style={{
+                  padding: '2rem',
+                  background: '#FFFFFF',
+                  border: '1.5px solid rgba(106, 27, 154, 0.15)',
+                  boxShadow: '0 8px 24px rgba(46, 8, 72, 0.05)',
+                }}
+              >
                 <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
                   National Hub
                 </span>
@@ -101,7 +145,7 @@ export default function ContactPage() {
                 <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem', color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.6, marginBottom: '1rem' }}>
                   <MapPin size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
                   <div>
-                    National Capital Regional Secretariat, New Delhi [Official address to be published ahead of 2027 program]
+                    National Capital Regional Secretariat, New Delhi (Official address to be published ahead of 2027 program)
                   </div>
                 </div>
                 <div style={{ fontSize: '0.82rem', color: 'var(--text-muted)' }}>
@@ -110,10 +154,20 @@ export default function ContactPage() {
               </div>
 
               {/* Response Time Guarantee */}
-              <div style={{ padding: '1.25rem', background: 'var(--bg-card-subtle)', borderRadius: 'var(--radius-md)', border: '1px solid var(--border-light)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <Clock size={20} color="var(--color-gold-rich)" />
+              <div
+                style={{
+                  padding: '1.25rem',
+                  background: 'rgba(106, 27, 154, 0.04)',
+                  borderRadius: 'var(--radius-md)',
+                  border: '1.5px solid rgba(106, 27, 154, 0.14)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.75rem',
+                }}
+              >
+                <Clock size={20} color="var(--color-burgundy)" />
                 <div style={{ fontSize: '0.85rem', color: 'var(--text-secondary)' }}>
-                  <strong>Response Assurance:</strong> All inquiries receive a written confirmation and ticket number within 24 hours.
+                  <strong style={{ color: 'var(--color-plum-deep)' }}>Response Assurance:</strong> All inquiries receive a written confirmation and ticket number within 24 hours.
                 </div>
               </div>
             </div>

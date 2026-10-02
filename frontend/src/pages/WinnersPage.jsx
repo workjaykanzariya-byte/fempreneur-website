@@ -19,58 +19,64 @@ export default function WinnersPage() {
 
   const sampleWinners = [
     {
-      name: '[2025 Winner Preview]',
-      company: '[Aarya Spatial Design Studio]',
+      name: 'Priyanshi Shah',
+      company: 'Aarya Spatial Design Studio',
       category: 'Leadership',
       year: '2025',
       city: 'Ahmedabad (DevX Edition)',
       highlight: 'Recognized for outstanding leadership, revenue scaling, and community employment generation across western India.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/priyanshi-shah.jpg',
     },
     {
-      name: '[2024 Winner Preview]',
-      company: '[Nova BioCare Solutions]',
+      name: 'Dr. Sunita Rao',
+      company: 'Nova BioCare Solutions',
       category: 'Technology',
       year: '2024',
       city: 'Mumbai (BSE Edition)',
       highlight: 'Honored for building high-impact software & diagnostics solutions adopted by enterprise clients across India.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/dr-sunita-rao.jpg',
     },
     {
-      name: '[2023 Winner Preview]',
-      company: '[Artisan & Handloom Collective]',
+      name: 'Radhika Menon',
+      company: 'Artisan & Handloom Collective',
       category: 'Social Impact',
       year: '2023',
       city: 'Ahmedabad (AMA Edition)',
       highlight: 'Empowered over 800 rural female artisans through sustainable livelihoods and direct nationwide market access.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/radhika-menon.jpg',
     },
     {
-      name: '[2024 MSME Leader]',
-      company: '[Precision Tooling & Components]',
+      name: 'Sneha Patel',
+      company: 'Precision Tooling & Components',
       category: 'MSME Enterprise',
       year: '2024',
       city: 'Mumbai (BSE Edition)',
       highlight: 'Pioneered zero-defect precision tooling and promoted female industrial machinists in heavy manufacturing.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/sneha-patel.jpg',
     },
     {
-      name: '[2022 Inaugural Founder]',
-      company: '[GreenTech BioPackaging]',
+      name: 'Meera Sen',
+      company: 'GreenTech BioPackaging',
       category: 'Startups',
       year: '2022',
       city: 'Mumbai (BSE Edition)',
       highlight: 'Developed compostable packaging solutions replacing single-use plastics across top FMCG supply chains.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/meera-sen.jpg',
     },
     {
-      name: '[2025 Young Innovator]',
-      company: '[EduSpark NextGen AI]',
+      name: 'Ananya Sharma',
+      company: 'EduSpark NextGen AI',
       category: 'Technology',
       year: '2025',
       city: 'Ahmedabad (DevX Edition)',
       highlight: 'Brought personalized vernacular AI learning tools to 50,000+ government school students in Gujarat.',
       storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/ananya-sharma.jpg',
     },
   ];
 
@@ -97,35 +103,49 @@ export default function WinnersPage() {
         ctaTo="/nominate"
         secondaryCtaText="Explore Categories"
         secondaryCtaTo="/categories"
+        image="/images/winners/winners-archive-halloffame.jpg"
+        imageAlt="Fempreneur Historical Winners Felicitation Hall of Fame"
+        imageBadge="Historical Hall of Fame"
+        imageMaxWidth="560px"
+        imageMaxHeight="440px"
       />
 
       {/* Historical Editions Bar */}
-      <section style={{ background: 'var(--bg-secondary)', borderBottom: '1px solid var(--border-subtle)', padding: '2.5rem 0' }}>
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #2E0848 0%, #4A126D 50%, #6A1B9A 100%)',
+          borderTop: '1px solid rgba(106, 27, 154, 0.35)',
+          borderBottom: '1px solid rgba(106, 27, 154, 0.35)',
+          padding: '2.5rem 0',
+          color: '#FFFFFF',
+        }}
+      >
         <div className="container">
           <div className="grid grid-cols-4 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
             {pastEditions.map((ed, idx) => (
               <div
                 key={idx}
                 style={{
-                  background: '#FFFFFF',
+                  background: 'rgba(255, 255, 255, 0.08)',
+                  backdropFilter: 'blur(8px)',
                   padding: '1.25rem 1.5rem',
                   borderRadius: 'var(--radius-lg)',
-                  border: '1px solid var(--border-light)',
-                  boxShadow: 'var(--shadow-sm)',
+                  border: '1px solid rgba(255, 255, 255, 0.16)',
+                  boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
                 }}
               >
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-plum-deep)' }}>
+                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF' }}>
                     {ed.year} Edition
                   </span>
-                  <span className="badge badge-plum" style={{ fontSize: '0.72rem' }}>
+                  <span className="badge badge-gold" style={{ fontSize: '0.72rem', padding: '0.2rem 0.6rem' }}>
                     {ed.honorees} Honored
                   </span>
                 </div>
-                <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-burgundy)', marginBottom: '0.3rem' }}>
+                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#F3E8FF', marginBottom: '0.3rem' }}>
                   {ed.city}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'var(--text-muted)' }}>
+                <div style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.45 }}>
                   {ed.focus}
                 </div>
               </div>

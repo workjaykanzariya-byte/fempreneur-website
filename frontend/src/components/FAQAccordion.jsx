@@ -50,7 +50,7 @@ export default function FAQAccordion({ items = [], defaultOpenIndex = null, clas
                     width: '32px',
                     height: '32px',
                     borderRadius: '50%',
-                    background: isOpen ? 'rgba(109, 27, 68, 0.08)' : 'var(--bg-card-subtle)',
+                    background: isOpen ? 'rgba(106, 27, 154, 0.08)' : 'var(--bg-card-subtle)',
                     color: isOpen ? 'var(--color-burgundy)' : 'var(--text-muted)',
                     display: 'flex',
                     alignItems: 'center',

@@ -89,6 +89,10 @@ export default function FaqPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'FAQ' }]}
         ctaText="Ask a Question"
         ctaTo="/contact"
+        ctaIcon={null}
+        image="/images/faq/faq-hero-transparent.png"
+        imageAlt="Frequently Asked Questions - Fempreneur Support"
+        imageFramed={false}
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>
