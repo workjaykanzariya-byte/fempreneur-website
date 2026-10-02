@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Handshake, Check, ShieldCheck, Download, Send, CheckCircle2 } from 'lucide-react';
+import { Handshake, Check, ShieldCheck, Download, Send, CheckCircle2, Users, Sparkles } from 'lucide-react';
 import { PageHeader, SectionTitle, CTAButton } from '../components';
 import { submitGeneralInquiry } from '../services/api';
 
@@ -93,6 +93,184 @@ export default function PartnersPage() {
     },
   ];
 
+  const partnersHeroCollage = (
+    <div className="floating-collage-box">
+      {/* Soft Purple Glow Aura */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '430px',
+          height: '430px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(142, 36, 170, 0.25) 0%, rgba(106, 27, 154, 0.08) 50%, transparent 72%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Decorative Subtle Curved Dashed Lines */}
+      <svg
+        viewBox="0 0 540 500"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
+      >
+        <path
+          d="M 110 90 Q 210 25 320 85 T 460 110"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+        <path
+          d="M 120 270 Q 200 230 290 260 T 460 300"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+        <path
+          d="M 430 170 Q 440 320 380 440"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+      </svg>
+
+      {/* 1. Strategic Partners Floating Pill (Top-Right) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '4%',
+          right: '6%',
+          background: 'linear-gradient(135deg, #7C4DFF 0%, #6A1B9A 100%)',
+          color: '#FFFFFF',
+          borderRadius: '999px',
+          padding: '7px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontSize: '0.85rem',
+          fontWeight: 700,
+          boxShadow: '0 8px 22px rgba(106, 27, 154, 0.32)',
+          zIndex: 8,
+        }}
+      >
+        <ShieldCheck size={15} />
+        <span>Strategic Partners</span>
+      </div>
+
+      {/* 2. Main Centerpiece: Authentic Founder Media & Interview Spotlight */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '430px',
+          maxWidth: '85%',
+          height: '350px',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          boxShadow: '0 22px 50px rgba(106, 27, 154, 0.28), 0 8px 18px rgba(0,0,0,0.08)',
+          border: '4px solid #FFFFFF',
+          zIndex: 5,
+        }}
+      >
+        <img
+          src="/images/partners/partners-media-interview.png"
+          alt="Fempreneur Media &amp; Corporate Partnerships Spotlight"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center 30%',
+            display: 'block',
+          }}
+        />
+        {/* Floating badge on centerpiece image */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            left: '1rem',
+            background: 'rgba(30, 8, 42, 0.85)',
+            backdropFilter: 'blur(8px)',
+            color: '#FFFFFF',
+            padding: '0.45rem 1rem',
+            borderRadius: 'var(--radius-pill)',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+          }}
+        >
+          <Sparkles size={14} color="#E91E63" />
+          <span>Media &amp; Corporate Spotlight</span>
+        </div>
+      </div>
+
+      {/* 3. 500+ Founders Floating Pill (Mid-Left) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '52%',
+          left: '2%',
+          background: '#FFFFFF',
+          color: 'var(--color-plum-deep)',
+          borderRadius: '999px',
+          padding: '7px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '7px',
+          fontSize: '0.82rem',
+          fontWeight: 800,
+          boxShadow: '0 8px 24px rgba(106, 27, 154, 0.16)',
+          border: '1.5px solid rgba(106, 27, 154, 0.16)',
+          zIndex: 8,
+        }}
+      >
+        <Users size={15} color="var(--color-burgundy)" />
+        <span>500+ Founders</span>
+      </div>
+
+      {/* 5. Packages Tier Floating Pill (Bottom-Right) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '8%',
+          right: '4%',
+          background: '#FFFFFF',
+          color: 'var(--color-plum-deep)',
+          borderRadius: '999px',
+          padding: '7px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '7px',
+          fontSize: '0.82rem',
+          fontWeight: 800,
+          boxShadow: '0 8px 24px rgba(106, 27, 154, 0.16)',
+          border: '1.5px solid rgba(106, 27, 154, 0.16)',
+          zIndex: 8,
+        }}
+      >
+        <Sparkles size={15} color="#D97706" />
+        <span>₹10,000 – ₹5,00,000</span>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <PageHeader
@@ -104,10 +282,7 @@ export default function PartnersPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Partners & Sponsors' }]}
         ctaText="Inquire for Sponsorship"
         ctaTo="#inquire"
-        image="/images/partners/partners-hero-showcase.jpg"
-        imageAlt="Strategic Corporate Partnerships & Sponsorships Summit"
-        imageBadge="Strategic Corporate Alliances"
-        imageMaxWidth="580px"
+        customVisual={partnersHeroCollage}
       />
 
       {/* Section 1: 6 Tiers Detailed Grid */}

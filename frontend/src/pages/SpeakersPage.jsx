@@ -20,6 +20,184 @@ export default function SpeakersPage() {
     { name: '[Panelist: TBA]', role: 'Tech & AI Innovator', topic: 'Automating Operational Productivity in Small Business' },
   ];
 
+  const speakersHeroCollage = (
+    <div className="floating-collage-box">
+      {/* Soft Purple Glow Aura */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '440px',
+          height: '440px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(142, 36, 170, 0.25) 0%, rgba(106, 27, 154, 0.08) 50%, transparent 72%)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
+
+      {/* Decorative Subtle Curved Dashed Lines */}
+      <svg
+        viewBox="0 0 540 500"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          width: '100%',
+          height: '100%',
+          pointerEvents: 'none',
+          zIndex: 2,
+        }}
+      >
+        <path
+          d="M 80 120 Q 210 40 340 90 T 480 110"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+        <path
+          d="M 60 290 Q 180 250 280 280 T 480 320"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+        <path
+          d="M 450 160 Q 460 300 400 420"
+          fill="none"
+          stroke="rgba(142, 36, 170, 0.35)"
+          strokeWidth="1.8"
+          strokeDasharray="4 5"
+        />
+      </svg>
+
+      {/* 1. Keynote Floating Pill (Top-Right) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '4%',
+          right: '8%',
+          background: 'linear-gradient(135deg, #7C4DFF 0%, #6A1B9A 100%)',
+          color: '#FFFFFF',
+          borderRadius: '999px',
+          padding: '7px 16px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '6px',
+          fontSize: '0.85rem',
+          fontWeight: 700,
+          boxShadow: '0 8px 22px rgba(106, 27, 154, 0.32)',
+          zIndex: 8,
+        }}
+      >
+        <Mic size={15} />
+        <span>Keynote</span>
+      </div>
+
+      {/* 2. Main Centerpiece: Real Speaker with Mic at Fempreneur Event */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '10%',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          width: '430px',
+          maxWidth: '85%',
+          height: '370px',
+          borderRadius: '24px',
+          overflow: 'hidden',
+          boxShadow: '0 22px 50px rgba(106, 27, 154, 0.28), 0 8px 18px rgba(0,0,0,0.08)',
+          border: '4px solid #FFFFFF',
+          zIndex: 5,
+        }}
+      >
+        <img
+          src="/images/speakers/speakers-keynote-real.png"
+          alt="Fempreneur Keynote Speaker"
+          style={{
+            width: '100%',
+            height: '100%',
+            objectFit: 'cover',
+            objectPosition: 'center top',
+            display: 'block',
+          }}
+        />
+        {/* Floating badge on speaker image */}
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '1rem',
+            left: '1rem',
+            background: 'rgba(30, 8, 42, 0.85)',
+            backdropFilter: 'blur(8px)',
+            color: '#FFFFFF',
+            padding: '0.45rem 1rem',
+            borderRadius: 'var(--radius-pill)',
+            fontSize: '0.82rem',
+            fontWeight: 700,
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            border: '1px solid rgba(255, 255, 255, 0.2)',
+          }}
+        >
+          <Sparkles size={14} color="#E91E63" />
+          <span>Keynote &amp; Masterclasses</span>
+        </div>
+      </div>
+
+      {/* 3. Masterclass Floating Pill (Mid-Left) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '52%',
+          left: '2%',
+          background: '#FFFFFF',
+          color: 'var(--color-plum-deep)',
+          borderRadius: '999px',
+          padding: '8px 18px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '7px',
+          fontSize: '0.85rem',
+          fontWeight: 800,
+          boxShadow: '0 8px 24px rgba(106, 27, 154, 0.16)',
+          border: '1.5px solid rgba(106, 27, 154, 0.16)',
+          zIndex: 8,
+        }}
+      >
+        <Sparkles size={15} color="var(--color-burgundy)" />
+        <span>Masterclass</span>
+      </div>
+
+      {/* 4. Inspire Floating Pill (Bottom-Right) */}
+      <div
+        style={{
+          position: 'absolute',
+          bottom: '8%',
+          right: '4%',
+          background: '#FFFFFF',
+          color: 'var(--color-plum-deep)',
+          borderRadius: '999px',
+          padding: '8px 18px',
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '7px',
+          fontSize: '0.85rem',
+          fontWeight: 800,
+          boxShadow: '0 8px 24px rgba(106, 27, 154, 0.16)',
+          border: '1.5px solid rgba(106, 27, 154, 0.16)',
+          zIndex: 8,
+        }}
+      >
+        <Users size={15} color="var(--color-burgundy)" />
+        <span>Inspire</span>
+      </div>
+    </div>
+  );
+
   return (
     <div>
       <PageHeader
@@ -33,11 +211,7 @@ export default function SpeakersPage() {
         ctaTo="#apply-speak"
         secondaryCtaText="Event Schedule"
         secondaryCtaTo="/events"
-        image="/images/speakers/speakers-hero-showcase.jpg"
-        imageAlt="Fempreneur 60+ Expert Speakers & Masterclass Leaders Keynote"
-        imageBadge="Keynote & Masterclasses"
-        imageMaxWidth="100%"
-        imageMaxHeight="500px"
+        customVisual={speakersHeroCollage}
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>

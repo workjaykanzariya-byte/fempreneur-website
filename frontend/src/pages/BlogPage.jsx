@@ -57,11 +57,11 @@ export default function BlogPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Blog & News' }]}
         ctaText="Submit Your Story"
         ctaTo="/story-drive"
-        image="/images/blog/blog-hero-showcase.jpg"
-        imageAlt="Fempreneur News, Stories & Founder Insights Broadcast"
-        imageBadge="Fempreneur News & Storyroom"
-        imageMaxWidth="100%"
-        imageMaxHeight="500px"
+        image="/images/blog/fempreneur-stories-events.png"
+        imageAlt="Fempreneur Community Stories & Chapter Felicitation"
+        imageBadge="Fempreneur Community Stories"
+        imageMaxWidth="560px"
+        imageMaxHeight="460px"
       />
 
       <section className="section-spacing" style={{ background: '#FFFFFF' }}>

@@ -367,9 +367,9 @@ export default function Hero({
                 }}
               >
                 <img
-                  src="/images/hubs/ahmedabad-hub.jpg"
-                  alt="Ahmedabad Hub"
-                  style={{ width: '100%', height: '76px', borderRadius: '11px', objectFit: 'cover', display: 'block' }}
+                  src="/images/hubs/ahmedabad-hub-roundtable.png"
+                  alt="Ahmedabad Hub Roundtable"
+                  style={{ width: '100%', height: '82px', borderRadius: '11px', objectFit: 'cover', objectPosition: 'center center', display: 'block' }}
                 />
                 <div style={{ padding: '6px 2px 1px', fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-plum-deep)', textAlign: 'left', lineHeight: 1.2 }}>
                   Ahmedabad<br />Hub
@@ -552,9 +552,9 @@ export default function Hero({
                 }}
               >
                 <img
-                  src="/images/hubs/delhi-hub.jpg"
-                  alt="Delhi NCR Hub"
-                  style={{ width: '100%', height: '76px', borderRadius: '11px', objectFit: 'cover', display: 'block' }}
+                  src="/images/hubs/delhi-hub-banner.png"
+                  alt="Delhi NCR Hub Leaders"
+                  style={{ width: '100%', height: '82px', borderRadius: '11px', objectFit: 'cover', objectPosition: 'center 15%', display: 'block' }}
                 />
                 <div style={{ padding: '6px 2px 1px', fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-plum-deep)', textAlign: 'left', lineHeight: 1.2 }}>
                   Delhi NCR<br />Hub
