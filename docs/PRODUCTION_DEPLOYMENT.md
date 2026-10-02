@@ -6,9 +6,9 @@
 - **Hosting Panel**: Virtualmin / Webmin
 - **Web Server**: Apache 2.4 (VirtualHost reverse proxy & static file server)
 - **Frontend**: React 19 Single Page Application (SPA), built via Vite 8, served directly by Apache with `.htaccess` rewrite rules.
-- **Backend**: Node.js & Express.js REST API listening locally on `127.0.0.1:5000`, proxied via Apache at `/api`.
-- **Database**: PostgreSQL with connection pooling via `pg` (`node-postgres`), initialized idempotently via `backend/models/initDb.js`.
-- **Process Manager**: PM2 (or systemd service `fempreneur-backend.service`) running under dedicated user `fempreneur`.
+- **Backend**: Node.js & Express.js REST API listening locally on `127.0.0.1:5001` (avoiding conflict with existing port 5000 services), proxied via Apache at `/api`.
+- **Database**: PostgreSQL with dedicated database `fempreneur_2027` (isolated from other websites), initialized idempotently via `backend/models/initDb.js`.
+- **Process Manager**: Systemd service (`fempreneur-backend.service`) running under dedicated user `fempreneur`.
 
 ---
 
@@ -18,7 +18,7 @@
 /home/fempreneur/
 ├── public_html/                       <-- Public Frontend (Apache DocumentRoot)
 │   ├── index.html
-│   ├── .htaccess                      <-- SPA routing fallback & asset caching
+│   ├── .htaccess                      <-- SPA routing fallback, .env blocking & asset caching
 │   ├── favicon.svg
 │   ├── fempreneur-logo.png
 │   ├── assets/                        <-- Bundled CSS & JS
@@ -43,22 +43,22 @@
 │           └── backend-error.log
 │
 └── backups/                           <-- Deployment Backups (chmod 700)
-    └── pre_deploy_YYYYMMDD_HHMMSS/
+    └── pre_deploy_20261002_1810/
         ├── public_html_backup.tar.gz
-        ├── apache_vhost_backup.conf
-        └── db_dump.sql (if applicable)
+        ├── httpd.conf.bak
+        └── ...
 ```
 
 ---
 
 ## 3. Environment Variables (`/home/fempreneur/apps/fempreneur/.env`)
 
-| Variable Name | Description | Example / Target Value |
+| Variable Name | Description | Value Configured |
 | :--- | :--- | :--- |
 | `NODE_ENV` | Runtime environment | `production` |
-| `PORT` | Local internal backend port | `5000` |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://fempreneur:<DB_PASSWORD>@localhost:5432/fempreneur_db` |
-| `JWT_SECRET` | Cryptographically secure secret | 64+ char random string |
+| `PORT` | Local internal backend port | `5001` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://fempreneur_user:<DB_PASSWORD>@localhost:5432/fempreneur_2027` |
+| `JWT_SECRET` | Cryptographically secure secret | Configured |
 | `CORS_ORIGIN` | Allowed front-end origin | `https://fempreneur.club` |
 
 *Note: The `.env` file must be stored in `/home/fempreneur/apps/fempreneur/.env` with file permissions `600` (readable only by the `fempreneur` user).*
