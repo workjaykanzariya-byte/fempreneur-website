@@ -27,7 +27,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
 
       # =========================================================================
       # 1. CI STAGE — FRONTEND BUILD & VALIDATION
@@ -235,8 +234,12 @@ jobs:
         if: failure()
         run: |
           echo "================================================================"
-          echo "  ⚠️ DEPLOYMENT FAILED! Initiating automated rollback..."
+          echo "  ⚠️ DEPLOYMENT FAILED! Evaluating rollback..."
           echo "================================================================"
+          if [ ! -f ~/.ssh/deploy_key ]; then
+            echo "Deployment failed prior to SSH configuration. No remote rollback required."
+            exit 0
+          fi
           ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} '
             if [ -d /home/fempreneur/backups/ci_release_previous ]; then
               echo "Restoring previous frontend files..."
