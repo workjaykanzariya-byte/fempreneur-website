@@ -200,5 +200,86 @@ pm2 reload fempreneur-backend
 ## 8. Rollback Procedure
 If any deployment issue arises:
 1. Restore previous `public_html` from `/home/fempreneur/backups/pre_deploy_<timestamp>/public_html_backup.tar.gz`.
-2. Reload PM2 with previous code: `pm2 reload fempreneur-backend`.
-3. Revert Apache configuration if modified: `sudo apachectl configtest && sudo systemctl reload apache2`.
+2. Restart backend with previous code: `sudo systemctl restart fempreneur-backend`.
+3. Revert Apache configuration if modified: `sudo httpd -t && sudo systemctl reload httpd`.
+
+---
+
+## 9. Automated CI/CD Deployment
+
+### Workflow Overview
+* **Workflow File**: [`.github/workflows/deploy-production.yml`](file:///.github/workflows/deploy-production.yml)
+* **Trigger**: Automatic on push/merge to the `main` branch, plus manual trigger (`workflow_dispatch`).
+* **Concurrency**: Handled by group `production-deploy` (`cancel-in-progress: false`) to prevent concurrent deployments.
+* **Target Environment**: Virtualmin Production VPS (`187.127.181.73`).
+
+### Required GitHub Secrets
+
+To enable automated deployments, configure the following secrets in your GitHub repository (**Settings > Secrets and variables > Actions > New repository secret**):
+
+| Secret Name | Required | Description |
+| :--- | :--- | :--- |
+| `PROD_SSH_KEY` | **Yes** | Dedicated Ed25519 private key generated specifically for the `fempreneur` user |
+| `PROD_SSH_HOST` | **Optional** | Server IP address (defaults to `187.127.181.73` in workflow) |
+| `PROD_SSH_USER` | **Optional** | SSH account user (defaults to `fempreneur` in workflow) |
+| `PROD_SSH_PORT` | **Optional** | SSH port (defaults to `22` in workflow) |
+| `PROD_KNOWN_HOSTS`| **Optional** | Pinned host key line for strict host verification (embedded as default in workflow) |
+
+### Deployment Pipeline Stages
+
+1. **Frontend CI**:
+   - Checks out code and installs dependencies using `npm --prefix frontend ci`.
+   - Runs `oxlint` static code analysis.
+   - Builds Vite production SPA with `VITE_API_URL=/api`.
+   - Validates that `index.html` was produced and confirms zero occurrences of `localhost:5000` in compiled assets.
+
+2. **Backend CI**:
+   - Installs backend dependencies using `npm --prefix backend ci`.
+   - Runs syntax check on `backend/server.js` using `node --check`.
+
+3. **SSH & Security**:
+   - Configures deployment SSH key with `chmod 600`.
+   - Enforces strict SSH host key verification using the pinned host key.
+
+4. **Pre-Deployment Safety Snapshot**:
+   - Creates a snapshot of the current active `public_html` and `backend` in `/home/fempreneur/backups/ci_release_previous` on the server before applying changes.
+
+5. **Frontend Deployment**:
+   - Synchronizes `frontend/dist/` into `/home/fempreneur/public_html/` using `rsync` over SSH.
+   - Explicitly excludes and preserves server-side `.htaccess`.
+
+6. **Backend Deployment**:
+   - Synchronizes backend source into `/home/fempreneur/apps/fempreneur/backend/` using `rsync`.
+   - Strictly excludes `.env`, `.env*`, `logs/`, `.git`, and `node_modules/` to preserve server-side secrets and runtime data.
+
+7. **Dependency Installation & Service Restart**:
+   - Installs production dependencies via `npm ci --omit=dev --prefer-offline`.
+   - Restarts `fempreneur-backend` using narrowly scoped passwordless sudo (`/etc/sudoers.d/fempreneur`).
+   - Verifies the service enters `active (running)` state.
+
+8. **Post-Deployment Verification**:
+   - Probes `https://fempreneur.club/api/health` for HTTP 200 and `"PostgreSQL Connected"`.
+   - Probes `https://fempreneur.club/` for HTTP 200.
+   - Probes representative SPA routes (`/about`, `/awards`, `/nominate`, `/voting`, `/winners`, `/events`, `/contact`) for HTTP 200.
+   - Probes static image and asset delivery.
+
+9. **Automated Rollback**:
+   - If any deployment or verification step fails, GitHub Actions triggers the rollback step (`if: failure()`).
+   - Restores previous frontend and backend files from `/home/fempreneur/backups/ci_release_previous` and restarts the systemd service.
+
+### How to Manually Trigger a Deployment
+1. Navigate to your GitHub repository in your browser.
+2. Click the **Actions** tab.
+3. Select **Deploy Fempreneur 2027 to Production** from the left sidebar.
+4. Click the **Run workflow** dropdown, select the `main` branch, and click **Run workflow**.
+
+### Investigating Failed Runs
+1. Click the failed run in the **Actions** tab.
+2. Select the `build-and-deploy` job.
+3. Expand the step that has a red `X` mark.
+4. Check error messages:
+   - If **Lint Frontend Code** fails: resolve lint errors in code.
+   - If **Verify Frontend Build Artifacts** fails: ensure no localhost URLs are hardcoded in client code.
+   - If **Configure SSH** fails: check that `PROD_SSH_KEY` is correctly set in GitHub Secrets.
+   - If **Install Production Dependencies & Restart Service** fails: inspect `/home/fempreneur/apps/fempreneur/logs/backend-error.log` via SSH.
+   - If **Live Production Verification Checks** fails: check the HTTP status code and response printed in the logs.
