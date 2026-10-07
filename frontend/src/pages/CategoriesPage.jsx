@@ -78,8 +78,8 @@ export default function CategoriesPage() {
         ctaIcon={null}
         secondaryCtaText="Evaluation Process"
         secondaryCtaTo="/awards"
-        image="/images/categories/award-categories-leaders.jpg"
-        imageAlt="40 Verified Award Categories Leaders"
+        image="/images/categories/award-categories-real.png"
+        imageAlt="Fempreneur Verified Award Winners & Categories Felicitation"
         imageBadge="150+ Industry Sectors"
         imageMaxWidth="560px"
         imageMaxHeight="440px"

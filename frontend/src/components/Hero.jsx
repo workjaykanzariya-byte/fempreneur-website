@@ -14,6 +14,7 @@ import {
   CheckCircle2,
 } from 'lucide-react';
 import CTAButton from './CTAButton';
+import VideoPlayerModal from './VideoPlayerModal';
 
 export default function Hero({
   badge = "6TH EDITION • 2027",
@@ -586,115 +587,10 @@ export default function Hero({
           </div>
 
           {/* Video Preview Modal */}
-          {videoModalOpen && (
-            <div
-              style={{
-                position: 'fixed',
-                inset: 0,
-                zIndex: 9999,
-                background: 'rgba(15, 5, 25, 0.85)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                padding: '1.5rem',
-                backdropFilter: 'blur(6px)',
-              }}
-              onClick={() => setVideoModalOpen(false)}
-            >
-              <div
-                style={{
-                  background: 'linear-gradient(135deg, #1C052B 0%, #2A0840 50%, #3B0D58 100%)',
-                  borderRadius: 'var(--radius-xl)',
-                  border: '1.5px solid rgba(106, 27, 154, 0.4)',
-                  padding: '2rem',
-                  maxWidth: '780px',
-                  width: '100%',
-                  color: '#FFFFFF',
-                  position: 'relative',
-                  textAlign: 'left',
-                  boxShadow: '0 25px 60px rgba(0, 0, 0, 0.5), 0 0 40px rgba(106, 27, 154, 0.25)',
-                }}
-                onClick={(e) => e.stopPropagation()}
-              >
-                <button
-                  type="button"
-                  onClick={() => setVideoModalOpen(false)}
-                  style={{
-                    position: 'absolute',
-                    top: '1.25rem',
-                    right: '1.25rem',
-                    background: 'rgba(255, 255, 255, 0.12)',
-                    border: '1px solid rgba(255, 255, 255, 0.2)',
-                    borderRadius: '50%',
-                    width: '36px',
-                    height: '36px',
-                    color: '#FFFFFF',
-                    cursor: 'pointer',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    transition: 'background var(--transition-fast)',
-                    zIndex: 10,
-                  }}
-                  onMouseEnter={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.25)')}
-                  onMouseLeave={(e) => (e.currentTarget.style.background = 'rgba(255, 255, 255, 0.12)')}
-                >
-                  <X size={20} />
-                </button>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.75rem', color: '#FFFFFF', fontWeight: 700, fontSize: '0.85rem' }}>
-                  <Sparkles size={16} color="var(--color-burgundy-light)" />
-                  <span>Fempreneur Conference &amp; Awards Official Broadcast</span>
-                </div>
-                <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '1.25rem' }}>
-                  Fempreneur Awards — Celebrating Women Entrepreneurs
-                </h3>
-
-                {/* Responsive Embedded YouTube Video */}
-                <div
-                  style={{
-                    position: 'relative',
-                    paddingBottom: '56.25%',
-                    height: 0,
-                    overflow: 'hidden',
-                    borderRadius: 'var(--radius-lg)',
-                    border: '1.5px solid rgba(106, 27, 154, 0.35)',
-                    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.4)',
-                    marginBottom: '1.5rem',
-                    background: '#000000',
-                  }}
-                >
-                  <iframe
-                    src="https://www.youtube.com/embed/nHMEGtAs9IQ?autoplay=1&rel=0&modestbranding=1"
-                    title="Fempreneur Conference & Awards Official Event"
-                    style={{
-                      position: 'absolute',
-                      top: 0,
-                      left: 0,
-                      width: '100%',
-                      height: '100%',
-                      border: 'none',
-                    }}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                  />
-                </div>
-
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1rem' }}>
-                  <p style={{ color: 'rgba(255, 255, 255, 0.8)', fontSize: '0.86rem', margin: 0 }}>
-                    Official event coverage hosted by VyapaarJagat.com &amp; 1MEIF.
-                  </p>
-                  <div style={{ display: 'flex', gap: '0.75rem' }}>
-                    <CTAButton to="/nominate" variant="primary" size="sm" onClick={() => setVideoModalOpen(false)}>
-                      Nominate for 2027
-                    </CTAButton>
-                    <CTAButton to="/events" variant="secondary" size="sm" onClick={() => setVideoModalOpen(false)}>
-                      View Event Hubs
-                    </CTAButton>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
+          <VideoPlayerModal
+            isOpen={videoModalOpen}
+            onClose={() => setVideoModalOpen(false)}
+          />
 
           {/* BOTTOM TRUST BADGES (FULL WIDTH SPAN) */}
           {showTrustBadges && (

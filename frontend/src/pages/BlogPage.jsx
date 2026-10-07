@@ -57,7 +57,7 @@ export default function BlogPage() {
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Blog & News' }]}
         ctaText="Submit Your Story"
         ctaTo="/story-drive"
-        image="/images/blog/fempreneur-stories-events.png"
+        image="/images/blog/blog-hero-showcase.png"
         imageAlt="Fempreneur Community Stories & Chapter Felicitation"
         imageBadge="Fempreneur Community Stories"
         imageMaxWidth="560px"

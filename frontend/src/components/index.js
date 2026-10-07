@@ -19,3 +19,4 @@ export { default as EmptyState } from './EmptyState';
 export { default as LoadingState } from './LoadingState';
 export { default as ErrorState } from './ErrorState';
 export { default as ScrollToTop } from './ScrollToTop';
+export { default as VideoPlayerModal } from './VideoPlayerModal';
