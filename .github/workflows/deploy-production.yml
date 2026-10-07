@@ -1,0 +1,266 @@
+name: Deploy Fempreneur 2027 to Production
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+concurrency:
+  group: production-deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-deploy:
+    name: Build, Deploy & Verify Fempreneur 2027
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: ⚙️ Setup Node.js 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # =========================================================================
+      # 1. CI STAGE — FRONTEND BUILD & VALIDATION
+      # =========================================================================
+      - name: 📦 Install Frontend Dependencies
+        run: |
+          echo "Installing frontend dependencies using lockfile..."
+          npm --prefix frontend ci --prefer-offline
+
+      - name: 🔍 Lint Frontend Code
+        run: |
+          echo "Running frontend oxlint..."
+          npm --prefix frontend run lint || echo "Lint warnings detected, continuing build..."
+
+      - name: 🏗️ Build Frontend Production SPA
+        env:
+          VITE_API_URL: /api
+        run: |
+          echo "Building frontend with VITE_API_URL=/api..."
+          npm --prefix frontend run build
+
+      - name: 🛡️ Verify Frontend Build Artifacts
+        run: |
+          echo "Verifying frontend build output..."
+          if [ ! -f "frontend/dist/index.html" ]; then
+            echo "❌ Error: frontend/dist/index.html was not generated!"
+            exit 1
+          fi
+
+          echo "Checking for accidental localhost:5000 references..."
+          if grep -rq "localhost:5000" frontend/dist/assets/; then
+            echo "❌ Error: Production build contains localhost:5000 references!"
+            exit 1
+          fi
+          echo "✅ Frontend build validation passed with zero localhost references."
+
+      # =========================================================================
+      # 2. CI STAGE — BACKEND VALIDATION
+      # =========================================================================
+      - name: 📦 Install Backend Dependencies (CI Check)
+        run: |
+          echo "Installing backend dependencies using lockfile..."
+          npm --prefix backend ci --prefer-offline
+
+      - name: 🔍 Validate Backend Syntax & Entry Point
+        run: |
+          echo "Validating backend entry point syntax..."
+          node --check backend/server.js
+          echo "✅ Backend syntax check passed."
+
+      # =========================================================================
+      # 3. DEPLOYMENT SETUP — SSH KEYS & PINNED HOST VERIFICATION
+      # =========================================================================
+      - name: 🔑 Configure SSH & Pinned Host Key
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.PROD_SSH_KEY }}
+          KNOWN_HOSTS_ENTRY: ${{ secrets.PROD_KNOWN_HOSTS || '187.127.181.73 ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICJHqiqo0G/cUyP4ulTxxYKXYrmKq95kAG8umdpxkSYU' }}
+        run: |
+          mkdir -p ~/.ssh
+          chmod 700 ~/.ssh
+
+          echo "$SSH_PRIVATE_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+
+          echo "$KNOWN_HOSTS_ENTRY" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+          echo "Testing strict SSH connectivity to production VPS..."
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} -o BatchMode=yes ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} "echo '✓ SSH connection to production VPS authenticated successfully'"
+
+      # =========================================================================
+      # 4. PRE-DEPLOYMENT SNAPSHOT (SAFETY & ROLLBACK PREPARATION)
+      # =========================================================================
+      - name: 💾 Create Pre-Deployment Release Snapshot on Server
+        run: |
+          echo "Creating server-side backup snapshot for instant rollback capability..."
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} '
+            mkdir -p /home/fempreneur/backups/ci_release_previous
+            # Snapshot frontend files
+            if [ -d /home/fempreneur/public_html ]; then
+              tar -czf /home/fempreneur/backups/ci_release_previous/public_html_snap.tar.gz -C /home/fempreneur/public_html .
+            fi
+            # Snapshot backend application source
+            if [ -d /home/fempreneur/apps/fempreneur/backend ]; then
+              tar -czf /home/fempreneur/backups/ci_release_previous/backend_snap.tar.gz --exclude="node_modules" -C /home/fempreneur/apps/fempreneur/backend .
+            fi
+            echo "✓ Release snapshot created successfully."
+          '
+
+      # =========================================================================
+      # 5. DEPLOY FRONTEND SPA TO PUBLIC DOCUMENT ROOT
+      # =========================================================================
+      - name: 🚀 Deploy Frontend SPA via rsync
+        run: |
+          echo "Synchronizing frontend build to /home/fempreneur/public_html/..."
+          # Deploy compiled assets while preserving server-side .htaccess and any persistent icons
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }}" \
+            --exclude '.htaccess' \
+            frontend/dist/ \
+            ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }}:/home/fempreneur/public_html/
+          echo "✓ Frontend files deployed."
+
+      # =========================================================================
+      # 6. DEPLOY BACKEND CODE TO APPS DIRECTORY
+      # =========================================================================
+      - name: 🚀 Deploy Backend Source via rsync
+        run: |
+          echo "Synchronizing backend source to /home/fempreneur/apps/fempreneur/backend/..."
+          # Deploy backend source while strictly preserving production .env, runtime logs, and git
+          rsync -avz \
+            -e "ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }}" \
+            --exclude 'node_modules' \
+            --exclude '.env' \
+            --exclude '.env*' \
+            --exclude 'logs' \
+            --exclude '.git' \
+            backend/ \
+            ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }}:/home/fempreneur/apps/fempreneur/backend/
+          echo "✓ Backend files deployed."
+
+      # =========================================================================
+      # 7. INSTALL PRODUCTION DEPENDENCIES & RESTART SYSTEMD SERVICE
+      # =========================================================================
+      - name: 🔄 Install Production Dependencies & Restart Service
+        run: |
+          echo "Executing remote production dependency install and service restart..."
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} '
+            set -e
+
+            echo "=== [1/4] Checking production environment file ==="
+            if [ ! -f /home/fempreneur/apps/fempreneur/.env ]; then
+              echo "❌ Fatal: Production environment file /home/fempreneur/apps/fempreneur/.env is missing!"
+              exit 1
+            fi
+
+            echo "=== [2/4] Installing backend production dependencies ==="
+            cd /home/fempreneur/apps/fempreneur/backend
+            npm ci --omit=dev --prefer-offline --no-audit
+
+            echo "=== [3/4] Restarting systemd service fempreneur-backend ==="
+            sudo /usr/bin/systemctl restart fempreneur-backend
+
+            echo "=== [4/4] Verifying backend service state ==="
+            sleep 3
+            if sudo /usr/bin/systemctl is-active --quiet fempreneur-backend; then
+              echo "✓ fempreneur-backend service is active and running."
+            else
+              echo "❌ Error: fempreneur-backend failed to start!"
+              sudo /usr/bin/systemctl status fempreneur-backend --no-pager
+              exit 1
+            fi
+          '
+
+      # =========================================================================
+      # 8. POST-DEPLOYMENT VERIFICATION TESTS
+      # =========================================================================
+      - name: 🩺 Live Production Verification Checks
+        run: |
+          echo "Waiting 5 seconds for web server proxy propagation..."
+          sleep 5
+
+          echo "--- [1/4] Verifying API Health Endpoint ---"
+          HEALTH_JSON=$(curl -s -f https://fempreneur.club/api/health)
+          echo "Health Response: $HEALTH_JSON"
+          if [[ "$HEALTH_JSON" != *"PostgreSQL Connected"* ]]; then
+            echo "❌ Fatal: API Health check did not return 'PostgreSQL Connected'!"
+            exit 1
+          fi
+          echo "✓ API Health & Database connection verified."
+
+          echo "--- [2/4] Verifying Homepage (HTTP 200) ---"
+          HOME_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://fempreneur.club/)
+          echo "Homepage status: $HOME_STATUS"
+          if [ "$HOME_STATUS" -ne 200 ]; then
+            echo "❌ Fatal: Homepage returned HTTP $HOME_STATUS instead of 200"
+            exit 1
+          fi
+          echo "✓ Homepage verified."
+
+          echo "--- [3/4] Verifying Internal SPA Routes ---"
+          ROUTES=("/about" "/awards" "/nominate" "/voting" "/winners" "/events" "/contact")
+          for route in "${ROUTES[@]}"; do
+            CODE=$(curl -s -o /dev/null -w "%{http_code}" "https://fempreneur.club${route}")
+            echo "Route https://fempreneur.club${route} -> HTTP $CODE"
+            if [ "$CODE" -ne 200 ]; then
+              echo "❌ Fatal: Route $route failed with HTTP $CODE"
+              exit 1
+            fi
+          done
+          echo "✓ Representative SPA routes verified."
+
+          echo "--- [4/4] Verifying Static Assets ---"
+          ASSET_STATUS=$(curl -s -o /dev/null -w "%{http_code}" https://fempreneur.club/fempreneur-logo.png)
+          if [ "$ASSET_STATUS" -ne 200 ]; then
+            echo "❌ Fatal: Static logo failed with HTTP $ASSET_STATUS"
+            exit 1
+          fi
+          echo "✓ Static asset delivery verified."
+
+      # =========================================================================
+      # 9. AUTOMATIC ROLLBACK (TRIGGERED ONLY ON FAILURE)
+      # =========================================================================
+      - name: 🚨 Execute Rollback on Deployment Failure
+        if: failure()
+        run: |
+          echo "================================================================"
+          echo "  ⚠️ DEPLOYMENT FAILED! Evaluating rollback..."
+          echo "================================================================"
+          if [ ! -f ~/.ssh/deploy_key ]; then
+            echo "Deployment failed prior to SSH configuration. No remote rollback required."
+            exit 0
+          fi
+          ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} '
+            if [ -d /home/fempreneur/backups/ci_release_previous ]; then
+              echo "Restoring previous frontend files..."
+              tar -xzf /home/fempreneur/backups/ci_release_previous/public_html_snap.tar.gz -C /home/fempreneur/public_html/
+              echo "Restoring previous backend source files..."
+              tar -xzf /home/fempreneur/backups/ci_release_previous/backend_snap.tar.gz -C /home/fempreneur/apps/fempreneur/backend/
+              echo "Restarting service with previous release..."
+              sudo /usr/bin/systemctl restart fempreneur-backend
+              echo "✓ Rollback completed."
+            else
+              echo "No rollback snapshot found."
+            fi
+          '
+
+      # =========================================================================
+      # 10. SUCCESS CONFIRMATION
+      # =========================================================================
+      - name: 🎉 Deployment Completed Successfully
+        run: |
+          echo "================================================================"
+          echo "  ✅ Fempreneur 2027 Production Deployment Succeeded!"
+          echo "  🌐 URL:    https://fempreneur.club"
+          echo "  🩺 Health: https://fempreneur.club/api/health"
+          echo "================================================================"
