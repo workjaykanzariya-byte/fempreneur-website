@@ -6,18 +6,7 @@ import {
   Award,
   ChevronDown,
   ChevronRight,
-  User,
-  Sparkles,
   Ticket,
-  Calendar,
-  BookOpen,
-  Users,
-  Building2,
-  FileText,
-  HelpCircle,
-  TrendingUp,
-  MapPin,
-  ExternalLink,
 } from 'lucide-react';
 import CTAButton from './CTAButton';
 
@@ -53,56 +42,46 @@ export default function Navbar() {
     return () => document.removeEventListener('mousedown', handleClickOutside);
   }, []);
 
-  // Navigation Structure matching Greenpreneur depth & categories
+  // Navigation Structure matching Greenpreneur dropdown hierarchy customized for Fempreneur
   const navigationItems = [
     { label: 'Home', path: '/' },
+    { label: 'About', path: '/about' },
     {
-      label: 'About',
-      id: 'about',
+      label: 'Event & Awards',
+      id: 'event-awards',
       children: [
-        { label: 'About Fempreneur', path: '/about', icon: Sparkles },
-        { label: 'Impact & SDG Alignment', path: '/impact', icon: TrendingUp },
-        { label: 'Frequently Asked Questions', path: '/faq', icon: HelpCircle },
+        { label: 'Event Overview', path: '/events' },
+        { label: 'Event Agenda', path: '/events' },
+        { label: 'Award Categories', path: '/categories' },
+        { label: 'How to Nominate', path: '/nominate' },
+        { label: 'Speakers & Jury Panel 2027', path: '/speakers' },
+        { label: 'Why Attend', path: '/events' },
+        { label: 'Sponsors', path: '/partners' },
+        { label: 'The Book', path: '/coffee-table-book' },
       ],
     },
-    {
-      label: 'Awards 2027',
-      id: 'awards',
-      children: [
-        { label: 'Award Overview & 50/50 Process', path: '/awards', icon: Award },
-        { label: '35–40+ Award Categories', path: '/categories', icon: Sparkles },
-        { label: 'Free Nomination Portal', path: '/nominate', icon: FileText },
-        { label: 'Public Voting System', path: '/voting', icon: Users },
-        { label: 'Past Winners Archive', path: '/winners', icon: Award },
-      ],
-    },
-    {
-      label: 'Events & Hubs',
-      id: 'events',
-      children: [
-        { label: '2027 Dual-City Showcase', path: '/events', icon: Calendar },
-        { label: '60+ Speakers Roster', path: '/speakers', icon: Users },
-        { label: 'City Chapters (Ahmedabad & Delhi)', path: '/city-chapters', icon: MapPin },
-      ],
-    },
+    { label: 'Winners', path: '/winners' },
     {
       label: 'Community',
       id: 'community',
       children: [
-        { label: 'Women Business Directory', path: '/directory', icon: Building2 },
-        { label: 'Membership Tiers', path: '/membership', icon: Users },
-        { label: '1,000 Story Drive', path: '/story-drive', icon: BookOpen },
+        { label: 'Women Business Directory', path: '/directory' },
+        { label: 'Membership Tiers', path: '/membership' },
+        { label: 'City Chapters (Ahmedabad & Delhi)', path: '/city-chapters' },
+        { label: '1,000 Story Drive', path: '/story-drive' },
       ],
     },
     {
-      label: 'Media & Partners',
-      id: 'media',
+      label: 'More',
+      id: 'more',
       children: [
-        { label: 'Coffee Table Book', path: '/coffee-table-book', icon: BookOpen },
-        { label: 'Sponsorship Opportunities', path: '/partners', icon: TrendingUp },
-        { label: 'Blog & Newsroom', path: '/blog', icon: FileText },
+        { label: 'Award Overview & 50/50 Process', path: '/awards' },
+        { label: 'Public Voting System', path: '/voting' },
+        { label: 'Blog & Newsroom', path: '/blog' },
+        { label: 'Impact & SDG Alignment', path: '/impact' },
       ],
     },
+    { label: 'FAQs', path: '/faq' },
     { label: 'Contact', path: '/contact' },
   ];
 
@@ -151,7 +130,6 @@ export default function Navbar() {
                           onMouseLeave={() => setOpenDropdown(null)}
                         >
                           {item.children.map((child) => {
-                            const ChildIcon = child.icon;
                             const isChildActive = location.pathname === child.path;
                             return (
                               <Link
@@ -160,10 +138,7 @@ export default function Navbar() {
                                 className={`fem-dropdown-item ${isChildActive ? 'active' : ''}`}
                                 onClick={() => setOpenDropdown(null)}
                               >
-                                <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                                  {ChildIcon && <ChildIcon size={15} color="var(--color-berry)" />}
-                                  <span>{child.label}</span>
-                                </div>
+                                <span>{child.label}</span>
                               </Link>
                             );
                           })}

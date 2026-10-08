@@ -813,7 +813,7 @@ h6 { font-size: 1rem; }
 }
 
 .fem-footer-links a:hover {
-  color: #E91E63;
+  color: var(--color-plum-deep);
   padding-left: 4px;
 }
 
@@ -838,7 +838,7 @@ h6 { font-size: 1rem; }
 }
 
 .fem-footer-bottom a:hover {
-  color: #E91E63;
+  color: var(--color-plum-deep);
 }
 
 .fem-mobile-toggle {

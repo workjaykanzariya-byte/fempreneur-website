@@ -1,38 +1,34 @@
 import React from 'react';
-import { Award, Users, BookOpen, ShieldCheck, Heart, Sparkles, Building2, Globe, CheckCircle2, ArrowRight, UserCheck, TrendingUp } from 'lucide-react';
-import { PageHeader, SectionTitle, CTAButton } from '../components';
+import { Award, Users, BookOpen, ShieldCheck, Heart, Sparkles, Building2, Globe, CheckCircle2, ArrowRight, UserCheck, TrendingUp, Newspaper, HelpCircle, Phone, Mail } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { PageHeader, CTAButton } from '../components';
 
 export default function AboutPage() {
-  const milestones = [
-    { year: '2022', title: 'Fempreneur Conference & Award', venue: 'BSE Mumbai', note: 'Foundational national edition establishing the Fempreneur platform.' },
-    { year: '2023', title: 'Fempreneur 2023 & Book Launch', venue: 'AMA Ahmedabad', note: 'Coffee Table Book launched; 35 award categories established.' },
-    { year: '2024', title: 'Fempreneur 2024 National Edition', venue: 'BSE Mumbai', note: 'Initiation of nationwide storytelling drive via VyapaarJagat.com.' },
-    { year: '2025', title: 'Fempreneur 2025 Annual Convention', venue: 'DevX Ahmedabad', note: '40+ award winners honored and Fempreneur Book Launch.' },
-    { year: '2027', title: '6th Edition Dual-City Showcase', venue: 'Ahmedabad & Delhi NCR', note: 'Expansion to 150+ categories; open to participants across India.' },
-  ];
-
-  const sdgs = [
-    { code: 'SDG 5', title: 'Gender Equality', desc: 'Accelerating female workforce participation, leadership equity, and enterprise ownership.' },
-    { code: 'SDG 8', title: 'Decent Work & Economic Growth', desc: 'Fostering inclusive economic formalization and local job creation through MSMEs.' },
-    { code: 'SDG 9', title: 'Industry, Innovation & Infrastructure', desc: 'Encouraging women innovators in technology, sustainable manufacturing, and patents.' },
-    { code: 'SDG 10', title: 'Reduced Inequalities', desc: 'Bridging access to capital and markets for women founders from Tier 2/3 towns.' },
-    { code: 'SDG 17', title: 'Partnerships for the Goals', desc: 'Forging collaborative ecosystems with 1MEIF NGO, industry chambers, and media.' },
-  ];
-
-  const viksitPillars = [
-    'Economic formalization of grassroots and women-led home enterprises',
-    'Enhancement of export competitiveness in artisanal, MSME, and technical sectors',
-    'Acceleration of female labor force participation and high-value leadership roles',
-    'Democratization of venture capital and credit into Tier 2 and Tier 3 cities',
-    'Grassroots innovation addressing local community and environmental challenges',
-    'Sustainable transformation aligning commercial growth with national prosperity',
-  ];
-
-  const teamRoles = [
-    { role: 'Program Director', department: 'Executive Leadership', desc: 'Oversees overall ecosystem strategy, dual-city expansion, and national advisory alliances.' },
-    { role: 'Awards Coordinator', department: 'Nomination & Jury Secretariat', desc: 'Manages the 7-weighted criteria evaluation engine, juror liaisons, and verified public voting.' },
-    { role: 'Media Manager', department: 'Editorial & Storytelling', desc: 'Leads the 1,000 Stories Drive on VyapaarJagat.com, press releases, and Coffee Table Book publishing.' },
-    { role: 'Community Manager', department: 'Chapters & Membership', desc: 'Directs City Chapters, member networking roundtables, and the 150+ sector directory.' },
+  const journeys = [
+    {
+      year: '2025',
+      location: 'BSE India, Mumbai',
+      theme: 'Scaling Women-Led Enterprise & Equity',
+      desc: 'Partnered with premier chambers and BSE India, felicitating 85+ women founders and enterprise leaders with nationwide media broadcast coverage.',
+    },
+    {
+      year: '2024',
+      location: 'AMA Ahmedabad',
+      theme: 'MSME & Grassroots Women Tech',
+      desc: 'Brought together 400+ delegates in Gujarat, focusing heavily on MSME innovation, sustainable retail product lines, and women-led manufacturing.',
+    },
+    {
+      year: '2023',
+      location: 'CEE (Centre for Environment Education), Ahmedabad',
+      theme: 'Impact, Education & Social Enterprise',
+      desc: 'Aligned directly with premier national institutions, evaluating innovations in education, crafts, healthcare, and sustainable consumer solutions.',
+    },
+    {
+      year: '2022',
+      location: 'VyapaarJagat Digital Conclave',
+      theme: 'Inaugural National Digital Showcase',
+      desc: 'An intensive digital convention celebrating women enterprise resilience, digital transformation, and early-stage women-led startups across 20+ states.',
+    },
   ];
 
   const aboutHeroCollage = (
@@ -53,7 +49,7 @@ export default function AboutPage() {
         }}
       />
 
-      {/* Decorative Subtle Curved Dashed Lines (Matching Home Page) */}
+      {/* Decorative Subtle Curved Dashed Lines */}
       <svg
         viewBox="0 0 540 500"
         style={{
@@ -162,7 +158,6 @@ export default function AboutPage() {
             display: 'block',
           }}
         />
-        {/* Subtle Floating pill badge on image */}
         <div
           style={{
             position: 'absolute',
@@ -262,7 +257,8 @@ export default function AboutPage() {
   );
 
   return (
-    <div>
+    <div style={{ background: '#FAF6FC', minHeight: '100vh' }}>
+      {/* Standardized Hero Header matching all other website pages */}
       <PageHeader
         badge="About Fempreneur"
         title="India's Comprehensive"
@@ -276,263 +272,974 @@ export default function AboutPage() {
         customVisual={aboutHeroCollage}
       />
 
-      {/* Section 1: Mission Statement & What is Women Entrepreneurship */}
-      <section className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container">
-          <div className="grid grid-cols-2 gap-12 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+      {/* SECTION 2: STATS COUNTER BAR (Matching Greenpreneur 4-Col Bar) */}
+      <section style={{ background: '#FFFFFF', borderTop: '1px solid #EFE4F4', borderBottom: '1px solid #EFE4F4', padding: '2rem 1.5rem' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', textAlign: 'center' }}>
+            {/* Stat 1 */}
             <div>
-              <span className="badge badge-plum" style={{ marginBottom: '1rem' }}>
-                Our Core Purpose
+              <span style={{ display: 'block', fontFamily: 'serif, Georgia', fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-gold-rich)' }}>
+                2027
               </span>
-              <h2 style={{ fontSize: '2.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '1.25rem', lineHeight: 1.25 }}>
-                Women Entrepreneurs <br />
-                <span className="text-gradient">Redefining Success</span>
-              </h2>
-              <p style={{ fontSize: '1.05rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
-                Fempreneur 2027 is India’s comprehensive platform for women entrepreneurs — bringing together ambitious women, business leaders, mentors, experts, and ecosystem partners to create meaningful connections, opportunities, and growth.
-              </p>
-              <p style={{ fontSize: '0.95rem', color: 'var(--text-muted)', lineHeight: 1.65, marginBottom: '1.5rem' }}>
-                Three pillars drive the platform: <strong>Award</strong> (recognising women founders through a fair process with 50% jury evaluation and 50% public voting), <strong>Connect</strong> (structured community across 150+ business and industry categories), and <strong>Amplify</strong> (1,000 Stories Drive on VyapaarJagat.com + annual collector’s Coffee Table Book).
-              </p>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-                <CTAButton to="/nominate" variant="primary" size="md">
-                  Nominate a Woman Leader
-                </CTAButton>
-                <CTAButton to="/membership" variant="secondary" size="md">
-                  Join Community
-                </CTAButton>
-              </div>
-            </div>
-
-            {/* What is Women Entrepreneurship Definition Box */}
-            <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
-                Definition &amp; Scope
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                National Dual-City Edition
               </span>
-              <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '1rem' }}>
-                What Is Women Entrepreneurship?
-              </h3>
-              <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '1.5rem' }}>
-                Women entrepreneurship brings together women building businesses, creating employment, driving innovation, leading MSMEs and startups, and contributing to economic and social development. They are purpose-driven in addressing social, industrial, and consumer challenges through innovative, sustainable solutions.
-              </p>
+            </div>
 
-              <div style={{ borderTop: '1px solid var(--border-subtle)', paddingTop: '1.25rem', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-                  <CheckCircle2 size={16} color="var(--color-burgundy)" />
-                  <span>500+ Women Entrepreneurs Honored &amp; Connected</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: 'var(--text-primary)', fontWeight: 600 }}>
-                  <CheckCircle2 size={16} color="var(--color-burgundy)" />
-                  <span>150+ Business &amp; Industry Categories Covered</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontSize: '0.88rem', color: 'var(--color-burgundy)"' }}>
-                  <CheckCircle2 size={16} color="var(--color-burgundy)" />
-                  <span>10,000+ Inspiring Stories Published Digitally</span>
-                </div>
-              </div>
+            {/* Stat 2 */}
+            <div>
+              <span style={{ display: 'block', fontFamily: 'serif, Georgia', fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-burgundy)' }}>
+                1,000+
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Stories Published
+              </span>
+            </div>
+
+            {/* Stat 3 */}
+            <div>
+              <span style={{ display: 'block', fontFamily: 'serif, Georgia', fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-gold-rich)' }}>
+                150+
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Sectors Vetted
+              </span>
+            </div>
+
+            {/* Stat 4 */}
+            <div>
+              <span style={{ display: 'block', fontFamily: 'serif, Georgia', fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-burgundy)' }}>
+                5,000+
+              </span>
+              <span style={{ fontSize: '0.72rem', color: 'var(--text-muted)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Community Members
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Platform Milestones Timeline */}
-      <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Historical Editions"
-            badgeVariant="plum"
-            title="Our History &amp;"
-            highlight="Milestones"
-            subtitle="Tracing our proven progression from the inaugural 2022 forum at BSE Mumbai to the 2027 dual-city national program."
-          />
-
-          <div style={{ maxWidth: '820px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
-            {milestones.map((m, idx) => (
-              <div
-                key={idx}
-                className="fem-card"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.5rem',
-                  padding: '1.5rem 2rem',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-display)',
-                    fontSize: '1.8rem',
-                    fontWeight: 800,
-                    color: 'var(--color-burgundy)',
-                    minWidth: '90px',
-                  }}
-                >
-                  {m.year}
-                </div>
-                <div style={{ flexGrow: 1, minWidth: '220px' }}>
-                  <h4 style={{ fontSize: '1.2rem', fontWeight: 700, color: 'var(--color-plum-deep)', marginBottom: '0.2rem' }}>
-                    {m.title}
-                  </h4>
-                  <div style={{ fontSize: '0.84rem', color: 'var(--color-gold-rich)', fontWeight: 600, marginBottom: '0.35rem' }}>
-                    Venue: {m.venue}
-                  </div>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                    {m.note}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3: Organizers Behind Fempreneur */}
-      <section className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Institutional Leadership"
-            badgeVariant="gold"
-            title="Organizers &amp;"
-            highlight="Ecosystem Partners"
-            subtitle="Led by registered non-profits, enterprise forums, and business storytelling media with anchor presence in Ahmedabad & Delhi NCR."
-          />
-
-          <div className="grid grid-cols-3 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))' }}>
-            <div className="fem-card" style={{ padding: '2.5rem' }}>
-              <span className="badge badge-plum" style={{ marginBottom: '1rem' }}>Registered NGO</span>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.75rem' }}>
-                1 Million Entrepreneurs International Forum (1MEIF)
-              </h3>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                An international non-profit forum committed to nurturing entrepreneurial spirit, business formalization, and inclusive ecosystem support for women and emerging founders across India.
-              </p>
-              <div style={{ fontSize: '0.84rem', color: 'var(--color-burgundy)', fontWeight: 700 }}>
-                Role: Program Governance &amp; Advisory Oversight
-              </div>
-            </div>
-
-            <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
-              <span className="badge badge-gold" style={{ marginBottom: '1rem' }}>Media &amp; Publishing</span>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.75rem' }}>
-                VyapaarJagat.com
-              </h3>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                One of India’s premier digital business platforms dedicated to covering startups, MSMEs, innovator journeys, and women entrepreneurs through video journalism and digital reach.
-              </p>
-              <div style={{ fontSize: '0.84rem', color: 'var(--color-burgundy)', fontWeight: 700 }}>
-                Role: National Media Partner &amp; 1,000 Stories Drive Host
-              </div>
-            </div>
-
-            <div className="fem-card" style={{ padding: '2.5rem' }}>
-              <span className="badge badge-plum" style={{ marginBottom: '1rem' }}>Host Venue Anchor</span>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.75rem' }}>
-                Ahmedabad Management Association (AMA)
-              </h3>
-              <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                Premier management institute and convention institution hosting Western India’s leading enterprise forums, executive masterclasses, and annual convenings.
-              </p>
-              <div style={{ fontSize: '0.84rem', color: 'var(--color-burgundy)', fontWeight: 700 }}>
-                Role: Anchor Venue &amp; Academic Ecosystem Partner
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 4: Team Roles Structure */}
-      <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Secretariat Operations"
-            badgeVariant="plum"
-            title="Program Secretariat &amp;"
-            highlight="Coordination Desks"
-            subtitle="The operational management structure executing the 2027 dual-city convention and national storytelling drive."
-          />
-
-          <div className="grid grid-cols-4 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))' }}>
-            {teamRoles.map((t, idx) => (
-              <div key={idx} className="fem-card" style={{ padding: '2rem 1.5rem', textAlign: 'center' }}>
-                <div
-                  style={{
-                    width: '60px',
-                    height: '60px',
-                    borderRadius: '50%',
-                    background: 'rgba(106, 27, 154, 0.08)',
-                    color: 'var(--color-burgundy)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    margin: '0 auto 1.25rem',
-                  }}
-                >
-                  <UserCheck size={26} />
-                </div>
-                <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.3rem' }}>
-                  {t.role}
-                </h4>
-                <div style={{ fontSize: '0.82rem', color: 'var(--color-gold-rich)', fontWeight: 700, marginBottom: '0.75rem' }}>
-                  {t.department}
-                </div>
-                <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                  {t.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 5: SDG Alignment & Viksit Bharat @2047 */}
-      <section className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Global & National Frameworks"
-            badgeVariant="gold"
-            title="Strategic Alignment with"
-            highlight="UN SDGs &amp; Viksit Bharat @2047"
-            subtitle="Demonstrating how recognizing, connecting, and amplifying female entrepreneurs directly advances India's national development goals."
-          />
-
-          <div className="grid grid-cols-3 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', marginBottom: '3.5rem' }}>
-            {sdgs.map((sdg, idx) => (
-              <div key={idx} className="fem-card" style={{ padding: '1.75rem' }}>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '1.1rem', fontWeight: 800, color: 'var(--color-burgundy)', marginBottom: '0.5rem' }}>
-                  {sdg.code}
-                </div>
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--color-plum-deep)', marginBottom: '0.65rem' }}>
-                  {sdg.title}
-                </h4>
-                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
-                  {sdg.desc}
-                </p>
-              </div>
-            ))}
-          </div>
-
-          {/* Viksit Bharat @2047 Six-Point Narrative */}
-          <div className="fem-card fem-card-gold" style={{ padding: '2.5rem' }}>
-            <span className="badge badge-gold" style={{ marginBottom: '0.75rem' }}>
-              National Vision Alignment
+      {/* SECTION 3: WHO WE ARE & DUAL ORGANIZER PARTNER CARDS (Matching Greenpreneur 7-col + 5-col sticky layout) */}
+      <section style={{ padding: '5.5rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'flex-start' }}>
+          {/* Left Column: Mission Narrative & Objectives (7 cols) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
+            <span style={{ color: 'var(--color-gold-rich)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '0.75rem', display: 'block' }}>
+              Who We Are
             </span>
-            <h3 style={{ fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '1rem' }}>
-              How Fempreneur Directly Powers Viksit Bharat @2047
-            </h3>
-            <p style={{ fontSize: '0.94rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-              As India charts its journey toward becoming a developed nation by 2047, women-led enterprise is the single most vital catalyst for GDP formalization, job creation, and export expansion:
+
+            <h2 style={{ fontSize: 'clamp(1.9rem, 3.5vw, 2.6rem)', fontFamily: 'serif, Georgia', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1.25 }}>
+              A Noble Movement Driven by Passion &amp; Women Empowerment
+            </h2>
+
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
+              Fempreneur is not just an award program; it is India’s premier network of women-led business architects. In 2027, we celebrate our national dual-city showcase spanning <strong style={{ color: 'var(--color-plum-deep)' }}>Ahmedabad &amp; Delhi NCR</strong>.
             </p>
 
-            <div className="grid grid-cols-2 gap-4" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))' }}>
-              {viksitPillars.map((pillar, idx) => (
-                <div key={idx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.65rem', fontSize: '0.9rem', color: 'var(--text-primary)' }}>
-                  <CheckCircle2 size={17} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '3px' }} />
-                  <span>{pillar}</span>
-                </div>
-              ))}
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
+              The platform was born from a simple realization: while traditional business awards focus purely on financial top-lines, our economy requires a system that honors women founders, MSME drivers, and innovators through a structured, multi-tier evaluation featuring <strong>50% expert jury audit and 50% verified public voting</strong>.
+            </p>
+
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
+              Over the years, we have brought together women innovators in Tech &amp; AI, MSMEs, manufacturing, sustainable fashion, healthcare, organic consumer goods, and education, creating opportunities for them to meet investors, corporate buyers, and institutional mentors.
+            </p>
+
+            {/* Core Objectives Box (Matching Greenpreneur Core Objectives) */}
+            <div style={{ background: '#FFFFFF', padding: '1.75rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)', marginTop: '0.75rem' }}>
+              <h4 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.05rem', marginBottom: '1rem' }}>
+                Our Core Objectives:
+              </h4>
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <Award size={18} color="var(--color-gold-rich)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Celebrate Excellence:</strong> Felicitating women entrepreneurs who demonstrate visionary leadership and measurable economic impact.</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <Users size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Build Networks:</strong> Bridging the gap between women founders, MSMEs, corporate ESG procurement, and investor circles.</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
+                  <Globe size={18} color="var(--color-gold-rich)" style={{ flexShrink: 0, marginTop: '2px' }} />
+                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Amplify Voice:</strong> Generating national visibility for women’s entrepreneurial journeys via VyapaarJagat.com and collector’s books.</span>
+                </li>
+              </ul>
             </div>
+          </div>
+
+          {/* Right Column: Two Organizer & Media Partner Cards (5 cols) */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+            {/* Card 1: 1MEIF NGO Organizer */}
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', marginBottom: '1rem' }}>
+                <div style={{ width: '46px', height: '46px', background: 'var(--color-plum-deep)', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Building2 size={24} color="var(--color-gold-rich)" />
+                </div>
+                <div>
+                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.2rem', margin: 0 }}>MEIF</h3>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-rich)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    NGO Organizer
+                  </span>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
+                <strong>1 Million Entrepreneurs International Forum (MEIF)</strong> is a registered Section 8 Company in India (NGO) with active <strong>80G &amp; 12A</strong> certifications. They are fully certified under CSR (CSR00106194) and NITI Aayog Darpan to implement impactful national development initiatives.
+              </p>
+
+              <div style={{ fontSize: '0.72rem', borderTop: '1px solid #F0E5F5', paddingTop: '0.75rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
+                <span>PAN: AACCZ1279M</span>
+                <span>Founding Dir: Dr. Pravin Parmar</span>
+              </div>
+            </div>
+
+            {/* Card 2: VyapaarJagat.com Media & Tech Partner */}
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', marginBottom: '1rem' }}>
+                <div style={{ width: '46px', height: '46px', background: '#3D0E54', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Globe size={24} color="var(--color-gold-rich)" />
+                </div>
+                <div>
+                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.2rem', margin: 0 }}>VyapaarJagat.com</h3>
+                  <span style={{ fontSize: '0.7rem', color: 'var(--color-burgundy)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    Media &amp; Tech Partner
+                  </span>
+                </div>
+              </div>
+
+              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                VyapaarJagat.com is one of India’s leading business platforms documenting entrepreneur stories. It serves as the primary media engine for Fempreneur, archiving and publishing editorial features on women-led businesses to drive organic reach and national recognition.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4: FEMPRENEUR MOBILE EXPERIENCE (Matching Greenpreneur App Showcase) */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #FAF4FC 0%, #FFFFFF 50%, #F6ECF9 100%)',
+          borderTop: '1px solid var(--border-subtle)',
+          borderBottom: '1px solid var(--border-subtle)',
+          position: 'relative',
+          overflow: 'hidden',
+          padding: '5.5rem 1.5rem',
+        }}
+      >
+        <div style={{ maxWidth: '1240px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
+              gap: '3.5rem',
+              alignItems: 'center',
+            }}
+          >
+            {/* Left Column: App Features & Store Badges */}
+            <div>
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.65rem',
+                  paddingLeft: '0.85rem',
+                  borderLeft: '4px solid var(--color-burgundy)',
+                  marginBottom: '1rem',
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: '0.85rem',
+                    fontWeight: 800,
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    color: 'var(--color-plum-deep)',
+                  }}
+                >
+                  FEMPRENEUR MOBILE EXPERIENCE
+                </span>
+              </div>
+
+              <h2
+                style={{
+                  fontSize: '2.5rem',
+                  fontWeight: 800,
+                  color: 'var(--color-plum-deep)',
+                  lineHeight: 1.2,
+                  marginBottom: '1.25rem',
+                }}
+              >
+                Your Women-Led Network <br />
+                <span className="text-gradient">on the Go</span>
+              </h2>
+
+              <p
+                style={{
+                  fontSize: '1.05rem',
+                  color: 'var(--text-secondary)',
+                  lineHeight: 1.65,
+                  marginBottom: '2rem',
+                }}
+              >
+                Stay connected to the Fempreneur network. Manage your profile, view upcoming events, collaborate across city hubs, and access directories anywhere.
+              </p>
+
+              {/* 4 Feature Items (2x2 Grid) */}
+              <div
+                style={{
+                  display: 'grid',
+                  gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
+                  gap: '1.5rem',
+                  marginBottom: '2.25rem',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+                  <div
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      background: 'rgba(106, 27, 154, 0.1)',
+                      color: 'var(--color-burgundy)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}
+                  >
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.3rem' }}>
+                      Leadership Skills
+                    </h4>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Access specialized masterclasses and roundtables by visionary industry leaders.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+                  <div
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      background: 'rgba(106, 27, 154, 0.1)',
+                      color: 'var(--color-burgundy)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}
+                  >
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.3rem' }}>
+                      Peer Networking Directory
+                    </h4>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Directly message and discover women founder circles to scale your business.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+                  <div
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      background: 'rgba(106, 27, 154, 0.1)',
+                      color: 'var(--color-burgundy)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}
+                  >
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.3rem' }}>
+                      City Hubs &amp; Circles
+                    </h4>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Join local city chapters and sector groups tailored for women entrepreneurs.
+                    </p>
+                  </div>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.85rem' }}>
+                  <div
+                    style={{
+                      width: '26px',
+                      height: '26px',
+                      borderRadius: '50%',
+                      background: 'rgba(106, 27, 154, 0.1)',
+                      color: 'var(--color-burgundy)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      flexShrink: 0,
+                      marginTop: '2px',
+                    }}
+                  >
+                    <CheckCircle2 size={16} />
+                  </div>
+                  <div>
+                    <h4 style={{ fontSize: '0.98rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.3rem' }}>
+                      Impact &amp; Awards Tracker
+                    </h4>
+                    <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                      Track your nominations, voting status, jury milestones, and published features.
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              {/* App Store & Google Play Badges */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', flexWrap: 'wrap', marginBottom: '2.5rem' }}>
+                <a
+                  href="#download-ios"
+                  onClick={(e) => { e.preventDefault(); alert('Fempreneur iOS App coming soon! Nominations & directory are fully active on web.'); }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    background: '#0F0914',
+                    color: '#FFFFFF',
+                    padding: '0.65rem 1.25rem',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    border: '1.5px solid #2B163B',
+                    boxShadow: '0 6px 18px rgba(15, 9, 20, 0.2)',
+                  }}
+                >
+                  <svg width="22" height="26" viewBox="0 0 170 170" fill="currentColor">
+                    <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.74 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.69-3.04-7.67-7.81-11.96-14.34-6.19-9.56-11.08-20.91-14.67-34.05-3.59-13.14-5.38-25.33-5.38-36.57 0-14.9 3.63-27.18 10.89-36.85 7.26-9.67 16.5-14.63 27.72-14.88 4.35 0 9.29 1.16 14.83 3.49 5.54 2.33 9.4 3.54 11.58 3.64 1.8.1 5.92-1.22 12.38-3.97 6.45-2.75 11.83-3.92 16.14-3.5 11.85.95 21.2 5.4 28.05 13.35-10.45 6.34-15.56 15.11-15.35 26.31.22 8.78 3.52 16.03 9.9 21.75 6.38 5.72 13.78 8.94 22.2 9.68-2.33 7.09-5.18 14.34-8.56 21.75zM119.22 31.84c0-7.3 2.66-14.17 7.98-20.61 5.32-6.44 11.91-10.42 19.78-11.23.21 1.06.32 2.01.32 2.86 0 7.09-2.73 14.07-8.19 20.95-5.46 6.88-12.19 10.9-20.19 11.01-.1-.85-.15-1.84-.15-2.98z" />
+                  </svg>
+                  <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
+                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.04em', opacity: 0.85 }}>Download on the</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 700 }}>App Store</div>
+                  </div>
+                </a>
+
+                <a
+                  href="#download-android"
+                  onClick={(e) => { e.preventDefault(); alert('Fempreneur Android App coming soon! Nominations & directory are fully active on web.'); }}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.75rem',
+                    background: '#0F0914',
+                    color: '#FFFFFF',
+                    padding: '0.65rem 1.25rem',
+                    borderRadius: '12px',
+                    textDecoration: 'none',
+                    border: '1.5px solid #2B163B',
+                    boxShadow: '0 6px 18px rgba(15, 9, 20, 0.2)',
+                  }}
+                >
+                  <svg width="22" height="24" viewBox="0 0 512 512" fill="none">
+                    <path d="M325.3 234.3L104.6 13l280.8 161.2-60.1 60.1z" fill="#EA4335" />
+                    <path d="M47 0C44 3.2 42.2 7.7 42.2 13v486c0 5.3 1.8 9.8 4.8 13l240.7-241L47 0z" fill="#4285F4" />
+                    <path d="M325.3 277.7l60.1 60.1L104.6 499l220.7-221.3z" fill="#34A853" />
+                    <path d="M457.6 237.9L385.4 196l-60.1 60.1 60.1 60.1 72.2-41.9c13.7-7.9 13.7-24.5 0-32.4z" fill="#FBBC04" />
+                  </svg>
+                  <div style={{ textAlign: 'left', lineHeight: 1.1 }}>
+                    <div style={{ fontSize: '0.65rem', textTransform: 'uppercase', letterSpacing: '0.04em', opacity: 0.85 }}>GET IT ON</div>
+                    <div style={{ fontSize: '1.05rem', fontWeight: 700 }}>Google Play</div>
+                  </div>
+                </a>
+              </div>
+
+              {/* Stats Counters */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '3rem', borderTop: '1px solid var(--border-subtle)', paddingTop: '1.75rem' }}>
+                <div>
+                  <div style={{ fontFamily: 'serif, Georgia', fontSize: '2.1rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1, marginBottom: '0.35rem' }}>
+                    500+
+                  </div>
+                  <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Women Leaders</div>
+                </div>
+                <div>
+                  <div style={{ fontFamily: 'serif, Georgia', fontSize: '2.1rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1, marginBottom: '0.35rem' }}>
+                    90%+
+                  </div>
+                  <div style={{ fontSize: '0.84rem', color: 'var(--text-muted)', fontWeight: 600 }}>Active Engagement</div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: 3D Showcase Presentation Poster */}
+            <div style={{ display: 'flex', justifyContent: 'center', position: 'relative' }}>
+              <div
+                style={{
+                  background: 'linear-gradient(165deg, #FBF6FD 0%, #FFFFFF 45%, #F7EEFA 100%)',
+                  borderRadius: '40px',
+                  padding: '2.5rem 1.75rem 2.5rem',
+                  border: '1.5px solid rgba(106, 27, 154, 0.16)',
+                  boxShadow: '0 25px 60px rgba(74, 18, 109, 0.1), 0 8px 24px rgba(0, 0, 0, 0.03)',
+                  position: 'relative',
+                  overflow: 'visible',
+                  width: '100%',
+                  maxWidth: '410px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                }}
+              >
+                {/* Brand Title & Subtitle */}
+                <div style={{ textAlign: 'center', marginBottom: '1.4rem', position: 'relative', zIndex: 3 }}>
+                  <div
+                    style={{
+                      fontFamily: 'serif, Georgia, "Times New Roman"',
+                      fontSize: '2.5rem',
+                      fontWeight: 800,
+                      color: '#5B1E78',
+                      letterSpacing: '-0.02em',
+                      lineHeight: 1.1,
+                      display: 'flex',
+                      alignItems: 'baseline',
+                      justifyContent: 'center',
+                    }}
+                  >
+                    <span>Fempreneur</span>
+                    <span style={{ fontSize: '0.9rem', marginLeft: '2px', fontWeight: 600 }}>®</span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: '0.92rem',
+                      color: '#1C1224',
+                      fontWeight: 800,
+                      letterSpacing: '0.01em',
+                      marginTop: '4px',
+                    }}
+                  >
+                    Grow Together. Lead Better.
+                  </div>
+                </div>
+
+                {/* Smartphone Container */}
+                <div style={{ position: 'relative', width: '304px', zIndex: 2 }}>
+                  <div
+                    style={{
+                      width: '304px',
+                      height: '590px',
+                      background: '#1A0E24',
+                      borderRadius: '42px',
+                      padding: '8px',
+                      boxShadow: '0 26px 55px rgba(26, 14, 36, 0.38), 0 10px 20px rgba(0, 0, 0, 0.18), inset 0 0 2px 2px rgba(255, 255, 255, 0.2)',
+                      border: '2px solid #371B48',
+                      position: 'relative',
+                    }}
+                  >
+                    {/* Screen */}
+                    <div
+                      style={{
+                        width: '100%',
+                        height: '100%',
+                        background: '#FAF7FC',
+                        borderRadius: '34px',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        position: 'relative',
+                      }}
+                    >
+                      {/* Status Bar */}
+                      <div
+                        style={{
+                          height: '28px',
+                          background: '#FFFFFF',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          padding: '0 0.9rem',
+                          fontSize: '0.66rem',
+                          fontWeight: 700,
+                          color: '#1C1224',
+                          borderBottom: '1px solid #F4ECF6',
+                        }}
+                      >
+                        <span>4:09</span>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.58rem' }}>
+                          <span>22.0 KB/s</span>
+                          <span style={{ fontSize: '0.54rem' }}>5G</span>
+                          <span>66%</span>
+                          <div style={{ width: '13px', height: '7px', border: '1.2px solid #1C1224', borderRadius: '2px', padding: '1px' }}>
+                            <div style={{ width: '66%', height: '100%', background: '#1C1224', borderRadius: '1px' }} />
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Header Row */}
+                      <div
+                        style={{
+                          background: '#FFFFFF',
+                          padding: '0.4rem 0.85rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'space-between',
+                          borderBottom: '1px solid #EFE4F4',
+                        }}
+                      >
+                        <div
+                          style={{
+                            width: '28px',
+                            height: '28px',
+                            borderRadius: '50%',
+                            background: '#1E88E5',
+                            color: '#FFFFFF',
+                            fontWeight: 800,
+                            fontSize: '0.7rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                          }}
+                        >
+                          HU
+                        </div>
+
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', color: '#4A3D54' }}>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <rect width="5" height="5" x="3" y="3" rx="1"/>
+                            <rect width="5" height="5" x="16" y="3" rx="1"/>
+                            <rect width="5" height="5" x="3" y="16" rx="1"/>
+                            <path d="M21 16h-3a2 2 0 0 0-2 2v3"/>
+                            <path d="M21 21v.01"/>
+                            <path d="M12 7v3a2 2 0 0 1-2 2H7"/>
+                            <path d="M3 12h.01"/>
+                            <path d="M12 3h.01"/>
+                            <path d="M12 16v.01"/>
+                            <path d="M16 12h1"/>
+                            <path d="M21 12v.01"/>
+                            <path d="M12 21v-1"/>
+                          </svg>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/>
+                            <path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/>
+                          </svg>
+                          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                            <path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/>
+                          </svg>
+                        </div>
+                      </div>
+
+                      {/* Screen Body */}
+                      <div
+                        style={{
+                          flex: 1,
+                          padding: '0.45rem 0.6rem',
+                          display: 'flex',
+                          flexDirection: 'column',
+                          gap: '0.4rem',
+                          background: '#FAF7FC',
+                          position: 'relative',
+                        }}
+                      >
+                        {/* Upgrade Banner */}
+                        <div
+                          style={{
+                            background: '#FFFFFF',
+                            borderRadius: '10px',
+                            padding: '0.45rem 0.6rem',
+                            borderLeft: '4px solid #7B1FA2',
+                            boxShadow: '0 2px 6px rgba(123, 31, 162, 0.08)',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'space-between',
+                            gap: '0.35rem',
+                          }}
+                        >
+                          <div style={{ fontSize: '0.62rem', fontWeight: 700, color: '#1C1224', lineHeight: 1.25 }}>
+                            Upgrade Now to unlock all<br />premium features.
+                          </div>
+                          <button
+                            style={{
+                              background: '#6A1B9A',
+                              color: '#FFFFFF',
+                              border: 'none',
+                              borderRadius: '8px',
+                              padding: '0.32rem 0.65rem',
+                              fontSize: '0.58rem',
+                              fontWeight: 800,
+                              letterSpacing: '0.04em',
+                              cursor: 'pointer',
+                              whiteSpace: 'nowrap',
+                            }}
+                          >
+                            UPGRADE
+                          </button>
+                        </div>
+
+                        {/* Suggested Matches */}
+                        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0.1rem 0.15rem 0' }}>
+                          <span style={{ fontSize: '0.74rem', fontWeight: 800, color: '#1C1224' }}>
+                            Suggested Matches
+                          </span>
+                          <span style={{ fontSize: '0.64rem', fontWeight: 700, color: '#7B1FA2', cursor: 'pointer' }}>
+                            See All
+                          </span>
+                        </div>
+
+                        {/* 1. Member: USER 125 */}
+                        <div style={{ background: '#FFFFFF', borderRadius: '10px', padding: '0.4rem 0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)', border: '1px solid #F0E6F4' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#8E24AA', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              U1
+                            </div>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#1C1224' }}>USER 125</span>
+                                <span style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700 }}>👤 0</span>
+                              </div>
+                              <div style={{ fontSize: '0.55rem', color: '#757575', lineHeight: 1.15 }}>📍 Ahmedabad</div>
+                              <div style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700, lineHeight: 1.15 }}>Tech &amp; AI</div>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>👤⁻</div>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>💬</div>
+                          </div>
+                        </div>
+
+                        {/* 2. Member: ADMIN USER */}
+                        <div style={{ background: '#FFFFFF', borderRadius: '10px', padding: '0.4rem 0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)', border: '1px solid #F0E6F4' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#1E88E5', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              AU
+                            </div>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#1C1224' }}>ADMIN USER</span>
+                                <span style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700 }}>👤 0</span>
+                              </div>
+                              <div style={{ fontSize: '0.55rem', color: '#757575', lineHeight: 1.15 }}>📍 Abhayapuri</div>
+                              <div style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700, lineHeight: 1.15 }}>It</div>
+                              <div style={{ fontSize: '0.52rem', color: '#9E9E9E', lineHeight: 1.15 }}>Real Estate Broker (R...</div>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>👤⁻</div>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>💬</div>
+                          </div>
+                        </div>
+
+                        {/* 3. Member: DEMO USER */}
+                        <div style={{ background: '#FFFFFF', borderRadius: '10px', padding: '0.4rem 0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)', border: '1px solid #F0E6F4' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#121212', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              DU
+                            </div>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#1C1224' }}>DEMO USER</span>
+                                <span style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700 }}>👤 6</span>
+                              </div>
+                              <div style={{ fontSize: '0.55rem', color: '#757575', lineHeight: 1.15 }}>📍 Ahmedabad</div>
+                              <div style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700, lineHeight: 1.15 }}>It</div>
+                              <div style={{ fontSize: '0.52rem', color: '#9E9E9E', lineHeight: 1.15 }}>Steel Manufacturing</div>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>👤⁻</div>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>💬</div>
+                          </div>
+                        </div>
+
+                        {/* 4. Member: TEST IDK */}
+                        <div style={{ background: '#FFFFFF', borderRadius: '10px', padding: '0.4rem 0.55rem', display: 'flex', alignItems: 'center', justifyContent: 'space-between', boxShadow: '0 1px 4px rgba(0, 0, 0, 0.04)', border: '1px solid #F0E6F4' }}>
+                          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
+                            <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#3F51B5', color: '#FFFFFF', fontSize: '0.65rem', fontWeight: 800, display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                              TI
+                            </div>
+                            <div>
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                                <span style={{ fontSize: '0.7rem', fontWeight: 800, color: '#1C1224' }}>TEST IDK</span>
+                                <span style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700 }}>👤 0</span>
+                              </div>
+                              <div style={{ fontSize: '0.55rem', color: '#757575', lineHeight: 1.15 }}>📍 Abohar</div>
+                              <div style={{ fontSize: '0.55rem', color: '#5C6BC0', fontWeight: 700, lineHeight: 1.15 }}>Testing</div>
+                              <div style={{ fontSize: '0.52rem', color: '#9E9E9E', lineHeight: 1.15 }}>Artificial Intelligence ...</div>
+                            </div>
+                          </div>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>👤⁻</div>
+                            <div style={{ width: '22px', height: '22px', borderRadius: '50%', background: '#F5EDF8', color: '#4A3D54', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '0.62rem' }}>💬</div>
+                          </div>
+                        </div>
+
+                        {/* Floating Purple Action Button */}
+                        <div
+                          style={{
+                            position: 'absolute',
+                            bottom: '12px',
+                            right: '12px',
+                            width: '32px',
+                            height: '32px',
+                            borderRadius: '50%',
+                            background: '#7B1FA2',
+                            color: '#FFFFFF',
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            fontSize: '1.2rem',
+                            fontWeight: 300,
+                            boxShadow: '0 4px 10px rgba(123, 31, 162, 0.45)',
+                            zIndex: 4,
+                          }}
+                        >
+                          +
+                        </div>
+                      </div>
+                    </div>
+
+                    {/* Curving Extension Paper */}
+                    <div
+                      style={{
+                        position: 'absolute',
+                        bottom: '-18px',
+                        left: '-12px',
+                        right: '-8px',
+                        background: '#FFFFFF',
+                        borderRadius: '16px',
+                        padding: '0.65rem 0.75rem 0.5rem',
+                        boxShadow: '0 16px 36px rgba(0, 0, 0, 0.22), 0 4px 10px rgba(0, 0, 0, 0.08)',
+                        border: '1px solid rgba(0, 0, 0, 0.06)',
+                        transform: 'rotate(-4deg) perspective(400px) rotateX(6deg)',
+                        transformOrigin: 'bottom left',
+                        zIndex: 10,
+                      }}
+                    >
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', marginBottom: '0.3rem' }}>
+                        <div
+                          style={{
+                            width: '24px',
+                            height: '24px',
+                            borderRadius: '50%',
+                            background: '#8E24AA',
+                            color: '#FFFFFF',
+                            fontSize: '0.6rem',
+                            fontWeight: 800,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            flexShrink: 0,
+                          }}
+                        >
+                          KS
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '0.68rem', fontWeight: 800, color: '#1C1224', lineHeight: 1.1 }}>
+                            KRUPA SHA...
+                          </div>
+                          <div style={{ fontSize: '0.5rem', color: '#757575' }}>
+                            06 Feb 2026, 08:19 AM
+                          </div>
+                        </div>
+                      </div>
+
+                      <p style={{ fontSize: '0.54rem', color: '#424242', lineHeight: 1.35, marginBottom: '0.35rem' }}>
+                        Customized leadership &amp; networking and executed for Ahmedabad's renowned enterprise leaders... <span style={{ color: '#7B1FA2', fontWeight: 800 }}>Read more</span>
+                      </p>
+
+                      <div style={{ borderRadius: '8px', overflow: 'hidden', height: '62px', boxShadow: '0 2px 5px rgba(0,0,0,0.1)' }}>
+                        <img
+                          src="/images/about/about-networking-event.png"
+                          alt="Networking Summit"
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5: OUR JOURNEY / CHRONICLES (Matching Greenpreneur 4-Card Journey Grid) */}
+      <section style={{ padding: '5.5rem 1.5rem', background: '#FFFFFF', borderBottom: '1px solid #EFE4F4' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <span style={{ color: 'var(--color-gold-rich)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.3em', fontSize: '0.75rem', display: 'block', marginBottom: '0.75rem' }}>
+              Our Journey
+            </span>
+            <h2 style={{ fontSize: 'clamp(2rem, 3.5vw, 2.7rem)', fontFamily: 'serif, Georgia', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0 }}>
+              Chronicles of Women Entrepreneurship
+            </h2>
+            <p style={{ color: 'var(--text-muted)', fontSize: '0.92rem', maxWidth: '620px', margin: '0.75rem auto 0', lineHeight: 1.6 }}>
+              Fempreneur has travelled across key institutional anchors and leading business centers, celebrating women-led change across India.
+            </p>
+          </div>
+
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '1.75rem' }}>
+            {journeys.map((j, idx) => (
+              <div
+                key={idx}
+                style={{
+                  background: '#FAF6FC',
+                  padding: '1.75rem',
+                  borderRadius: '16px',
+                  border: '1px solid #EFE4F4',
+                  position: 'relative',
+                  transition: 'transform 0.2s ease, border-color 0.2s ease',
+                }}
+              >
+                <span style={{ display: 'block', fontFamily: 'serif, Georgia', fontSize: '2.5rem', fontWeight: 800, color: 'var(--color-gold-rich)', marginBottom: '0.5rem', opacity: 0.8 }}>
+                  {j.year}
+                </span>
+                <span style={{ fontSize: '0.75rem', textTransform: 'uppercase', fontWeight: 800, color: 'var(--color-burgundy)', letterSpacing: '0.08em', display: 'block', marginBottom: '0.35rem' }}>
+                  {j.location}
+                </span>
+                <h4 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '0.98rem', marginBottom: '0.75rem' }}>
+                  {j.theme}
+                </h4>
+                <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.6, margin: 0 }}>
+                  {j.desc}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6: FOUNDER'S VISION (Matching Greenpreneur Founder Section) */}
+      <section style={{ padding: '5.5rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
+        <div
+          style={{
+            background: 'linear-gradient(135deg, #1C0626 0%, #2D0B3D 60%, #150220 100%)',
+            color: '#FFFFFF',
+            borderRadius: '24px',
+            overflow: 'hidden',
+            boxShadow: '0 24px 60px rgba(28, 6, 38, 0.25)',
+            border: '1px solid rgba(212, 175, 55, 0.25)',
+            padding: '3.5rem 2.5rem',
+          }}
+        >
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '3rem', alignItems: 'center' }}>
+            {/* Left: Founder Portrait */}
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <div style={{ position: 'relative' }}>
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: '-12px',
+                    border: '2px solid rgba(212, 175, 55, 0.35)',
+                    borderRadius: '50%',
+                  }}
+                />
+                <div
+                  style={{
+                    width: '190px',
+                    height: '190px',
+                    borderRadius: '50%',
+                    border: '4px solid var(--color-gold-rich)',
+                    boxShadow: '0 12px 32px rgba(0, 0, 0, 0.4)',
+                    overflow: 'hidden',
+                    background: '#FFFFFF',
+                  }}
+                >
+                  <img
+                    src="/images/about/pravin.png"
+                    alt="Dr. Pravin Parmar"
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      transform: 'scale(1.7)',
+                      transformOrigin: '50% 40%',
+                      display: 'block',
+                    }}
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Right: Founder Quote & Details */}
+            <div>
+              <span style={{ color: 'var(--color-gold-rich)', fontSize: '0.72rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', display: 'block', marginBottom: '0.5rem' }}>
+                Founder's Vision
+              </span>
+
+              <h3 style={{ fontFamily: 'serif, Georgia', fontSize: 'clamp(1.8rem, 3vw, 2.4rem)', fontWeight: 800, marginBottom: '1.25rem', color: '#FFFFFF' }}>
+                Dr. Pravin Parmar
+              </h3>
+
+              <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '1rem', lineHeight: 1.7, fontStyle: 'italic', marginBottom: '1.5rem', fontWeight: 300 }}>
+                "Our vision is clear: we want to create an empowering national collaborative platform where women entrepreneurs, innovators, and established MSMEs don't operate in silos. By sharing stories and validating impactful models through transparent evaluation, we align Indian women enterprise with the national agenda of Viksit Bharat @2047. Fempreneur is a dedication to empowering India's future economic leaders."
+              </p>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '2px', fontSize: '0.84rem' }}>
+                <span style={{ fontWeight: 800, color: '#FFFFFF' }}>Founder, MEIF &amp; VyapaarJagat.com</span>
+                <span style={{ color: 'rgba(255, 255, 255, 0.55)' }}>Organiser of Fempreneur Mega Events</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 7: BOTTOM CTA BANNER (Matching Greenpreneur Celebration Event CTA) */}
+      <section
+        style={{
+          background: 'linear-gradient(135deg, #1C0626 0%, #2A0938 100%)',
+          color: '#FFFFFF',
+          padding: '4.5rem 1.5rem',
+          textAlign: 'center',
+          position: 'relative',
+          overflow: 'hidden',
+          borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+        }}
+      >
+        <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
+          <h2 style={{ fontFamily: 'serif, Georgia', fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', color: '#FFFFFF' }}>
+            Be part of the Fempreneur 2027 National Showcase.
+          </h2>
+
+          <p style={{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '0.98rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '560px', margin: '0 auto 2rem' }}>
+            Nominate your business for free or secure a delegate pass to network with 500+ women leaders, mentors, and ecosystem partners.
+          </p>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
+            <Link
+              to="/nominate"
+              style={{
+                background: 'linear-gradient(135deg, #E91E63 0%, #C2185B 100%)',
+                color: '#FFFFFF',
+                padding: '0.85rem 2rem',
+                borderRadius: '999px',
+                fontWeight: 800,
+                fontSize: '0.88rem',
+                textDecoration: 'none',
+                boxShadow: '0 8px 24px rgba(233, 30, 99, 0.35)',
+                transition: 'transform 0.2s ease',
+              }}
+            >
+              Nominate Now (FREE)
+            </Link>
+
+            <Link
+              to="/membership"
+              style={{
+                background: 'transparent',
+                color: '#FFFFFF',
+                border: '1.5px solid rgba(255, 255, 255, 0.6)',
+                padding: '0.85rem 2rem',
+                borderRadius: '999px',
+                fontWeight: 800,
+                fontSize: '0.88rem',
+                textDecoration: 'none',
+                transition: 'background 0.2s ease',
+              }}
+            >
+              Get Delegate Pass
+            </Link>
           </div>
         </div>
       </section>

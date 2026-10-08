@@ -1,436 +1,717 @@
 import React, { useState } from 'react';
-import { Calendar, Clock, MapPin, Users, Ticket, CheckCircle2, Building2, Sparkles, ArrowRight, X } from 'lucide-react';
-import { PageHeader, SectionTitle, CTAButton } from '../components';
+import {
+  Calendar,
+  MapPin,
+  Users,
+  Ticket,
+  CheckCircle2,
+  Building2,
+  Sparkles,
+  ArrowRight,
+  TrendingUp,
+  UserCheck,
+  Heart,
+  ShieldCheck,
+  Award,
+  BookOpen,
+  Briefcase,
+  Check,
+} from 'lucide-react';
 import { registerEventPass } from '../services/api';
 
 export default function EventsPage() {
-  const [selectedHub, setSelectedHub] = useState('Ahmedabad');
-  const [bookingPass, setBookingPass] = useState(null);
-  const [attendeeData, setAttendeeData] = useState({ name: '', email: '', phone: '', company: '' });
-  const [bookingSuccess, setBookingSuccess] = useState(false);
-  const [bookingLoading, setBookingLoading] = useState(false);
-  const [bookingError, setBookingError] = useState(null);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+    city: '',
+    segment: 'Women Entrepreneur',
+  });
+  const [passOption, setPassOption] = useState('with_dinner');
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
 
-  const agendaItems = [
-    { time: '09:00 AM – 10:00 AM', title: 'Delegate Registration & Open Networking', desc: 'Badge collection, attendee networking over tea, and exhibition showcase preview walkthrough.' },
-    { time: '10:00 AM – 11:15 AM', title: 'Inaugural Ceremony & Presidential Keynote', desc: 'Opening address by 1MEIF leadership, government dignitaries, and opening keynote on Nari Shakti.' },
-    { time: '11:15 AM – 12:30 PM', title: 'Women in Leadership & Scaling Panel', desc: 'High-impact discussion featuring leading women industrialists, startup founders, and venture investors.' },
-    { time: '12:30 PM – 01:30 PM', title: 'Practical Masterclasses (Funding & Brand Scale)', desc: 'Parallel practical masterclasses on venture debt, public grants, digital marketing, and governance.' },
-    { time: '01:30 PM – 02:30 PM', title: 'Networking Lunch & 50-Stall Exhibition Showcase', desc: 'Curated exhibition featuring 50 innovative women-led enterprises showcasing products and services.' },
-    { time: '02:30 PM – 03:45 PM', title: 'Fireside Chats: Overcoming Market Disruption', desc: 'Candid conversations with celebrated women founders on resilience and scaling across Indian markets.' },
-    { time: '03:45 PM – 04:30 PM', title: 'Formal Launch of Fempreneur Coffee Table Book', desc: 'Unveiling of the Top 50 Women Entrepreneurs hardbound volume with dignitaries and media.' },
-    { time: '04:30 PM – 06:00 PM', title: 'Fempreneur Awards 2027 Felicitation Ceremony', desc: 'Stage recognition of winners across 35–40+ categories decided 50% by jury and 50% by public votes.' },
-    { time: '06:00 PM – 06:45 PM', title: 'Story Drive Live Interviews & Valedictory Reception', desc: 'On-site interviews with VyapaarJagat journalists, partner acknowledgments, and closing reception.' },
+  const attendeeSegments = [
+    { title: 'Women Entrepreneurs', icon: Sparkles },
+    { title: 'MSME Owners', icon: Building2 },
+    { title: 'Tech & AI Startups', icon: TrendingUp },
+    { title: 'CXOs & Executives', icon: UserCheck },
+    { title: 'NGO & Social Leaders', icon: Heart },
+    { title: 'Government Dignitaries', icon: ShieldCheck },
+    { title: 'Corporate Sponsors', icon: Award },
+    { title: 'Emerging Innovators', icon: BookOpen },
   ];
 
-  const passTiers = [
-    {
-      name: 'General Delegate Pass',
-      price: '₹999',
-      features: ['Access to all keynote addresses & panels', 'Entry to 50-stall Exhibition Showcase', 'Networking lunch & tea/coffee reception', 'Digital copy of Coffee Table Book summary'],
-      cta: 'Book Delegate Pass',
-      popular: false,
-    },
-    {
-      name: 'VIP Executive Pass',
-      price: '₹2,499',
-      features: ['Priority seating at inaugural & awards ceremony', 'Access to closed-door VIP networking lounge', 'Hardbound copy of Coffee Table Book', 'Fast-track registration and delegate welcome kit'],
-      cta: 'Book VIP Pass',
-      popular: true,
-    },
-    {
-      name: 'Student / Aspiring Founder',
-      price: '₹499',
-      features: ['Full session attendance access', 'Exhibition showcase walkthrough', 'Masterclass access on funding & scaling', 'Digital participation certificate'],
-      cta: 'Book Student Pass',
-      popular: false,
-    },
-  ];
 
-  const handleOpenBooking = (pass) => {
-    setBookingPass(pass);
-    setBookingSuccess(false);
-    setBookingError(null);
-  };
 
-  const handleCompleteBooking = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    setBookingLoading(true);
-    setBookingError(null);
+    setErrorMessage('');
+
+    if (!formData.name.trim()) {
+      setErrorMessage('Full name is required.');
+      return;
+    }
+    if (!formData.email.trim() || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
+      setErrorMessage('Please enter a valid email address.');
+      return;
+    }
+    if (!formData.phone.trim()) {
+      setErrorMessage('Mobile number is required.');
+      return;
+    }
+    const cleanPhone = formData.phone.replace(/\D/g, '');
+    if (cleanPhone.length < 7 || cleanPhone.length > 15) {
+      setErrorMessage('Please enter a valid mobile number (7 to 15 digits).');
+      return;
+    }
+    if (!formData.city.trim()) {
+      setErrorMessage('City & State is required.');
+      return;
+    }
+
+    setIsLoading(true);
+    const amount = passOption === 'with_dinner' ? 1500 : 750;
+    const passName = passOption === 'with_dinner' ? 'Delegate (With Dinner)' : 'Delegate (Without Dinner)';
 
     try {
-      const priceNum = parseInt(bookingPass?.price?.replace(/[^0-9]/g, '') || '0', 10);
       await registerEventPass({
-        attendeeName: attendeeData.name.trim(),
-        email: attendeeData.email.trim(),
-        phone: attendeeData.phone.trim(),
-        organization: attendeeData.company ? attendeeData.company.trim() : null,
-        cityHub: selectedHub,
-        passTier: bookingPass?.name || 'General Delegate Pass',
-        price: priceNum,
+        attendeeName: formData.name.trim(),
+        email: formData.email.trim(),
+        phone: formData.phone.trim(),
+        organization: formData.segment,
+        cityHub: formData.city.trim(),
+        passTier: passName,
+        price: amount,
       });
 
-      setBookingLoading(false);
-      setBookingSuccess(true);
+      setIsSuccess(true);
     } catch (err) {
-      setBookingLoading(false);
-      setBookingError(err.message || 'Failed to complete pass reservation. Please try again.');
+      setErrorMessage(err.message || 'Registration failed. Please try again.');
+    } finally {
+      setIsLoading(false);
     }
   };
 
   return (
-    <div>
-      <PageHeader
-        badge="Dual-City Showcase 2027"
-        badgeIcon={Sparkles}
-        title="Fempreneur 2027"
-        highlight="Event Hub & Passes"
-        description="Experience 9 high-impact event-day program elements, 50 curated women-led exhibition stalls, masterclasses, and prestigious award felicitations."
-        breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Events Hub' }]}
-        ctaText="Book Passes"
-        ctaTo="#passes"
-        ctaIcon={null}
-        secondaryCtaText="Nominate for Award"
-        secondaryCtaTo="/nominate"
-        image="/images/events/events-pass-badge.png"
-        imageAlt="Fempreneur 2027 Event Pass & Lanyards"
-        imageFramed={false}
-        imageFilter="none"
-        imageMaxWidth="640px"
-      />
-
-      {/* Section 1: City Hub Selector */}
-      <section className="section-spacing-sm" style={{ background: '#FFFFFF', borderBottom: '1px solid var(--border-subtle)' }}>
-        <div className="container">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-            <span style={{ fontSize: '0.9rem', fontWeight: 700, color: 'var(--text-muted)' }}>
-              Select Event Hub:
-            </span>
-            <button
-              type="button"
-              onClick={() => setSelectedHub('Ahmedabad')}
-              className={`btn ${selectedHub === 'Ahmedabad' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ borderRadius: 'var(--radius-pill)', padding: '0.5rem 1.5rem' }}
-            >
-              <Building2 size={16} />
-              Ahmedabad Anchor Hub (AMA)
-            </button>
-            <button
-              type="button"
-              onClick={() => setSelectedHub('Delhi NCR')}
-              className={`btn ${selectedHub === 'Delhi NCR' ? 'btn-primary' : 'btn-secondary'}`}
-              style={{ borderRadius: 'var(--radius-pill)', padding: '0.5rem 1.5rem' }}
-            >
-              <MapPin size={16} />
-              Delhi NCR National Hub
-            </button>
-          </div>
-        </div>
-      </section>
-
-      {/* Section 2: 9 Core Event-Day Elements */}
-      <section className="section-spacing" style={{ background: 'var(--bg-secondary)' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Event Day Program"
-            badgeVariant="plum"
-            title="9 Core Elements of the"
-            highlight="2027 Agenda"
-            subtitle={`Full schedule for the ${selectedHub} edition. Designed for structured networking, learning, and celebration.`}
-          />
-
-          <div style={{ maxWidth: '860px', margin: '0 auto', display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-            {agendaItems.map((item, idx) => (
-              <div
-                key={idx}
-                className="fem-card"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '1.5rem',
-                  padding: '1.35rem 1.75rem',
-                  flexWrap: 'wrap',
-                }}
-              >
-                <div
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    fontSize: '0.85rem',
-                    fontWeight: 700,
-                    color: 'var(--color-burgundy)',
-                    minWidth: '170px',
-                  }}
-                >
-                  <Clock size={15} />
-                  <span>{item.time}</span>
-                </div>
-
-                <div style={{ flexGrow: 1, minWidth: '220px' }}>
-                  <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--color-plum-deep)', marginBottom: '0.2rem' }}>
-                    {item.title}
-                  </h4>
-                  <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)' }}>
-                    {item.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Section 3: Pass Tiers & Registration */}
-      <section id="passes" className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Delegate Registration"
-            badgeVariant="gold"
-            title="Secure Your"
-            highlight="Event Pass"
-            subtitle={`Reserve your seat for the ${selectedHub} program. Capacity is tracked to ensure curated networking.`}
-          />
-
-          <div className="grid grid-cols-3 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(290px, 1fr))' }}>
-            {passTiers.map((p, idx) => (
-              <div
-                key={idx}
-                className={`fem-card ${p.popular ? 'fem-card-gold' : ''}`}
-                style={{
-                  display: 'flex',
-                  flexDirection: 'column',
-                  padding: '2.25rem',
-                  border: p.popular ? '2px solid var(--color-gold)' : '1px solid var(--border-subtle)',
-                }}
-              >
-                {p.popular && (
-                  <span className="badge badge-gold" style={{ alignSelf: 'flex-start', marginBottom: '0.75rem' }}>
-                    Recommended
-                  </span>
-                )}
-                <h3 style={{ fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.35rem' }}>
-                  {p.name}
-                </h3>
-                <div style={{ fontFamily: 'var(--font-display)', fontSize: '2.4rem', fontWeight: 800, color: 'var(--color-burgundy)', margin: '1rem 0 1.5rem' }}>
-                  {p.price}
-                </div>
-
-                <ul style={{ display: 'flex', flexDirection: 'column', gap: '0.7rem', fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '2rem', flexGrow: 1 }}>
-                  {p.features.map((f, i) => (
-                    <li key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem' }}>
-                      <CheckCircle2 size={16} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                      <span>{f}</span>
-                    </li>
-                  ))}
-                </ul>
-
-                <button
-                  type="button"
-                  onClick={() => handleOpenBooking(p)}
-                  className={`btn ${p.popular ? 'btn-primary' : 'btn-secondary'} btn-block btn-md`}
-                >
-                  {p.cta}
-                </button>
-              </div>
-            ))}
-          </div>
-
-          {/* Planned Feature Tag: Workshops Series */}
-          <div
-            style={{
-              marginTop: '4rem',
-              padding: '1.25rem 1.75rem',
-              background: 'var(--bg-secondary)',
-              border: '1px solid var(--border-light)',
-              borderRadius: 'var(--radius-lg)',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-between',
-              flexWrap: 'wrap',
-              gap: '1rem',
-            }}
-          >
-            <div>
-              <span className="badge badge-planned" style={{ marginBottom: '0.25rem' }}>
-                Planned Feature
-              </span>
-              <h4 style={{ fontSize: '1.1rem', fontWeight: 700, color: 'var(--color-plum-deep)' }}>
-                Recurring Workshop Series on Funding &amp; Brand Scaling
-              </h4>
-              <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', marginTop: '0.2rem' }}>
-                Monthly online and offline masterclasses for founders between annual events. Free for members.
-              </p>
-            </div>
-            <span className="badge badge-gold">Coming Soon</span>
-          </div>
-        </div>
-      </section>
-
-      {/* Pass Booking Modal UI */}
-      {bookingPass && (
+    <div style={{ background: '#FAF6FC', minHeight: '100vh', color: 'var(--text-primary)' }}>
+      {/* SECTION 1: EVENT HEADER / HERO (Matching website-wide light brand theme) */}
+      <header
+        style={{
+          position: 'relative',
+          background: 'linear-gradient(180deg, #FDFBFE 0%, #F9F2FB 40%, #FAF5FC 100%)',
+          color: 'var(--text-primary)',
+          padding: '5rem 1.5rem 6.5rem',
+          textAlign: 'center',
+          overflow: 'hidden',
+          borderBottom: '1px solid rgba(106, 27, 154, 0.12)',
+        }}
+      >
+        {/* Ambient Radial Glows (matching all website headers) */}
         <div
           style={{
-            position: 'fixed',
-            inset: 0,
-            background: 'rgba(58, 12, 39, 0.65)',
-            backdropFilter: 'blur(5px)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            zIndex: 1000,
-            padding: '1.5rem',
+            position: 'absolute',
+            top: '-15%',
+            right: '5%',
+            width: '500px',
+            height: '500px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(142, 36, 170, 0.12) 0%, rgba(106, 27, 154, 0.04) 50%, transparent 70%)',
+            pointerEvents: 'none',
           }}
-          onClick={() => setBookingPass(null)}
-        >
+        />
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '-15%',
+            left: '5%',
+            width: '450px',
+            height: '450px',
+            borderRadius: '50%',
+            background: 'radial-gradient(circle, rgba(106, 27, 154, 0.08) 0%, transparent 65%)',
+            pointerEvents: 'none',
+          }}
+        />
+
+        <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
+          {/* Pulsing Badge */}
           <div
             style={{
-              background: '#FFFFFF',
-              borderRadius: 'var(--radius-xl)',
-              maxWidth: '520px',
-              width: '100%',
-              padding: '2.25rem',
-              boxShadow: 'var(--shadow-xl)',
-              position: 'relative',
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.65rem',
+              padding: '0.45rem 1.25rem',
+              border: '1px solid rgba(106, 27, 154, 0.18)',
+              borderRadius: '999px',
+              marginBottom: '2rem',
+              background: 'rgba(106, 27, 154, 0.07)',
             }}
-            onClick={(e) => e.stopPropagation()}
           >
-            <button
-              type="button"
-              onClick={() => setBookingPass(null)}
+            <span
               style={{
-                position: 'absolute',
-                right: '1.25rem',
-                top: '1.25rem',
-                background: 'none',
-                border: 'none',
-                cursor: 'pointer',
-                color: 'var(--text-muted)',
+                width: '9px',
+                height: '9px',
+                borderRadius: '50%',
+                background: 'var(--color-burgundy)',
+                display: 'inline-block',
+                boxShadow: '0 0 8px rgba(106, 27, 154, 0.5)',
+              }}
+            />
+            <span
+              style={{
+                color: 'var(--color-burgundy)',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.2em',
               }}
             >
-              <X size={20} />
-            </button>
+              6th Annual Edition — Coming Soon
+            </span>
+          </div>
 
-            {!bookingSuccess ? (
-              <form onSubmit={handleCompleteBooking}>
-                <span className="badge badge-gold" style={{ marginBottom: '0.5rem' }}>
-                  Pass Booking • {selectedHub} Hub
-                </span>
-                <h3 style={{ fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.25rem' }}>
-                  {bookingPass.name}
-                </h3>
-                <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', marginBottom: '1.5rem' }}>
-                  Price: <strong>{bookingPass.price}</strong> per attendee • Valid for full day program.
-                </p>
+          {/* Main Title */}
+          <h1
+            style={{
+              fontFamily: 'serif, Georgia, "Times New Roman"',
+              fontSize: 'clamp(2.8rem, 6vw, 4.8rem)',
+              color: 'var(--color-plum-deep)',
+              marginBottom: '1.5rem',
+              lineHeight: 1.15,
+              letterSpacing: '-0.02em',
+              fontWeight: 800,
+            }}
+          >
+            Fempreneur{' '}
+            <span
+              style={{
+                background: 'linear-gradient(135deg, #7B1FA2 0%, #A21CAF 50%, #C2185B 100%)',
+                WebkitBackgroundClip: 'text',
+                WebkitTextFillColor: 'transparent',
+                fontStyle: 'italic',
+              }}
+            >
+              2027
+            </span>
+          </h1>
 
-                <div className="form-group" style={{ marginBottom: '1rem' }}>
-                  <label className="form-label">Attendee Full Name *</label>
-                  <input
-                    type="text"
-                    required
-                    placeholder="e.g. Ananya Singhania"
-                    className="form-input"
-                    value={attendeeData.name}
-                    onChange={(e) => setAttendeeData({ ...attendeeData, name: e.target.value })}
-                  />
-                </div>
+          <p
+            style={{
+              fontSize: 'clamp(1rem, 2vw, 1.25rem)',
+              color: 'var(--text-secondary)',
+              maxWidth: '720px',
+              margin: '0 auto 3.5rem',
+              fontWeight: 400,
+              lineHeight: 1.65,
+            }}
+          >
+            India's most comprehensive gathering of women entrepreneurs, investors, and ecosystem pioneers. Returning bigger and bolder in 2027 across Ahmedabad &amp; Delhi NCR Hubs.
+          </p>
 
-                <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '1rem' }}>
-                  <div className="form-group">
-                    <label className="form-label">Email Address *</label>
-                    <input
-                      type="email"
-                      required
-                      placeholder="ananya@company.com"
-                      className="form-input"
-                      value={attendeeData.email}
-                      onChange={(e) => setAttendeeData({ ...attendeeData, email: e.target.value })}
-                    />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label">Phone / WhatsApp *</label>
-                    <input
-                      type="tel"
-                      required
-                      placeholder="+91 98765 43210"
-                      className="form-input"
-                      value={attendeeData.phone}
-                      onChange={(e) => setAttendeeData({ ...attendeeData, phone: e.target.value })}
-                    />
-                  </div>
-                </div>
+          {/* 3-Column Meta Details Bar */}
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '2rem',
+              maxWidth: '860px',
+              margin: '0 auto',
+              borderTop: '1px solid rgba(106, 27, 154, 0.12)',
+              paddingTop: '2.75rem',
+            }}
+          >
+            {/* 1. Date */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  border: '1.5px solid rgba(106, 27, 154, 0.18)',
+                  background: 'rgba(106, 27, 154, 0.06)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  color: 'var(--color-burgundy)',
+                }}
+              >
+                <Calendar size={22} />
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, marginBottom: '0.35rem' }}>
+                Date
+              </p>
+              <p style={{ fontFamily: 'serif, Georgia', fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0 }}>
+                To Be Announced
+              </p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                Stay tuned for 2027 details
+              </p>
+            </div>
 
-                <div className="form-group" style={{ marginBottom: '1.5rem' }}>
-                  <label className="form-label">Company / Organization Name</label>
-                  <input
-                    type="text"
-                    placeholder="e.g. Singhania Ventures"
-                    className="form-input"
-                    value={attendeeData.company}
-                    onChange={(e) => setAttendeeData({ ...attendeeData, company: e.target.value })}
-                  />
-                </div>
+            {/* 2. Venue */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  border: '1.5px solid rgba(106, 27, 154, 0.18)',
+                  background: 'rgba(106, 27, 154, 0.06)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  color: 'var(--color-burgundy)',
+                }}
+              >
+                <MapPin size={22} />
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, marginBottom: '0.35rem' }}>
+                Venue
+              </p>
+              <p style={{ fontFamily: 'serif, Georgia', fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0 }}>
+                To Be Announced
+              </p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                Ahmedabad &amp; Delhi NCR Hubs
+              </p>
+            </div>
 
-                {bookingError && (
-                  <div
-                    style={{
-                      padding: '0.75rem 1rem',
-                      background: 'var(--color-coral-soft)',
-                      border: '1px solid rgba(224, 93, 93, 0.3)',
-                      borderRadius: 'var(--radius-md)',
-                      color: '#DC2626',
-                      fontSize: '0.85rem',
-                      marginBottom: '1.25rem',
-                    }}
-                  >
-                    {bookingError}
-                  </div>
-                )}
+            {/* 3. Attendance */}
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div
+                style={{
+                  width: '48px',
+                  height: '48px',
+                  borderRadius: '50%',
+                  border: '1.5px solid rgba(106, 27, 154, 0.18)',
+                  background: 'rgba(106, 27, 154, 0.06)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  marginBottom: '1rem',
+                  color: 'var(--color-burgundy)',
+                }}
+              >
+                <Users size={22} />
+              </div>
+              <p style={{ fontSize: '0.75rem', color: 'var(--text-muted)', textTransform: 'uppercase', letterSpacing: '0.15em', fontWeight: 800, marginBottom: '0.35rem' }}>
+                Attendance
+              </p>
+              <p style={{ fontFamily: 'serif, Georgia', fontSize: '1.35rem', fontWeight: 800, color: 'var(--color-plum-deep)', margin: 0 }}>
+                500+ Leaders
+              </p>
+              <p style={{ fontSize: '0.82rem', color: 'var(--text-secondary)', marginTop: '4px' }}>
+                Exclusive Networking Gala
+              </p>
+            </div>
+          </div>
+        </div>
+      </header>
 
-                <button
-                  type="submit"
-                  className="btn btn-primary"
-                  style={{ width: '100%', justifyContent: 'center' }}
-                  disabled={bookingLoading}
+      {/* SECTION 2: WHO SHOULD ATTEND (Matching Greenpreneur Layout & 8 Cards) */}
+      <section
+        id="attendees"
+        style={{
+          padding: '5rem 1.5rem',
+          background: '#1C0626',
+          color: '#FFFFFF',
+          borderBottom: '1px solid rgba(212, 175, 55, 0.15)',
+        }}
+      >
+        <div style={{ maxWidth: '1100px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <h2
+              style={{
+                fontFamily: 'serif, Georgia',
+                fontSize: 'clamp(2rem, 3.5vw, 2.75rem)',
+                fontWeight: 800,
+                marginBottom: '0.75rem',
+                color: '#FFFFFF',
+              }}
+            >
+              Who Should Attend
+            </h2>
+            <p
+              style={{
+                color: 'var(--color-gold-rich)',
+                fontWeight: 800,
+                textTransform: 'uppercase',
+                letterSpacing: '0.2em',
+                fontSize: '0.75rem',
+                marginBottom: '1rem',
+              }}
+            >
+              Building a national women-led economy across 150+ sectors
+            </p>
+            <p style={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.88rem', maxWidth: '600px', margin: '0 auto', fontWeight: 300, lineHeight: 1.6 }}>
+              Uniting key ecosystem stakeholders to forge partnerships, access funding, and drive enterprise growth.
+            </p>
+          </div>
+
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+              gap: '1.25rem',
+            }}
+          >
+            {attendeeSegments.map((segment, idx) => {
+              const IconComp = segment.icon;
+              return (
+                <div
+                  key={idx}
+                  style={{
+                    border: '1px solid rgba(255, 255, 255, 0.12)',
+                    padding: '1.75rem 1.25rem',
+                    borderRadius: '16px',
+                    textAlign: 'center',
+                    background: 'rgba(255, 255, 255, 0.04)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.08)';
+                    e.currentTarget.style.borderColor = 'rgba(212, 175, 55, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.background = 'rgba(255, 255, 255, 0.04)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                  }}
                 >
-                  {bookingLoading ? 'Reserving Pass...' : 'Confirm Delegate Pass Reservation'}
-                  <ArrowRight size={16} />
-                </button>
-              </form>
-            ) : (
-              <div style={{ textAlign: 'center', padding: '1rem 0' }}>
+                  <IconComp
+                    size={30}
+                    color="var(--color-gold-rich)"
+                    style={{ margin: '0 auto 1rem', display: 'block' }}
+                  />
+                  <h4 style={{ fontWeight: 800, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
+                    {segment.title}
+                  </h4>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 3: REGISTER INTEREST & PASS OPTIONS (Matching Greenpreneur Booking Component) */}
+      <section
+        id="register"
+        style={{
+          padding: '5.5rem 1.5rem',
+          background: '#FFFFFF',
+          borderBottom: '1px solid #EFE4F4',
+        }}
+      >
+        <div style={{ maxWidth: '640px', margin: '0 auto' }}>
+          <div
+            style={{
+              background: 'linear-gradient(180deg, #FAF6FD 0%, #FFFFFF 100%)',
+              padding: 'clamp(2rem, 5vw, 3rem)',
+              borderRadius: '24px',
+              border: '1.5px solid rgba(106, 27, 154, 0.15)',
+              boxShadow: '0 20px 50px rgba(46, 8, 72, 0.08)',
+            }}
+          >
+            {/* Header */}
+            <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+              <h3
+                style={{
+                  fontFamily: 'serif, Georgia',
+                  fontSize: 'clamp(1.75rem, 3vw, 2.25rem)',
+                  fontWeight: 800,
+                  color: 'var(--color-plum-deep)',
+                  marginBottom: '0.5rem',
+                }}
+              >
+                Register Interest for 2027
+              </h3>
+              <p style={{ fontSize: '0.86rem', color: 'var(--text-muted)', lineHeight: 1.5 }}>
+                Be the first to know — register your interest for Fempreneur 2027. Date &amp; venue will be announced soon.
+              </p>
+            </div>
+
+            {/* Success View */}
+            {isSuccess ? (
+              <div style={{ textAlign: 'center', padding: '2rem 1rem' }}>
                 <div
                   style={{
-                    width: '54px',
-                    height: '54px',
+                    width: '64px',
+                    height: '64px',
                     borderRadius: '50%',
-                    background: 'rgba(37, 211, 102, 0.1)',
+                    background: 'rgba(76, 175, 80, 0.12)',
+                    color: '#2E7D32',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     margin: '0 auto 1.25rem',
                   }}
                 >
-                  <CheckCircle2 size={30} color="#25D366" />
+                  <Check size={32} strokeWidth={3} />
                 </div>
-                <h4 style={{ fontSize: '1.3rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
-                  Pass Reserved Successfully!
+                <h4 style={{ fontWeight: 800, fontSize: '1.35rem', color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
+                  Pass Secured Successfully!
                 </h4>
-                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.5rem' }}>
-                  Thank you, <strong>{attendeeData.name}</strong>. Your reservation for <strong>{bookingPass.name} ({selectedHub} Hub)</strong> has been officially confirmed in the database. Delegate check-in instructions and receipt details will be sent to <strong>{attendeeData.email}</strong>.
+                <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6, maxWidth: '440px', margin: '0 auto 1.5rem' }}>
+                  Thank you, <strong>{formData.name}</strong>. Your delegate interest for <strong>{passOption === 'with_dinner' ? 'Delegate (With Dinner)' : 'Delegate (Without Dinner)'}</strong> has been registered. Our secretariat will send confirmation details shortly.
                 </p>
                 <button
                   type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setBookingPass(null)}
+                  onClick={() => {
+                    setIsSuccess(false);
+                    setFormData({ name: '', email: '', phone: '', city: '', segment: 'Women Entrepreneur' });
+                  }}
+                  className="btn btn-primary"
+                  style={{ borderRadius: 'var(--radius-pill)', padding: '0.6rem 1.75rem', fontSize: '0.88rem' }}
                 >
-                  Close Window
+                  Register Another Pass
                 </button>
               </div>
+            ) : (
+              /* Booking Form */
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.15rem' }}>
+                {/* 1. Full Name */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
+                    Full Name
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.name}
+                    onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+                    placeholder="Enter your name"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E0D4E6',
+                      borderRadius: '10px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+
+                {/* 2. Phone */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
+                    Mobile Number (WhatsApp)
+                  </label>
+                  <input
+                    type="tel"
+                    required
+                    value={formData.phone}
+                    onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                    placeholder="e.g. +91 70411 51714"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E0D4E6',
+                      borderRadius: '10px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+
+                {/* 3. Email */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
+                    Email Address
+                  </label>
+                  <input
+                    type="email"
+                    required
+                    value={formData.email}
+                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                    placeholder="hello@fempreneur.in"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E0D4E6',
+                      borderRadius: '10px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+
+                {/* 4. City & State */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
+                    City &amp; State
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                    placeholder="Ahmedabad, Gujarat"
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E0D4E6',
+                      borderRadius: '10px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  />
+                </div>
+
+                {/* 5. Attendee Profile Segment */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.4rem' }}>
+                    Attendee Profile Segment
+                  </label>
+                  <select
+                    value={formData.segment}
+                    onChange={(e) => setFormData({ ...formData, segment: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.75rem 1rem',
+                      background: '#FFFFFF',
+                      border: '1px solid #E0D4E6',
+                      borderRadius: '10px',
+                      fontSize: '0.9rem',
+                      outline: 'none',
+                    }}
+                  >
+                    <option>Women Entrepreneur</option>
+                    <option>MSME Owner</option>
+                    <option>Startup Founder</option>
+                    <option>Corporate Executive</option>
+                    <option>NGO / Social Enterprise</option>
+                    <option>Student / Academic</option>
+                  </select>
+                </div>
+
+                {/* 6. Select Pass Option */}
+                <div>
+                  <label style={{ fontSize: '0.75rem', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.08em', color: 'var(--text-muted)', display: 'block', marginBottom: '0.5rem' }}>
+                    Select Pass Option
+                  </label>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '0.85rem' }}>
+                    {/* Without Dinner */}
+                    <label
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '1rem',
+                        border: passOption === 'no_dinner' ? '2px solid var(--color-burgundy)' : '1px solid #E0D4E6',
+                        background: passOption === 'no_dinner' ? 'rgba(106, 27, 154, 0.05)' : '#FFFFFF',
+                        borderRadius: '14px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="passOption"
+                        value="no_dinner"
+                        checked={passOption === 'no_dinner'}
+                        onChange={() => setPassOption('no_dinner')}
+                        style={{ display: 'none' }}
+                      />
+                      <span style={{ fontWeight: 800, fontSize: '0.86rem', color: 'var(--color-plum-deep)', marginBottom: '0.25rem' }}>
+                        Without Dinner
+                      </span>
+                      <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '0.75rem', lineHeight: 1.3 }}>
+                        General access to event sessions &amp; awards felicitation.
+                      </span>
+                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-burgundy)', marginTop: 'auto' }}>
+                        ₹750
+                      </span>
+                    </label>
+
+                    {/* With Dinner (Recommended) */}
+                    <label
+                      style={{
+                        display: 'flex',
+                        flexDirection: 'column',
+                        padding: '1rem',
+                        border: passOption === 'with_dinner' ? '2px solid var(--color-burgundy)' : '1px solid #E0D4E6',
+                        background: passOption === 'with_dinner' ? 'rgba(106, 27, 154, 0.05)' : '#FFFFFF',
+                        borderRadius: '14px',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <input
+                        type="radio"
+                        name="passOption"
+                        value="with_dinner"
+                        checked={passOption === 'with_dinner'}
+                        onChange={() => setPassOption('with_dinner')}
+                        style={{ display: 'none' }}
+                      />
+                      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.25rem' }}>
+                        <span style={{ fontWeight: 800, fontSize: '0.86rem', color: 'var(--color-plum-deep)' }}>
+                          With Dinner
+                        </span>
+                        <span style={{ background: 'rgba(212, 175, 55, 0.2)', color: '#8A6D15', fontSize: '0.62rem', fontWeight: 800, padding: '2px 6px', borderRadius: '4px', textTransform: 'uppercase' }}>
+                          Recommended
+                        </span>
+                      </div>
+                      <span style={{ fontSize: '0.76rem', color: 'var(--text-muted)', marginBottom: '0.75rem', lineHeight: 1.3 }}>
+                        Access to event sessions &amp; Gala Networking Dinner.
+                      </span>
+                      <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-burgundy)', marginTop: 'auto' }}>
+                        ₹1,500
+                      </span>
+                    </label>
+                  </div>
+                </div>
+
+                {/* Error Banner */}
+                {errorMessage && (
+                  <div style={{ padding: '0.75rem', background: '#FEE2E2', border: '1px solid #FCA5A5', color: '#B91C1C', fontSize: '0.84rem', fontWeight: 600, borderRadius: '8px', textAlign: 'center' }}>
+                    {errorMessage}
+                  </div>
+                )}
+
+                {/* Submit Button */}
+                <div style={{ paddingTop: '0.5rem' }}>
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    style={{
+                      width: '100%',
+                      padding: '1rem',
+                      background: 'linear-gradient(135deg, #7B1FA2 0%, #E91E63 100%)',
+                      color: '#FFFFFF',
+                      border: 'none',
+                      borderRadius: '12px',
+                      fontSize: '0.92rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.04em',
+                      cursor: isLoading ? 'not-allowed' : 'pointer',
+                      boxShadow: '0 8px 24px rgba(123, 31, 162, 0.35)',
+                      opacity: isLoading ? 0.7 : 1,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '0.5rem',
+                    }}
+                  >
+                    {isLoading ? 'PROCESSING...' : `PAY & REGISTER (₹${passOption === 'with_dinner' ? '1,500' : '750'})`}
+                    <ArrowRight size={16} />
+                  </button>
+                </div>
+
+                <p style={{ fontSize: '0.72rem', textAlign: 'center', color: 'var(--text-muted)', margin: 0 }}>
+                  Passes are first-come first-served. Registration includes GST and networking access.
+                </p>
+              </form>
             )}
           </div>
         </div>
-      )}
+      </section>
+
     </div>
   );
 }

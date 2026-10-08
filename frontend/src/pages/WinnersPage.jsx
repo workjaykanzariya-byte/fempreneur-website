@@ -1,5 +1,22 @@
 import React, { useState } from 'react';
-import { Award, Calendar, MapPin, Sparkles, Filter, ExternalLink, ShieldCheck, BookOpen, ArrowRight, Search, CheckCircle2 } from 'lucide-react';
+import {
+  Award,
+  Calendar,
+  MapPin,
+  Sparkles,
+  Filter,
+  ExternalLink,
+  ShieldCheck,
+  BookOpen,
+  ArrowRight,
+  Search,
+  CheckCircle2,
+  Quote,
+  Star,
+  Building2,
+  Users,
+  Trophy,
+} from 'lucide-react';
 import { PageHeader, WinnerCard, EmptyState, SectionTitle, CTAButton } from '../components';
 
 export default function WinnersPage() {
@@ -8,79 +25,132 @@ export default function WinnersPage() {
   const [searchTerm, setSearchTerm] = useState('');
 
   const years = ['All', '2025', '2024', '2023', '2022'];
-  const categories = ['All', 'Leadership', 'Startups', 'Technology', 'Social Impact', 'MSME Enterprise'];
-
-  const pastEditions = [
-    { year: '2025', city: 'DevX Ahmedabad', honorees: '40+', focus: 'Tech Innovation & Sustainable Enterprise' },
-    { year: '2024', city: 'BSE Mumbai', honorees: '38+', focus: 'Capital Scale & National Impact' },
-    { year: '2023', city: 'AMA Ahmedabad', honorees: '35+', focus: 'Grassroots Founders & Artisan Clusters' },
-    { year: '2022', city: 'BSE Mumbai', honorees: '32+', focus: 'Foundational Women Leadership Forum' },
+  const categories = [
+    'All',
+    'Leadership',
+    'Technology & Startups',
+    'Manufacturing & MSME',
+    'Healthcare & Wellness',
+    'Design & Architecture',
+    'Social Enterprise',
+    'Consumer & D2C',
   ];
 
-  const sampleWinners = [
+  const pastEditions = [
+    {
+      year: '2025',
+      city: 'DevX Ahmedabad',
+      honorees: '40+',
+      focus: 'Tech Innovation, Spatial Architecture & Sustainable Scaling',
+      badge: '5th Edition',
+    },
+    {
+      year: '2024',
+      city: 'BSE Mumbai',
+      honorees: '38+',
+      focus: 'Capital Access, Diagnostics & Corporate Leadership',
+      badge: '4th Edition',
+    },
+    {
+      year: '2023',
+      city: 'AMA Ahmedabad',
+      honorees: '35+',
+      focus: 'Grassroots Founders, Artisan Clusters & Regional MSMEs',
+      badge: '3rd Edition',
+    },
+    {
+      year: '2022',
+      city: 'BSE Mumbai',
+      honorees: '32+',
+      focus: 'Foundational Women Leadership & D2C Innovation',
+      badge: 'Inaugural Gala',
+    },
+  ];
+
+  const allWinners = [
     {
       name: 'Priyanshi Shah',
       company: 'Aarya Spatial Design Studio',
-      category: 'Leadership',
+      category: 'Design & Architecture',
       year: '2025',
       city: 'Ahmedabad (DevX Edition)',
-      highlight: 'Recognized for outstanding leadership, revenue scaling, and community employment generation across western India.',
+      highlight: 'Recognized for pioneering sustainable commercial spatial architecture and generating local employment for craftspeople across Western India.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/priyanshi-shah.jpg',
     },
     {
       name: 'Dr. Sunita Rao',
-      company: 'Nova BioCare Solutions',
-      category: 'Technology',
+      company: 'Nova BioCare Diagnostics',
+      category: 'Healthcare & Wellness',
       year: '2024',
       city: 'Mumbai (BSE Edition)',
-      highlight: 'Honored for building high-impact software & diagnostics solutions adopted by enterprise clients across India.',
+      highlight: 'Honored for building high-impact pathology software & diagnostic devices serving over 1,00,000 patients across India.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/dr-sunita-rao.jpg',
     },
     {
       name: 'Radhika Menon',
       company: 'Artisan & Handloom Collective',
-      category: 'Social Impact',
+      category: 'Social Enterprise',
       year: '2023',
       city: 'Ahmedabad (AMA Edition)',
-      highlight: 'Empowered over 800 rural female artisans through sustainable livelihoods and direct nationwide market access.',
+      highlight: 'Empowered over 800 rural female handloom weavers through direct nationwide e-commerce logistics and fair compensation.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/radhika-menon.jpg',
     },
     {
       name: 'Sneha Patel',
       company: 'Precision Tooling & Components',
-      category: 'MSME Enterprise',
+      category: 'Manufacturing & MSME',
       year: '2024',
       city: 'Mumbai (BSE Edition)',
-      highlight: 'Pioneered zero-defect precision tooling and promoted female industrial machinists in heavy manufacturing.',
+      highlight: 'Pioneered zero-defect precision tooling and championed female industrial machinists in heavy auto-component manufacturing.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/sneha-patel.jpg',
     },
     {
       name: 'Meera Sen',
       company: 'GreenTech BioPackaging',
-      category: 'Startups',
+      category: 'Technology & Startups',
       year: '2022',
       city: 'Mumbai (BSE Edition)',
-      highlight: 'Developed compostable packaging solutions replacing single-use plastics across top FMCG supply chains.',
+      highlight: 'Developed compostable agricultural waste packaging solutions replacing single-use plastics across top FMCG retail brands.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/meera-sen.jpg',
     },
     {
       name: 'Ananya Sharma',
       company: 'EduSpark NextGen AI',
-      category: 'Technology',
+      category: 'Technology & Startups',
       year: '2025',
       city: 'Ahmedabad (DevX Edition)',
-      highlight: 'Brought personalized vernacular AI learning tools to 50,000+ government school students in Gujarat.',
+      highlight: 'Brought personalized vernacular AI learning tools to 50,000+ government school students in regional Indian languages.',
       storyUrl: 'https://vyapaarjagat.com',
       image: '/images/entrepreneurs/ananya-sharma.jpg',
     },
+    {
+      name: 'Pooja Mehta',
+      company: 'Vedic Naturals Wellness',
+      category: 'Consumer & D2C',
+      year: '2023',
+      city: 'Ahmedabad (AMA Edition)',
+      highlight: 'Built a 100% clean-beauty certified direct-to-consumer skincare brand sourcing organic botanicals from female farmer cooperatives.',
+      storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/pooja-mehta.jpg',
+    },
+    {
+      name: 'Dr. Ananya Sen',
+      company: 'Apex HealthTech Research',
+      category: 'Healthcare & Wellness',
+      year: '2025',
+      city: 'Ahmedabad (DevX Edition)',
+      highlight: 'Awarded for breakthrough clinical biotechnology formulations making oncology supportive care accessible across Tier 2 hospitals.',
+      storyUrl: 'https://vyapaarjagat.com',
+      image: '/images/entrepreneurs/dr-ananya-sen.jpg',
+    },
   ];
 
-  const filteredWinners = sampleWinners.filter((winner) => {
+  const filteredWinners = allWinners.filter((winner) => {
     const matchesYear = selectedYear === 'All' || winner.year === selectedYear;
     const matchesCategory = selectedCategory === 'All' || winner.category === selectedCategory;
     const matchesSearch =
@@ -94,18 +164,18 @@ export default function WinnersPage() {
   return (
     <div>
       <PageHeader
-        badge="Hall of Fame"
+        badge="Hall of Fame • 2022–2025"
         title="Fempreneur Past"
         highlight="Winners Archive"
-        description="Celebrating outstanding women founders, innovators, and changemakers honored across our historical editions from 2022 to 2025."
+        description="Celebrating outstanding women founders, innovators, and changemakers honored across our historical editions in Mumbai & Ahmedabad. Evaluated 50% by jury and 50% by public vote."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Winners Archive' }]}
         ctaText="Nominate for 2027"
         ctaTo="/nominate"
-        secondaryCtaText="Explore Categories"
+        secondaryCtaText="Explore 40 Categories"
         secondaryCtaTo="/categories"
-        image="/images/winners/winners-archive-halloffame.jpg"
+        image="/images/awards/awards-stage-winners-clean.png"
         imageAlt="Fempreneur Historical Winners Felicitation Hall of Fame"
-        imageBadge="Historical Hall of Fame"
+        imageBadge="500+ Honorees Since 2022"
         imageMaxWidth="560px"
         imageMaxHeight="440px"
       />
@@ -128,24 +198,29 @@ export default function WinnersPage() {
                 style={{
                   background: 'rgba(255, 255, 255, 0.08)',
                   backdropFilter: 'blur(8px)',
-                  padding: '1.25rem 1.5rem',
+                  padding: '1.5rem',
                   borderRadius: 'var(--radius-lg)',
                   border: '1px solid rgba(255, 255, 255, 0.16)',
                   boxShadow: '0 6px 20px rgba(0, 0, 0, 0.2)',
+                  cursor: 'pointer',
+                  transition: 'transform 0.2s ease, border-color 0.2s ease',
                 }}
+                onClick={() => setSelectedYear(ed.year)}
+                onMouseEnter={(e) => (e.currentTarget.style.borderColor = '#FFD54F')}
+                onMouseLeave={(e) => (e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.16)')}
               >
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.4rem' }}>
-                  <span style={{ fontSize: '1.2rem', fontWeight: 800, color: '#FFFFFF' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.5rem' }}>
+                  <span style={{ fontSize: '1.25rem', fontWeight: 800, color: '#FFFFFF' }}>
                     {ed.year} Edition
                   </span>
-                  <span className="badge badge-gold" style={{ fontSize: '0.72rem', padding: '0.2rem 0.6rem' }}>
+                  <span className="badge badge-gold" style={{ fontSize: '0.7rem', padding: '0.2rem 0.6rem' }}>
                     {ed.honorees} Honored
                   </span>
                 </div>
-                <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#F3E8FF', marginBottom: '0.3rem' }}>
+                <div style={{ fontSize: '0.9rem', fontWeight: 700, color: '#F3E8FF', marginBottom: '0.35rem' }}>
                   {ed.city}
                 </div>
-                <div style={{ fontSize: '0.78rem', color: 'rgba(255, 255, 255, 0.8)', lineHeight: 1.45 }}>
+                <div style={{ fontSize: '0.8rem', color: 'rgba(255, 255, 255, 0.82)', lineHeight: 1.45 }}>
                   {ed.focus}
                 </div>
               </div>
@@ -172,11 +247,11 @@ export default function WinnersPage() {
               <div style={{ position: 'relative' }}>
                 <input
                   type="text"
-                  placeholder="Search past honorees by name, business, or keyword..."
+                  placeholder="Search past honorees by founder name, business, sector, or keyword..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
                   className="form-input"
-                  style={{ paddingLeft: '2.5rem' }}
+                  style={{ paddingLeft: '2.5rem', background: '#FFFFFF' }}
                 />
                 <Search
                   size={18}
@@ -188,14 +263,14 @@ export default function WinnersPage() {
               {/* Year Filter Buttons */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
                 <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--text-muted)', marginRight: '0.25rem' }}>
-                  Year:
+                  Filter Year:
                 </span>
                 {years.map((yr) => (
                   <button
                     key={yr}
                     type="button"
                     onClick={() => setSelectedYear(yr)}
-                    className={`btn btn-sm ${selectedYear === yr ? 'btn-primary' : 'btn-ghost'}`}
+                    className={`btn btn-sm ${selectedYear === yr ? 'btn-primary' : 'btn-secondary'}`}
                     style={{ borderRadius: 'var(--radius-pill)', padding: '0.35rem 0.85rem', fontSize: '0.82rem' }}
                   >
                     {yr}
@@ -205,9 +280,9 @@ export default function WinnersPage() {
             </div>
 
             {/* Category Filter Pills */}
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', paddingTop: '0.5rem', borderTop: '1px solid var(--border-subtle)' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
               <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--text-muted)', marginRight: '0.3rem' }}>
-                Category Sector:
+                Industry Sector:
               </span>
               {categories.map((cat) => (
                 <button
@@ -215,7 +290,7 @@ export default function WinnersPage() {
                   type="button"
                   onClick={() => setSelectedCategory(cat)}
                   style={{
-                    padding: '0.3rem 0.8rem',
+                    padding: '0.35rem 0.85rem',
                     borderRadius: 'var(--radius-pill)',
                     fontSize: '0.8rem',
                     fontWeight: 600,
@@ -233,10 +308,10 @@ export default function WinnersPage() {
             </div>
           </div>
 
-          {/* Results Summary */}
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
-            <span style={{ fontSize: '0.9rem', color: 'var(--text-muted)', fontWeight: 600 }}>
-              Showing {filteredWinners.length} verified past honoree profiles
+          {/* Results Summary & Reset */}
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.75rem', flexWrap: 'wrap', gap: '0.5rem' }}>
+            <span style={{ fontSize: '0.92rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+              Showing {filteredWinners.length} verified past honoree profiles {selectedYear !== 'All' ? `(${selectedYear} Edition)` : ''} {selectedCategory !== 'All' ? `in ${selectedCategory}` : ''}
             </span>
             {(selectedYear !== 'All' || selectedCategory !== 'All' || searchTerm !== '') && (
               <button
@@ -260,11 +335,54 @@ export default function WinnersPage() {
             ))}
           </div>
 
+          {/* Honoree Testimonial Strip */}
+          <div
+            className="fem-card fem-card-gold"
+            style={{
+              padding: '3rem 2.5rem',
+              marginBottom: '4rem',
+              background: 'linear-gradient(135deg, #FFFDF8 0%, #FFF8E7 100%)',
+              border: '1.5px solid rgba(212, 175, 55, 0.4)',
+              borderRadius: 'var(--radius-xl)',
+            }}
+          >
+            <div className="grid grid-cols-2 gap-8 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
+              <div>
+                <Quote size={32} color="var(--color-gold-rich)" style={{ marginBottom: '0.5rem' }} />
+                <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1.35, marginBottom: '0.85rem' }}>
+                  "Winning at Fempreneur gave our venture the credibility to secure enterprise corporate contracts."
+                </h3>
+                <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+                  — Verified Fempreneur Award Winner &amp; Founder Alumni. The 50% public voting campaign allowed us to mobilize our customer community across 12 cities.
+                </p>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CheckCircle2 size={18} color="var(--color-burgundy)" />
+                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-plum-deep)' }}>Permanent SEO Feature on VyapaarJagat.com</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CheckCircle2 size={18} color="var(--color-burgundy)" />
+                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-plum-deep)' }}>Inclusion in Top 50 Women Coffee Table Book</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CheckCircle2 size={18} color="var(--color-burgundy)" />
+                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-plum-deep)' }}>Verified Credential Certificate &amp; Signature 'F' Trophy</span>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+                  <CheckCircle2 size={18} color="var(--color-burgundy)" />
+                  <span style={{ fontSize: '0.92rem', fontWeight: 700, color: 'var(--color-plum-deep)' }}>Direct Access to 1MEIF Investor &amp; Mentor Networks</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
           {/* Official Digitization Notice (EmptyState Guarantee) */}
           <EmptyState
             badge="Official Archive Synchronization"
             title="Complete Historical Records Currently Being Digitized"
-            description="Verified honoree records for past editions (2022 BSE Mumbai, 2023 AMA Ahmedabad, 2024 BSE Mumbai, 2025 DevX Ahmedabad) are being digitized from the 1MEIF event archives. If you are an honored past winner requesting profile adjustments or feature links, please connect with the secretariat."
+            description="Verified honoree records for past editions (2022 BSE Mumbai, 2023 AMA Ahmedabad, 2024 BSE Mumbai, 2025 DevX Ahmedabad) are continuously being digitized from the 1MEIF secretariat archives. If you are an honored past winner requesting profile adjustments or story links, please connect with our team."
             actionText="Submit Past Winner Verification"
             actionTo="/contact"
           />
@@ -275,7 +393,7 @@ export default function WinnersPage() {
               marginTop: '4rem',
               background: 'linear-gradient(135deg, var(--color-plum-deep) 0%, var(--color-burgundy) 100%)',
               borderRadius: 'var(--radius-2xl)',
-              padding: '3rem',
+              padding: '3.5rem 2.5rem',
               color: '#FFFFFF',
               display: 'flex',
               alignItems: 'center',
@@ -293,7 +411,7 @@ export default function WinnersPage() {
                 Write Your Chapter in Fempreneur History
               </h3>
               <p style={{ color: 'rgba(255, 255, 255, 0.85)', maxWidth: '580px', fontSize: '0.95rem', lineHeight: 1.6 }}>
-                Nominations for Fempreneur 2027 are 100% free across 35–40+ categories with our verified 50% Jury Evaluation + 50% Public Voting system.
+                Nominations for Fempreneur 2027 are 100% free across 40 categories with our verified 50% Jury Evaluation + 50% Public Voting system.
               </p>
             </div>
             <div style={{ display: 'flex', gap: '1rem', flexWrap: 'wrap' }}>
@@ -310,3 +428,4 @@ export default function WinnersPage() {
     </div>
   );
 }
+

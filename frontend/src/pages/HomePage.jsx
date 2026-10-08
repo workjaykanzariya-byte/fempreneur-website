@@ -641,7 +641,178 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 12. JOIN THE COMMUNITY CTA */}
+      {/* 12. EIGHT PATHWAYS TO PARTICIPATE */}
+      <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="container">
+          <SectionTitle
+            badge="Ecosystem Pathways"
+            badgeVariant="gold"
+            title="8 Ways to"
+            highlight="Participate in Fempreneur"
+            subtitle="Whether you are an early-stage founder, MSME leader, corporate sponsor, or community builder, there is a dedicated pathway for you."
+          />
+
+          <div className="grid grid-cols-4 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+            {[
+              {
+                title: '1. Nominate for Award',
+                desc: '100% free nomination across 40 business & industry categories. Receive your verified public voting link.',
+                to: '/nominate',
+                link: 'Apply for Award',
+                badge: 'Free Entry',
+              },
+              {
+                title: '2. Attend the Summit',
+                desc: 'Join 500+ leaders in Ahmedabad & Delhi NCR for keynotes, masterclasses, and national networking.',
+                to: '/events',
+                link: 'Get Event Pass',
+                badge: 'Dual-City',
+              },
+              {
+                title: '3. Sponsor the Movement',
+                desc: '6 structured partnership tiers (₹10,000 to ₹5,00,000) with prominent branding and CSR alignment.',
+                to: '/partners',
+                link: 'Explore Packages',
+                badge: 'Brand Visibility',
+              },
+              {
+                title: '4. Coffee Table Book',
+                desc: 'Hardbound collector volume featuring Top 50 Women Entrepreneurs with 5L+ digital readership.',
+                to: '/coffee-table-book',
+                link: 'Book Showcase',
+                badge: 'Top 50',
+              },
+              {
+                title: '5. Share Your Story',
+                desc: 'Publish your founder journey on VyapaarJagat.com under the nationwide 1,000 Stories Drive.',
+                to: '/story-drive',
+                link: 'Submit Story',
+                badge: '1,000 Stories',
+              },
+              {
+                title: '6. Join City Chapters',
+                desc: 'Connect with local regional chapters in Ahmedabad and Delhi NCR for masterclasses and peer circles.',
+                to: '/city-chapters',
+                link: 'Explore Chapters',
+                badge: 'Regional Hubs',
+              },
+              {
+                title: '7. Business Directory',
+                desc: 'Get listed in India’s verified directory of women-owned businesses spanning 150+ sectors.',
+                to: '/directory',
+                link: 'Browse Directory',
+                badge: '150+ Sectors',
+              },
+              {
+                title: '8. Speak & Mentor',
+                desc: 'Apply to lead panel discussions, mentor emerging founders, and deliver industry masterclasses.',
+                to: '/speakers',
+                link: 'Speaker Portal',
+                badge: '60+ Speakers',
+              },
+            ].map((p, idx) => (
+              <div
+                key={idx}
+                className="fem-card"
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  padding: '1.75rem 1.5rem',
+                  height: '100%',
+                  transition: 'transform var(--transition-fast), box-shadow var(--transition-fast)',
+                }}
+              >
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.75rem' }}>
+                  <span className="badge badge-plum" style={{ fontSize: '0.68rem', fontWeight: 800 }}>
+                    {p.badge}
+                  </span>
+                </div>
+                <h4 style={{ fontSize: '1.12rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
+                  {p.title}
+                </h4>
+                <p style={{ fontSize: '0.86rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '1.25rem', flexGrow: 1 }}>
+                  {p.desc}
+                </p>
+                <Link
+                  to={p.to}
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    fontSize: '0.85rem',
+                    fontWeight: 700,
+                    color: 'var(--color-burgundy)',
+                    textDecoration: 'none',
+                  }}
+                >
+                  <span>{p.link}</span>
+                  <ArrowRight size={14} />
+                </Link>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* 13. SDG 5 ALIGNMENT & VIKSIT BHARAT @2047 */}
+      <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
+        <div className="container">
+          <div
+            className="fem-card"
+            style={{
+              padding: '3rem 2.5rem',
+              background: 'linear-gradient(135deg, #2E0848 0%, #4A126D 50%, #6A1B9A 100%)',
+              color: '#FFFFFF',
+              borderRadius: 'var(--radius-xl)',
+            }}
+          >
+            <div className="grid grid-cols-2 gap-8 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
+              <div>
+                <span className="badge badge-gold" style={{ marginBottom: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 800 }}>
+                  National Vision &amp; UN SDGs
+                </span>
+                <h2 style={{ fontSize: '2.2rem', fontWeight: 800, color: '#FFFFFF', marginBottom: '1rem', lineHeight: 1.25 }}>
+                  Empowering Women Founders for <span className="text-gold font-serif">Viksit Bharat @2047</span>
+                </h2>
+                <p style={{ fontSize: '0.98rem', opacity: 0.9, lineHeight: 1.65, marginBottom: '1.75rem' }}>
+                  Fempreneur directly champions United Nations Sustainable Development Goal 5 (Gender Equality), Goal 8 (Decent Work &amp; Economic Growth), and Goal 9 (Industry, Innovation &amp; Infrastructure) by creating tangible market access, institutional recognition, and funding bridges for female entrepreneurs.
+                </p>
+                <CTAButton to="/impact" variant="gold" size="md" icon={ArrowRight}>
+                  Explore Full SDG &amp; Impact Blueprint
+                </CTAButton>
+              </div>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '1rem' }}>
+                <div style={{ background: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFD54F', marginBottom: '0.25rem' }}>SDG 5</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF' }}>Gender Equality</div>
+                  <div style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '0.2rem' }}>Economic leadership &amp; equal entrepreneurial opportunities.</div>
+                </div>
+
+                <div style={{ background: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFD54F', marginBottom: '0.25rem' }}>SDG 8</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF' }}>Decent Work &amp; Growth</div>
+                  <div style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '0.2rem' }}>MSME job creation and female-led commercial scaling.</div>
+                </div>
+
+                <div style={{ background: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFD54F', marginBottom: '0.25rem' }}>SDG 9</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF' }}>Industry &amp; Innovation</div>
+                  <div style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '0.2rem' }}>Pioneering technology, deep-tech, and manufacturing innovation.</div>
+                </div>
+
+                <div style={{ background: 'rgba(255, 255, 255, 0.08)', borderRadius: 'var(--radius-lg)', padding: '1.25rem', border: '1px solid rgba(255, 255, 255, 0.15)' }}>
+                  <div style={{ fontSize: '1.5rem', fontWeight: 800, color: '#FFD54F', marginBottom: '0.25rem' }}>SDG 17</div>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 700, color: '#FFFFFF' }}>Partnerships for Goals</div>
+                  <div style={{ fontSize: '0.78rem', opacity: 0.8, marginTop: '0.2rem' }}>Cross-sector alliances between government, industry, and NGOs.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 14. JOIN THE COMMUNITY CTA */}
       <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
         <div className="container-narrow">
           <span className="badge badge-gold" style={{ marginBottom: '1rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 800 }}>
