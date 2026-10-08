@@ -51,7 +51,6 @@ export default function Navbar() {
       id: 'event-awards',
       children: [
         { label: 'Event Overview', path: '/events' },
-        { label: 'Event Agenda', path: '/events' },
         { label: 'Award Categories', path: '/categories' },
         { label: 'How to Nominate', path: '/nominate' },
         { label: 'Speakers & Jury Panel 2027', path: '/speakers' },

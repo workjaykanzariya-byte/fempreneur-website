@@ -1,10 +1,46 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Award, ArrowRight, Sparkles } from 'lucide-react';
+import {
+  Award,
+  Sparkles,
+  Shield,
+  Leaf,
+  Globe,
+  Building2,
+  TrendingUp,
+  Cpu,
+  HeartPulse,
+  Factory,
+  ShoppingBag,
+  Palette,
+  Briefcase,
+  HeartHandshake,
+  Crown
+} from 'lucide-react';
+
+// Domain icon helper to match categories
+const getCategoryIcon = (cat) => {
+  if (cat.isHonorary) return Crown;
+  const name = (cat.name || '').toLowerCase();
+  const domain = (cat.domain || '').toLowerCase();
+
+  if (name.includes('service') || name.includes('consulting') || name.includes('legal')) return Shield;
+  if (name.includes('health') || name.includes('wellness') || name.includes('pharma')) return Leaf;
+  if (name.includes('hospitality') || name.includes('tourism') || name.includes('global')) return Globe;
+  if (name.includes('corporate') || name.includes('csr') || name.includes('education')) return Building2;
+  if (name.includes('tech') || name.includes('innovation') || name.includes('digital')) return Cpu;
+  if (name.includes('manufacturing') || name.includes('logistics') || name.includes('engineering')) return Factory;
+  if (name.includes('retail') || name.includes('e-commerce') || name.includes('food') || name.includes('fashion') || name.includes('beauty')) return ShoppingBag;
+  if (name.includes('design') || name.includes('architecture') || name.includes('art')) return Palette;
+  if (name.includes('social') || name.includes('rural') || name.includes('impact')) return HeartHandshake;
+  if (name.includes('trend') || name.includes('influencer') || name.includes('young') || name.includes('startup')) return Sparkles;
+  if (domain === 'leadership') return Award;
+  return Shield;
+};
 
 /**
- * AwardCategoryCard Component
- * Displays individual award categories with category code, domain badge, and direct apply trigger.
+ * AwardCategoryCard Component (Harmonized Fempreneur Brand Purple Theme)
+ * Consistent soft purple icon box -> Serif title -> Muted description -> Outlined Purple NOMINATE NOW button
  */
 export default function AwardCategoryCard({
   code,
@@ -14,68 +50,126 @@ export default function AwardCategoryCard({
   isHonorary = false,
   className = '',
 }) {
+  const IconComponent = getCategoryIcon({ name, domain, isHonorary });
+
+  const primaryColor = '#6A1B9A';
+  const iconBg = '#F6EEFA';
+
   return (
     <div
-      className={`fem-card ${className}`}
+      className={`fem-category-card ${className}`}
       style={{
         display: 'flex',
         flexDirection: 'column',
         height: '100%',
-        borderTop: isHonorary ? '3px solid var(--color-gold)' : '3px solid var(--color-burgundy)',
+        background: '#FFFFFF',
+        borderRadius: '16px',
+        border: '1px solid #EFE4F4',
+        boxShadow: '0 4px 18px rgba(46, 8, 72, 0.03)',
+        padding: '2rem 1.6rem 1.6rem 1.6rem',
+        transition: 'all 0.25s ease',
+        position: 'relative',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-4px)';
+        e.currentTarget.style.boxShadow = '0 12px 28px rgba(106, 27, 154, 0.08)';
+        e.currentTarget.style.borderColor = primaryColor;
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0)';
+        e.currentTarget.style.boxShadow = '0 4px 18px rgba(46, 8, 72, 0.03)';
+        e.currentTarget.style.borderColor = '#EFE4F4';
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.85rem' }}>
-        <span
+      {/* Top Icon in Rounded Square (Uniform Purple Brand Tone) */}
+      <div>
+        <div
           style={{
-            fontFamily: 'var(--font-display)',
-            fontSize: '0.78rem',
-            fontWeight: 800,
-            color: 'var(--color-gold-rich)',
-            letterSpacing: '0.06em',
+            width: '46px',
+            height: '46px',
+            borderRadius: '12px',
+            background: iconBg,
+            color: primaryColor,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            transition: 'all 0.2s ease',
           }}
         >
-          {code}
-        </span>
-        <span className={`badge ${isHonorary ? 'badge-gold' : 'badge-plum'}`} style={{ fontSize: '0.7rem' }}>
-          {isHonorary ? 'Honorary' : domain}
-        </span>
+          <IconComponent size={22} strokeWidth={1.8} />
+        </div>
       </div>
 
-      <h4
+      {/* Category Title in Elegant Serif Font */}
+      <h3
         style={{
+          fontFamily: "'Playfair Display', Georgia, serif",
           fontSize: '1.2rem',
           fontWeight: 700,
-          color: 'var(--color-plum-deep)',
-          marginBottom: '0.65rem',
+          color: '#1C1224',
           lineHeight: 1.35,
+          marginTop: '1.4rem',
+          marginBottom: '0.65rem',
+          minHeight: '3.1rem',
+          display: '-webkit-box',
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
         }}
       >
         {name}
-      </h4>
+      </h3>
 
-      {description && (
-        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.55, marginBottom: '1.25rem' }}>
-          {description}
-        </p>
-      )}
+      {/* Category Description */}
+      <p
+        style={{
+          fontSize: '0.86rem',
+          color: '#6B7280',
+          lineHeight: 1.5,
+          marginBottom: '1.75rem',
+          flexGrow: 1,
+          minHeight: '2.6rem',
+          display: '-webkit-box',
+          WebkitLineClamp: 3,
+          WebkitBoxOrient: 'vertical',
+          overflow: 'hidden',
+        }}
+      >
+        {description}
+      </p>
 
-      <div style={{ marginTop: 'auto', paddingTop: '0.85rem', borderTop: '1px solid var(--border-subtle)', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-        <span style={{ fontSize: '0.8rem', color: 'var(--color-gold-rich)', fontWeight: 600 }}>
-          50% Jury + 50% Vote
-        </span>
+      {/* Outlined NOMINATE NOW Button (Strictly Purple Brand Style) */}
+      <div style={{ marginTop: 'auto' }}>
         <Link
-          to={`/nominate?category=${encodeURIComponent(name)}`}
+          to={`/awards/apply?category=${encodeURIComponent(name)}`}
           style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            color: 'var(--color-burgundy)',
+            display: 'block',
+            width: '100%',
+            textAlign: 'center',
+            padding: '0.75rem 1rem',
+            borderRadius: '10px',
+            border: `1.5px solid ${primaryColor}`,
+            color: primaryColor,
+            fontSize: '0.84rem',
+            fontWeight: 800,
+            letterSpacing: '0.08em',
+            textTransform: 'uppercase',
+            textDecoration: 'none',
+            background: 'transparent',
+            transition: 'all 0.2s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.background = primaryColor;
+            e.currentTarget.style.color = '#FFFFFF';
+            e.currentTarget.style.borderColor = primaryColor;
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.background = 'transparent';
+            e.currentTarget.style.color = primaryColor;
+            e.currentTarget.style.borderColor = primaryColor;
           }}
         >
-          <span>Nominate</span>
-          <ArrowRight size={14} />
+          NOMINATE NOW
         </Link>
       </div>
     </div>

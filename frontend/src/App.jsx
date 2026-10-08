@@ -10,6 +10,7 @@ import AboutPage from './pages/AboutPage';
 import AwardsPage from './pages/AwardsPage';
 import CategoriesPage from './pages/CategoriesPage';
 import NominatePage from './pages/NominatePage';
+import ApplyPage from './pages/ApplyPage';
 import VotingPage from './pages/VotingPage';
 import WinnersPage from './pages/WinnersPage';
 import EventsPage from './pages/EventsPage';
@@ -57,8 +58,11 @@ export default function App() {
 
             {/* Awards & Evaluation Track */}
             <Route path="/awards" element={<AwardsPage />} />
+            <Route path="/awards/apply" element={<ApplyPage />} />
+            <Route path="/apply" element={<ApplyPage />} />
             <Route path="/categories" element={<CategoriesPage />} />
             <Route path="/nominate" element={<NominatePage />} />
+            <Route path="/nominate/apply" element={<Navigate to="/awards/apply" replace />} />
             <Route path="/voting" element={<VotingPage />} />
             <Route path="/winners" element={<WinnersPage />} />
 

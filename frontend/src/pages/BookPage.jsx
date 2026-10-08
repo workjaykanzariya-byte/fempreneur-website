@@ -1,6 +1,18 @@
 import React, { useState } from 'react';
-import { BookOpen, CheckCircle2, ShoppingBag, Sparkles, Send, ArrowRight } from 'lucide-react';
-import { PageHeader, SectionTitle, CTAButton } from '../components';
+import {
+  BookOpen,
+  CheckCircle2,
+  ShoppingBag,
+  Sparkles,
+  Send,
+  ArrowRight,
+  Check,
+  ShieldCheck,
+  Share2,
+  Users,
+  Award
+} from 'lucide-react';
+import { PageHeader, CTAButton } from '../components';
 import { orderCoffeeTableBook, submitGeneralInquiry } from '../services/api';
 
 export default function BookPage() {
@@ -8,16 +20,153 @@ export default function BookPage() {
   const [orderSubmitted, setOrderSubmitted] = useState(false);
   const [orderLoading, setOrderLoading] = useState(false);
   const [orderError, setOrderError] = useState(null);
+
   const [featureSubmitted, setFeatureSubmitted] = useState(false);
   const [featureLoading, setFeatureLoading] = useState(false);
   const [featureError, setFeatureError] = useState(null);
+
   const [orderData, setOrderData] = useState({ name: '', email: '', phone: '', address: '' });
-  const [featureData, setFeatureData] = useState({ founder: '', venture: '', email: '', highlight: '' });
+  const [featureData, setFeatureData] = useState({
+    fullName: '',
+    phone: '',
+    email: '',
+    businessName: '',
+    packageSelection: 'Inside Feature Story (₹15,000)',
+    message: '',
+  });
 
   const pricePerBook = 2999;
 
+  // Feature Slots Table Data (Matching Reference)
+  const featurePackages = [
+    {
+      name: 'Cover Story',
+      price: '₹2,00,000',
+      desc: 'Premium front cover position + 4-page spread',
+      badge: 'SOLD OUT',
+      badgeColor: '#EF4444',
+      badgeBg: '#FEF2F2',
+      selectable: false,
+    },
+    {
+      name: 'Back Cover',
+      price: '₹50,000',
+      desc: 'High-visibility rear exterior placement',
+      badge: '1 SLOT ONLY',
+      badgeColor: '#D97706',
+      badgeBg: '#FFFBEB',
+      selectable: true,
+    },
+    {
+      name: 'Inside Front/Back Cover',
+      price: '₹40,000',
+      desc: 'First or last interior page placement',
+      badge: '1 SLOT ONLY',
+      badgeColor: '#D97706',
+      badgeBg: '#FFFBEB',
+      selectable: true,
+    },
+    {
+      name: 'Full-Page Advertisement',
+      price: '₹20,000',
+      desc: 'Curated design service included',
+      badge: 'LIMITED',
+      badgeColor: '#D97706',
+      badgeBg: '#FFFBEB',
+      selectable: true,
+    },
+    {
+      name: 'Inside Feature Story',
+      price: '₹15,000',
+      desc: '2-page pictorial business narrative',
+      badge: 'OPEN',
+      badgeColor: '#10B981',
+      badgeBg: '#ECFDF5',
+      selectable: true,
+    },
+    {
+      name: 'Editorial Spread',
+      price: '₹10,000',
+      desc: 'Sector-specific expert feature',
+      badge: 'LIMITED',
+      badgeColor: '#D97706',
+      badgeBg: '#FFFBEB',
+      selectable: true,
+    },
+    {
+      name: 'Inside Feature (Members)',
+      price: '₹5,000',
+      desc: 'Exclusively for 1MEIF / Fempreneur Community Members',
+      badge: 'MEMBERS ONLY',
+      badgeColor: '#6A1B9A',
+      badgeBg: '#FAF5FC',
+      selectable: true,
+    },
+    {
+      name: 'Extra Print Copies',
+      price: '₹300 / copy',
+      desc: 'Reserve additional hardbound copies',
+      badge: 'OPEN',
+      badgeColor: '#10B981',
+      badgeBg: '#ECFDF5',
+      selectable: true,
+    },
+  ];
+
+  const handleSelectPackage = (pkgName, pkgPrice) => {
+    const formatted = `${pkgName} (${pkgPrice})`;
+    setFeatureData((prev) => ({ ...prev, packageSelection: formatted }));
+    const formElem = document.getElementById('apply');
+    if (formElem) {
+      formElem.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const handleOrderSubmit = async (e) => {
+    e.preventDefault();
+    setOrderError(null);
+    setOrderLoading(true);
+    try {
+      await orderCoffeeTableBook({
+        name: orderData.name,
+        email: orderData.email,
+        phone: orderData.phone,
+        shippingAddress: orderData.address,
+        quantity: Number(quantity),
+        totalAmount: quantity * pricePerBook,
+      });
+      setOrderSubmitted(true);
+    } catch (err) {
+      setOrderError(err.message || 'Failed to place pre-order. Please try again.');
+    } finally {
+      setOrderLoading(false);
+    }
+  };
+
+  const handleFeatureSubmit = async (e) => {
+    e.preventDefault();
+    setFeatureError(null);
+    setFeatureLoading(true);
+    try {
+      await submitGeneralInquiry({
+        type: 'book_feature',
+        fullName: featureData.fullName,
+        company: featureData.businessName,
+        email: featureData.email,
+        phone: featureData.phone,
+        messageOrTopic: `Package: ${featureData.packageSelection}. Notes: ${featureData.message}`,
+      });
+      setFeatureSubmitted(true);
+    } catch (err) {
+      setFeatureError(err.message || 'Failed to submit feature application. Please try again.');
+    } finally {
+      setFeatureLoading(false);
+    }
+  };
+
   return (
-    <div>
+    <div style={{ background: '#FAF6FC', minHeight: '100vh', color: '#1C1224' }}>
+      {/* SECTION 1: HERO HEADER */}
       <PageHeader
         badge="Annual Hardbound Volume"
         badgeIcon={BookOpen}
@@ -28,7 +177,7 @@ export default function BookPage() {
         ctaText="Pre-Order Book Copy"
         ctaTo="#order"
         secondaryCtaText="Apply to Be Featured"
-        secondaryCtaTo="#apply-feature"
+        secondaryCtaTo="#apply"
         image="/images/coffee-table-book/coffee-table-book-hero.png"
         imageAlt="Fempreneur Top 50 Women Entrepreneurs Coffee Table Book"
         imageFramed={false}
@@ -36,336 +185,699 @@ export default function BookPage() {
         imageMaxWidth="700px"
       />
 
-      {/* Section 1: Book Specifications */}
-      <section className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container">
-          <div className="grid grid-cols-2 gap-12 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
-            {/* Visual Book Cover Presentation */}
-            <div
-              className="fem-card"
-              style={{
-                background: 'linear-gradient(135deg, #2E0848 0%, #4A126D 50%, #6A1B9A 100%)',
-                color: '#FFFFFF',
-                padding: '4rem 3rem',
-                textAlign: 'center',
-                boxShadow: 'var(--shadow-xl)',
-                borderRadius: 'var(--radius-xl)',
-              }}
-            >
-              <div style={{ border: '2px solid rgba(255, 255, 255, 0.3)', borderRadius: 'var(--radius-lg)', padding: '2.5rem 1.5rem' }}>
-                <span className="badge badge-gold" style={{ marginBottom: '1.25rem' }}>
-                  2027 Edition • Hardbound
-                </span>
-                <h2 style={{ fontFamily: 'var(--font-serif)', fontSize: '2.2rem', fontStyle: 'italic', marginBottom: '1rem', color: '#FFFFFF' }}>
-                  "Women Entrepreneurs Redefining Success"
-                </h2>
-                <div style={{ fontSize: '0.88rem', textTransform: 'uppercase', letterSpacing: '0.12em', color: '#FFFFFF', fontWeight: 700 }}>
-                  Top 50 Women Entrepreneurs
-                </div>
-                <div style={{ fontSize: '0.8rem', opacity: 0.8, marginTop: '1.5rem' }}>
-                  Published by 1MEIF &amp; VyapaarJagat.com
-                </div>
-              </div>
+      {/* SECTION 2: STATS PROOF BAR */}
+      <section style={{ background: '#FFFFFF', borderTop: '1px solid #EFE4F4', borderBottom: '1px solid #EFE4F4', padding: '2.5rem 1.5rem' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '2rem', textAlign: 'center' }}>
+            <div>
+              <span style={{ display: 'block', fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.5rem', fontWeight: 800, color: '#6A1B9A' }}>
+                Top 50
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#72627C', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Featured Founders
+              </span>
             </div>
 
-            {/* Specifications Details */}
             <div>
-              <span className="badge badge-plum" style={{ marginBottom: '1rem' }}>
-                Verified Specifications
+              <span style={{ display: 'block', fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.5rem', fontWeight: 800, color: '#4A126D' }}>
+                5,000+
               </span>
-              <h2 style={{ fontSize: '2.3rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '1rem' }}>
-                A Tangible Honor for <span className="text-gradient">Generations</span>
-              </h2>
-              <p style={{ fontSize: '1.02rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '1.5rem' }}>
-                The Fempreneur Coffee Table Book elevates female achievement from ephemeral social media posts into a lasting physical archive presented to industry titans and government ministers.
-              </p>
+              <span style={{ fontSize: '0.75rem', color: '#72627C', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Hardbound Print Copies
+              </span>
+            </div>
 
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem', marginBottom: '2rem' }}>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span style={{ fontSize: '0.92rem', color: 'var(--text-primary)' }}><strong>5,000+ Print Copies:</strong> Hand-delivered to industry leaders and corporate boards.</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span style={{ fontSize: '0.92rem', color: 'var(--text-primary)' }}><strong>5,00,000+ Digital Reach:</strong> Downloadable e-edition shared with global founders.</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span style={{ fontSize: '0.92rem', color: 'var(--text-primary)' }}><strong>Curated Top 50:</strong> Evaluated based on innovation, resilience, and commercial growth.</span>
-                </div>
-                <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.6rem' }}>
-                  <CheckCircle2 size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span style={{ fontSize: '0.92rem', color: 'var(--text-primary)' }}><strong>Unveiled Live on Stage:</strong> Formal book launch at both Ahmedabad and Delhi NCR hubs.</span>
-                </div>
-              </div>
+            <div>
+              <span style={{ display: 'block', fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.5rem', fontWeight: 800, color: '#6A1B9A' }}>
+                5,00,000+
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#72627C', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Digital Readership
+              </span>
+            </div>
 
-              <CTAButton to="#order" variant="primary" size="lg" icon={ShoppingBag}>
-                Pre-Order Hardbound Copy (₹2,999)
-              </CTAButton>
+            <div>
+              <span style={{ display: 'block', fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.5rem', fontWeight: 800, color: '#4A126D' }}>
+                2 Hubs
+              </span>
+              <span style={{ fontSize: '0.75rem', color: '#72627C', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.15em', marginTop: '4px', display: 'block' }}>
+                Live Stage Launch
+              </span>
             </div>
           </div>
         </div>
       </section>
 
-      {/* Section 2: Pre-Order E-Commerce Form */}
-      <section id="order" className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
-        <div className="container-narrow">
-          <div
-            className="fem-card"
+      {/* SECTION 3: FOUNDER QUOTE SECTION (Matching Screenshot 4) */}
+      <section style={{ padding: '4.5rem 1.5rem', background: '#FFFFFF', position: 'relative' }}>
+        <div style={{ maxWidth: '880px', margin: '0 auto', textAlign: 'center' }}>
+          <div style={{ width: '48px', height: '3px', background: 'linear-gradient(90deg, #6A1B9A, #E91E63)', margin: '0 auto 2.25rem', borderRadius: '9999px' }} />
+          <h3
             style={{
-              padding: '3rem 2.5rem',
-              background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
-              border: '1.5px solid rgba(106, 27, 154, 0.2)',
-              boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
-              borderRadius: 'var(--radius-2xl)',
+              fontFamily: "'Playfair Display', Georgia, serif",
+              fontSize: 'clamp(1.35rem, 2.8vw, 1.85rem)',
+              color: '#1C1224',
+              fontStyle: 'italic',
+              fontWeight: 400,
+              lineHeight: 1.6,
+              marginBottom: '2rem',
+              padding: '0 1rem',
             }}
           >
-            <SectionTitle
-              badge="Pre-Order Hardbound Copy"
-              badgeVariant="plum"
-              title="Reserve Your"
-              highlight="Collector's Edition"
-              subtitle="Pre-order copies for your office library, executive reception, or personal collection."
-            />
+            "Nomination is FREE. Always. This is our way of celebrating India's women entrepreneurs. This book is the permanent record of that celebration."
+          </h3>
 
-            {orderSubmitted ? (
-              <div style={{ padding: '2rem', background: '#FFFFFF', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                <CheckCircle2 size={44} color="var(--color-gold-rich)" style={{ margin: '0 auto 0.75rem' }} />
-                <h3 style={{ color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>Pre-Order Reserved!</h3>
-                <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                  Your pre-order for {quantity} hardbound cop{quantity > 1 ? 'ies' : 'y'} (Total: ₹{(quantity * pricePerBook).toLocaleString()}) has been recorded. Dispatch notifications will follow.
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+            <div
+              style={{
+                width: '60px',
+                height: '60px',
+                borderRadius: '50%',
+                overflow: 'hidden',
+                marginBottom: '0.75rem',
+                border: '2.5px solid #6A1B9A',
+                boxShadow: '0 4px 16px rgba(106, 27, 154, 0.25)',
+              }}
+            >
+              <img
+                src="/images/pravin.png"
+                alt="Dr. Pravin Parmar"
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            </div>
+            <p style={{ fontWeight: 800, color: '#1C1224', fontSize: '0.95rem', margin: '0 0 0.2rem 0' }}>
+              Dr. Pravin Parmar
+            </p>
+            <p style={{ fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.15em', color: '#6A1B9A', fontWeight: 800, margin: 0 }}>
+              FOUNDER, 1MEIF
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 4: DISTRIBUTION & REACH SECTION (Matching Screenshot 3) */}
+      <section style={{ padding: '5.5rem 1.5rem', background: '#FAF6FC', borderTop: '1px solid #EFE4F4', borderBottom: '1px solid #EFE4F4' }}>
+        <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'center' }}>
+            {/* Left 2 Highlight Cards */}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))', gap: '1.5rem' }}>
+              {/* Card 1: Premium Print */}
+              <div
+                style={{
+                  padding: '2.25rem 2rem',
+                  background: '#FFFFFF',
+                  borderRadius: '24px',
+                  border: '1px solid #EBECEF',
+                  boxShadow: '0 4px 20px rgba(46, 8, 72, 0.04)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '12px',
+                    background: '#FAF5FC',
+                    color: '#6A1B9A',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1.5rem',
+                  }}
+                >
+                  <BookOpen size={24} />
+                </div>
+                <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.35rem', color: '#1C1224', fontWeight: 700, margin: '0 0 0.6rem 0' }}>
+                  Premium Print
+                </h4>
+                <p style={{ fontSize: '0.86rem', color: '#5C4E65', lineHeight: 1.6, margin: 0 }}>
+                  High-GSM textured papers, luxury hardbound gold embossing cover designed for library and lobby archives.
                 </p>
               </div>
+
+              {/* Card 2: 5,00,000+ Reach */}
+              <div
+                style={{
+                  padding: '2.25rem 2rem',
+                  background: 'linear-gradient(145deg, #2E0848 0%, #4A126D 100%)',
+                  color: '#FFFFFF',
+                  borderRadius: '24px',
+                  boxShadow: '0 12px 32px rgba(46, 8, 72, 0.25)',
+                  marginTop: '1.5rem',
+                }}
+              >
+                <div
+                  style={{
+                    width: '44px',
+                    height: '44px',
+                    borderRadius: '12px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    color: '#FAF5FC',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginBottom: '1.5rem',
+                  }}
+                >
+                  <Share2 size={24} />
+                </div>
+                <h4 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.35rem', color: '#FFFFFF', fontWeight: 700, margin: '0 0 0.6rem 0' }}>
+                  5,00,000+ Reach
+                </h4>
+                <p style={{ fontSize: '0.86rem', color: 'rgba(255, 255, 255, 0.82)', lineHeight: 1.6, margin: 0 }}>
+                  Massive digital distributions to central and state nodal ministries, corporate ESG teams, and directories.
+                </p>
+              </div>
+            </div>
+
+            {/* Right Text Description & Bullets */}
+            <div>
+              <span style={{ color: '#6A1B9A', fontWeight: 800, letterSpacing: '0.2em', fontSize: '0.75rem', textTransform: 'uppercase', display: 'block', marginBottom: '0.6rem' }}>
+                DISTRIBUTION &amp; REACH
+              </span>
+              <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2rem, 3.5vw, 2.7rem)', fontWeight: 700, color: '#1C1224', lineHeight: 1.25, margin: '0 0 1.25rem 0' }}>
+                Capturing the Women Entrepreneurship Legacy
+              </h2>
+              <p style={{ fontSize: '0.94rem', color: '#5C4E65', lineHeight: 1.65, marginBottom: '2rem' }}>
+                The Fempreneur 2027 Coffee Table Book is a premium publication launched at our main awards gala. It stands as a permanent record of sustainable innovations and is distributed directly to decision-makers in the ecosystem.
+              </p>
+
+              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.92rem', color: '#374151' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6A1B9A', flexShrink: 0 }} />
+                  <span>Distributed to all 500+ conclave delegates</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.92rem', color: '#374151' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6A1B9A', flexShrink: 0 }} />
+                  <span>Showcased across Fempreneur &amp; Peers Global Business Platforms</span>
+                </li>
+                <li style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', fontSize: '0.92rem', color: '#374151' }}>
+                  <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#6A1B9A', flexShrink: 0 }} />
+                  <span>Included pictorial lifetime listing in Vyapaar Jagat</span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 5: FEATURE PACKAGES / BOOK INCLUSION & PRICING TABLE (Matching Screenshot 2) */}
+      <section id="packages" style={{ padding: '5.5rem 1.5rem', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: '1080px', margin: '0 auto' }}>
+          <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
+            <span style={{ color: '#6A1B9A', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em', fontSize: '0.78rem', display: 'block', marginBottom: '0.6rem' }}>
+              FEATURE PACKAGES
+            </span>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: 'clamp(2.1rem, 3.5vw, 2.8rem)', fontWeight: 700, color: '#1C1224', margin: 0 }}>
+              Book Inclusion &amp; Pricing
+            </h2>
+            <p style={{ fontSize: '0.86rem', color: '#72627C', marginTop: '0.6rem' }}>
+              No GST is applicable on these contributions since payments support Section 8 NGO projects.
+            </p>
+          </div>
+
+          {/* Pricing Table Card */}
+          <div
+            style={{
+              background: '#FFFFFF',
+              borderRadius: '24px',
+              border: '1px solid #ECEEF1',
+              overflow: 'hidden',
+              boxShadow: '0 8px 30px rgba(46, 8, 72, 0.05)',
+            }}
+          >
+            <div style={{ overflowX: 'auto' }}>
+              <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
+                <thead>
+                  <tr style={{ background: 'linear-gradient(135deg, #2E0848 0%, #4A126D 100%)', color: '#FFFFFF', fontSize: '0.72rem', textTransform: 'uppercase', letterSpacing: '0.12em' }}>
+                    <th style={{ padding: '1.25rem 1.5rem' }}>FEATURE SLOT</th>
+                    <th style={{ padding: '1.25rem 1.5rem' }}>INVESTMENT</th>
+                    <th style={{ padding: '1.25rem 1.5rem', textAlign: 'right' }}>AVAILABILITY</th>
+                  </tr>
+                </thead>
+                <tbody style={{ fontSize: '0.88rem' }}>
+                  {featurePackages.map((pkg, idx) => (
+                    <tr
+                      key={idx}
+                      onClick={() => pkg.selectable && handleSelectPackage(pkg.name, pkg.price)}
+                      style={{
+                        borderBottom: '1px solid #F0E6F4',
+                        cursor: pkg.selectable ? 'pointer' : 'default',
+                        transition: 'background 0.2s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        if (pkg.selectable) e.currentTarget.style.background = '#FAF5FC';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.background = '#FFFFFF';
+                      }}
+                    >
+                      <td style={{ padding: '1.25rem 1.5rem' }}>
+                        <div style={{ fontWeight: 700, fontSize: '0.96rem', color: '#1C1224' }}>
+                          {pkg.name}
+                        </div>
+                        <div style={{ fontSize: '0.78rem', color: '#72627C', marginTop: '0.2rem' }}>
+                          {pkg.desc}
+                        </div>
+                      </td>
+                      <td style={{ padding: '1.25rem 1.5rem', fontWeight: 800, color: '#6A1B9A', fontSize: '1rem', whiteSpace: 'nowrap' }}>
+                        {pkg.price}
+                      </td>
+                      <td style={{ padding: '1.25rem 1.5rem', textAlign: 'right' }}>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            padding: '0.35rem 0.85rem',
+                            borderRadius: '9999px',
+                            fontWeight: 800,
+                            fontSize: '0.7rem',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.06em',
+                            color: pkg.badgeColor,
+                            background: pkg.badgeBg,
+                            border: `1px solid ${pkg.badgeColor}33`,
+                          }}
+                        >
+                          {pkg.badge}
+                        </span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* SECTION 6: APPLY FOR FEATURE FORM (Matching Screenshot 1) */}
+      <section id="apply" style={{ padding: '5.5rem 1.5rem', background: 'linear-gradient(145deg, #2E0848 0%, #4A126D 100%)', color: '#FFFFFF' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
+          <div
+            style={{
+              background: 'rgba(255, 255, 255, 0.06)',
+              backdropFilter: 'blur(12px)',
+              borderRadius: '28px',
+              border: '1px solid rgba(255, 255, 255, 0.16)',
+              padding: '3rem 2.25rem',
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.3)',
+            }}
+          >
+            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2rem', fontWeight: 700, color: '#FFFFFF', margin: '0 0 0.35rem 0' }}>
+              Apply for Feature
+            </h3>
+            <p style={{ fontSize: '0.86rem', color: 'rgba(255, 255, 255, 0.75)', margin: '0 0 2rem 0' }}>
+              Submit details below. Our editorial board will contact you to request photos and draft copy.
+            </p>
+
+            {featureError && (
+              <div style={{ padding: '1rem', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', borderRadius: '10px', marginBottom: '1.5rem', fontSize: '0.88rem' }}>
+                {featureError}
+              </div>
+            )}
+
+            {featureSubmitted ? (
+              <div style={{ textAlign: 'center', padding: '2.5rem 1rem' }}>
+                <CheckCircle2 size={54} color="#D8B4FE" style={{ margin: '0 auto 1rem' }} />
+                <h4 style={{ fontSize: '1.45rem', fontWeight: 700, color: '#FFFFFF', marginBottom: '0.5rem' }}>
+                  Application Recorded
+                </h4>
+                <p style={{ fontSize: '0.92rem', color: 'rgba(255, 255, 255, 0.85)', lineHeight: 1.6, maxWidth: '440px', margin: '0 auto' }}>
+                  Thank you, <strong>{featureData.fullName}</strong>. Your request to feature <strong>{featureData.businessName}</strong> has been sent to our editorial desk. We will reach out on WhatsApp/Email.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => setFeatureSubmitted(false)}
+                  style={{
+                    marginTop: '1.75rem',
+                    padding: '0.75rem 1.5rem',
+                    borderRadius: '10px',
+                    background: 'rgba(255, 255, 255, 0.15)',
+                    border: '1px solid rgba(255, 255, 255, 0.25)',
+                    color: '#FFFFFF',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Submit Another Request
+                </button>
+              </div>
             ) : (
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                setOrderLoading(true);
-                setOrderError(null);
-                try {
-                  await orderCoffeeTableBook({
-                    customerName: orderData.name.trim(),
-                    email: orderData.email.trim(),
-                    phone: orderData.phone.trim(),
-                    quantity: quantity,
-                    deliveryAddress: orderData.address.trim(),
-                  });
-                  setOrderLoading(false);
-                  setOrderSubmitted(true);
-                } catch (err) {
-                  setOrderLoading(false);
-                  setOrderError(err.message || 'Failed to submit pre-order. Please verify your details and try again.');
-                }
-              }}>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="custName">Recipient Full Name *</label>
+              <form onSubmit={handleFeatureSubmit}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                      FULL NAME
+                    </label>
                     <input
-                      id="custName"
                       type="text"
                       required
-                      value={orderData.name}
-                      onChange={(e) => setOrderData({ ...orderData, name: e.target.value })}
-                      className="form-input"
-                      placeholder="e.g. Shalini Verma"
+                      placeholder="Your Name"
+                      value={featureData.fullName}
+                      onChange={(e) => setFeatureData({ ...featureData, fullName: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.85rem 1rem',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        background: 'rgba(0, 0, 0, 0.25)',
+                        fontSize: '0.92rem',
+                        color: '#FFFFFF',
+                        outline: 'none',
+                      }}
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="custEmail">Email Address *</label>
-                    <input
-                      id="custEmail"
-                      type="email"
-                      required
-                      value={orderData.email}
-                      onChange={(e) => setOrderData({ ...orderData, email: e.target.value })}
-                      className="form-input"
-                      placeholder="shalini@example.com"
-                    />
-                  </div>
-                </div>
 
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="custPhone">Phone Number *</label>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                      MOBILE NUMBER
+                    </label>
                     <input
-                      id="custPhone"
                       type="tel"
                       required
-                      value={orderData.phone}
-                      onChange={(e) => setOrderData({ ...orderData, phone: e.target.value })}
-                      className="form-input"
-                      placeholder="+91-XXXXX-XXXXX"
+                      placeholder="+91 XXXXX XXXXX"
+                      value={featureData.phone}
+                      onChange={(e) => setFeatureData({ ...featureData, phone: e.target.value })}
+                      style={{
+                        width: '100%',
+                        padding: '0.85rem 1rem',
+                        borderRadius: '10px',
+                        border: '1px solid rgba(255, 255, 255, 0.2)',
+                        background: 'rgba(0, 0, 0, 0.25)',
+                        fontSize: '0.92rem',
+                        color: '#FFFFFF',
+                        outline: 'none',
+                      }}
                     />
-                  </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="quantity">Quantity (₹2,999 each)</label>
-                    <select
-                      id="quantity"
-                      value={quantity}
-                      onChange={(e) => setQuantity(Number(e.target.value))}
-                      className="form-select"
-                    >
-                      <option value={1}>1 Hardbound Copy (₹2,999)</option>
-                      <option value={2}>2 Copies (₹5,998)</option>
-                      <option value={5}>5 Copies (Corporate Pack - ₹14,995)</option>
-                    </select>
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="address">Delivery Street Address *</label>
-                  <textarea
-                    id="address"
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                    EMAIL ADDRESS
+                  </label>
+                  <input
+                    type="email"
                     required
-                    rows={3}
-                    value={orderData.address}
-                    onChange={(e) => setOrderData({ ...orderData, address: e.target.value })}
-                    className="form-textarea"
-                    placeholder="Complete postal address for courier delivery..."
+                    placeholder="founder@company.com"
+                    value={featureData.email}
+                    onChange={(e) => setFeatureData({ ...featureData, email: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: 'rgba(0, 0, 0, 0.25)',
+                      fontSize: '0.92rem',
+                      color: '#FFFFFF',
+                      outline: 'none',
+                    }}
                   />
                 </div>
 
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '1rem', background: '#FFFFFF', borderRadius: 'var(--radius-md)', marginBottom: '1.5rem', border: '1px solid var(--border-light)' }}>
-                  <span style={{ fontWeight: 600, color: 'var(--text-secondary)' }}>Total Investment:</span>
-                  <span style={{ fontFamily: 'var(--font-display)', fontSize: '1.5rem', fontWeight: 800, color: 'var(--color-burgundy)' }}>
-                    ₹{(quantity * pricePerBook).toLocaleString()}
-                  </span>
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                    BUSINESS NAME
+                  </label>
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter company name"
+                    value={featureData.businessName}
+                    onChange={(e) => setFeatureData({ ...featureData, businessName: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: 'rgba(0, 0, 0, 0.25)',
+                      fontSize: '0.92rem',
+                      color: '#FFFFFF',
+                      outline: 'none',
+                    }}
+                  />
                 </div>
 
-                {orderError && (
-                  <div
+                <div style={{ marginBottom: '1.25rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                    INCLUSION PACKAGE SELECTION
+                  </label>
+                  <select
+                    value={featureData.packageSelection}
+                    onChange={(e) => setFeatureData({ ...featureData, packageSelection: e.target.value })}
                     style={{
-                      padding: '0.75rem 1rem',
-                      background: 'var(--color-coral-soft)',
-                      border: '1px solid rgba(224, 93, 93, 0.3)',
-                      borderRadius: 'var(--radius-md)',
-                      color: '#DC2626',
-                      fontSize: '0.85rem',
-                      marginBottom: '1.25rem',
+                      width: '100%',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: '#240838',
+                      fontSize: '0.92rem',
+                      color: '#FFFFFF',
+                      outline: 'none',
                     }}
                   >
-                    {orderError}
-                  </div>
-                )}
+                    <option value="Cover Story (₹2,00,000)">Cover Story (₹2,00,000) - Sold Out</option>
+                    <option value="Back Cover (₹50,000)">Back Cover (₹50,000)</option>
+                    <option value="Inside Front/Back Cover (₹40,000)">Inside Front/Back Cover (₹40,000)</option>
+                    <option value="Full-Page Advertisement (₹20,000)">Full-Page Advertisement (₹20,000)</option>
+                    <option value="Inside Feature Story (₹15,000)">Inside Feature Story (₹15,000)</option>
+                    <option value="Editorial Spread (₹10,000)">Editorial Spread (₹10,000)</option>
+                    <option value="Inside Feature (Members) (₹5,000)">Inside Feature (Members) (₹5,000)</option>
+                    <option value="Extra Print Copies (₹300 / copy)">Extra Print Copies (₹300 / copy)</option>
+                  </select>
+                </div>
 
-                <CTAButton type="submit" variant="primary" size="lg" block disabled={orderLoading}>
-                  {orderLoading ? 'Reserving Pre-Order...' : 'Complete Pre-Order Reservation'}
-                </CTAButton>
+                <div style={{ marginBottom: '2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.72rem', fontWeight: 800, color: 'rgba(255, 255, 255, 0.9)', letterSpacing: '0.08em', textTransform: 'uppercase', marginBottom: '0.45rem' }}>
+                    BRIEF MESSAGE (OPTIONAL)
+                  </label>
+                  <textarea
+                    rows={3}
+                    placeholder="Any specific requests or category mentions..."
+                    value={featureData.message}
+                    onChange={(e) => setFeatureData({ ...featureData, message: e.target.value })}
+                    style={{
+                      width: '100%',
+                      padding: '0.85rem 1rem',
+                      borderRadius: '10px',
+                      border: '1px solid rgba(255, 255, 255, 0.2)',
+                      background: 'rgba(0, 0, 0, 0.25)',
+                      fontSize: '0.92rem',
+                      color: '#FFFFFF',
+                      outline: 'none',
+                      lineHeight: 1.5,
+                    }}
+                  />
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={featureLoading}
+                  style={{
+                    width: '100%',
+                    padding: '1.05rem',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #6A1B9A 0%, #9C27B0 45%, #E91E63 100%)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    fontWeight: 800,
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.08em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    boxShadow: '0 8px 24px rgba(106, 27, 154, 0.45)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 12px 30px rgba(233, 30, 99, 0.55)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.45)';
+                  }}
+                >
+                  {featureLoading ? 'SUBMITTING...' : 'SUBMIT FEATURE REQUEST'}
+                </button>
               </form>
             )}
           </div>
         </div>
       </section>
 
-      {/* Section 3: Apply to Be Featured (Pathway 04) */}
-      <section id="apply-feature" className="section-spacing" style={{ background: '#FFFFFF' }}>
-        <div className="container-narrow">
+      {/* SECTION 7: PRE-ORDER HARDBOUND COPY */}
+      <section id="order" style={{ padding: '5.5rem 1.5rem', background: '#FFFFFF' }}>
+        <div style={{ maxWidth: '680px', margin: '0 auto' }}>
           <div
-            className="fem-card"
             style={{
-              padding: '3rem 2.5rem',
-              background: 'linear-gradient(135deg, #FBF8FD 0%, #F5ECFA 50%, #FAF2FC 100%)',
-              border: '1.5px solid rgba(106, 27, 154, 0.2)',
-              boxShadow: '0 16px 40px rgba(106, 27, 154, 0.08), 0 4px 16px rgba(106, 27, 154, 0.04)',
-              borderRadius: 'var(--radius-2xl)',
+              padding: '3rem 2.25rem',
+              background: '#FFFFFF',
+              borderRadius: '24px',
+              border: '1px solid #EFE4F4',
+              boxShadow: '0 8px 32px rgba(46, 8, 72, 0.05)',
             }}
           >
-            <span className="badge badge-plum" style={{ marginBottom: '0.75rem' }}>
-              Pathway 04: Feature Opportunity
+            <span
+              style={{
+                display: 'inline-block',
+                padding: '0.35rem 0.85rem',
+                borderRadius: '9999px',
+                background: '#FAF5FC',
+                color: '#6A1B9A',
+                fontWeight: 800,
+                fontSize: '0.75rem',
+                textTransform: 'uppercase',
+                letterSpacing: '0.06em',
+                marginBottom: '1rem',
+              }}
+            >
+              Order Hardbound Copy
             </span>
-            <h3 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.75rem' }}>
-              Apply for Inclusion in the "Top 50 Women Entrepreneurs"
+
+            <h3 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '1.9rem', fontWeight: 700, color: '#1C1224', marginBottom: '0.5rem' }}>
+              Pre-Order Collector Edition
             </h3>
-            <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', marginBottom: '2rem' }}>
-              Are you a founder with an inspiring track record of enterprise scaling? Submit your profile to our editorial curation committee for consideration.
+            <p style={{ fontSize: '0.92rem', color: '#5C4E65', marginBottom: '1.75rem' }}>
+              ₹{pricePerBook.toLocaleString('en-IN')} per copy (includes pan-India doorstep courier).
             </p>
 
-            {featureSubmitted ? (
-              <div style={{ padding: '1.5rem', background: 'var(--bg-secondary)', borderRadius: 'var(--radius-md)', textAlign: 'center' }}>
-                <CheckCircle2 size={36} color="var(--color-gold-rich)" style={{ margin: '0 auto 0.5rem' }} />
-                <h4>Editorial Application Logged</h4>
-                <p style={{ fontSize: '0.88rem', color: 'var(--text-muted)' }}>
-                  Our editorial panel will review your profile against the Top 50 curation standards.
+            {orderError && (
+              <div style={{ padding: '0.85rem', background: '#FEF2F2', border: '1px solid #FCA5A5', color: '#991B1B', borderRadius: '10px', marginBottom: '1.25rem', fontSize: '0.88rem' }}>
+                {orderError}
+              </div>
+            )}
+
+            {orderSubmitted ? (
+              <div style={{ padding: '2.5rem', background: '#FAF6FC', borderRadius: '16px', textAlign: 'center', border: '1px solid #EFE4F4' }}>
+                <CheckCircle2 size={44} color="#6A1B9A" style={{ margin: '0 auto 0.75rem' }} />
+                <h4 style={{ fontSize: '1.35rem', fontWeight: 800, color: '#1C1224', marginBottom: '0.35rem' }}>Pre-Order Received</h4>
+                <p style={{ fontSize: '0.9rem', color: '#5C4E65', margin: 0 }}>
+                  Our team will contact you with shipping and invoice details.
                 </p>
+                <button
+                  type="button"
+                  onClick={() => setOrderSubmitted(false)}
+                  style={{
+                    marginTop: '1.5rem',
+                    padding: '0.65rem 1.25rem',
+                    borderRadius: '8px',
+                    background: '#FFFFFF',
+                    border: '1px solid #E6D5EC',
+                    color: '#6A1B9A',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                  }}
+                >
+                  Place Another Order
+                </button>
               </div>
             ) : (
-              <form onSubmit={async (e) => {
-                e.preventDefault();
-                setFeatureLoading(true);
-                setFeatureError(null);
-                try {
-                  await submitGeneralInquiry({
-                    type: 'book_feature',
-                    fullName: featureData.founder.trim(),
-                    email: (featureData.email || `${featureData.founder.toLowerCase().replace(/\s+/g, '')}@example.com`).trim(),
-                    organization: featureData.venture.trim(),
-                    messageOrTopic: featureData.highlight.trim(),
-                  });
-                  setFeatureLoading(false);
-                  setFeatureSubmitted(true);
-                } catch (err) {
-                  setFeatureLoading(false);
-                  setFeatureError(err.message || 'Failed to submit feature application. Please try again.');
-                }
-              }}>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="appFounder">Founder Name *</label>
+              <form onSubmit={handleOrderSubmit}>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 800, color: '#1C1224', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>
+                      Full Name *
+                    </label>
                     <input
-                      id="appFounder"
                       type="text"
                       required
-                      value={featureData.founder}
-                      onChange={(e) => setFeatureData({ ...featureData, founder: e.target.value })}
-                      className="form-input"
-                      placeholder="e.g. Nandita Sen"
+                      value={orderData.name}
+                      onChange={(e) => setOrderData({ ...orderData, name: e.target.value })}
+                      style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid #E6D5EC', background: '#FAFAFA', fontSize: '0.92rem', outline: 'none' }}
+                      placeholder="e.g. Radhika Sharma"
                     />
                   </div>
-                  <div className="form-group">
-                    <label className="form-label" htmlFor="appVenture">Venture / Brand Name *</label>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 800, color: '#1C1224', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>
+                      Quantity *
+                    </label>
                     <input
-                      id="appVenture"
-                      type="text"
-                      required
-                      value={featureData.venture}
-                      onChange={(e) => setFeatureData({ ...featureData, venture: e.target.value })}
-                      className="form-input"
-                      placeholder="e.g. Zen Organics"
+                      type="number"
+                      min="1"
+                      max="50"
+                      value={quantity}
+                      onChange={(e) => setQuantity(e.target.value)}
+                      style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid #E6D5EC', background: '#FAFAFA', fontSize: '0.92rem', outline: 'none' }}
                     />
                   </div>
                 </div>
 
-                <div className="form-group">
-                  <label className="form-label" htmlFor="appHighlight">Why Should Your Story Be Featured? *</label>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1.25rem', marginBottom: '1.25rem' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 800, color: '#1C1224', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>
+                      Email Address *
+                    </label>
+                    <input
+                      type="email"
+                      required
+                      value={orderData.email}
+                      onChange={(e) => setOrderData({ ...orderData, email: e.target.value })}
+                      style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid #E6D5EC', background: '#FAFAFA', fontSize: '0.92rem', outline: 'none' }}
+                      placeholder="radhika@example.com"
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 800, color: '#1C1224', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>
+                      Phone / Mobile *
+                    </label>
+                    <input
+                      type="tel"
+                      required
+                      value={orderData.phone}
+                      onChange={(e) => setOrderData({ ...orderData, phone: e.target.value })}
+                      style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid #E6D5EC', background: '#FAFAFA', fontSize: '0.92rem', outline: 'none' }}
+                      placeholder="+91-XXXXX-XXXXX"
+                    />
+                  </div>
+                </div>
+
+                <div style={{ marginBottom: '2rem' }}>
+                  <label style={{ display: 'block', fontSize: '0.78rem', fontWeight: 800, color: '#1C1224', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: '0.45rem' }}>
+                    Doorstep Delivery Address *
+                  </label>
                   <textarea
-                    id="appHighlight"
                     required
-                    rows={3}
-                    value={featureData.highlight}
-                    onChange={(e) => setFeatureData({ ...featureData, highlight: e.target.value })}
-                    className="form-textarea"
-                    placeholder="Highlight your market innovation, revenue milestone, or community job creation..."
+                    rows={2}
+                    value={orderData.address}
+                    onChange={(e) => setOrderData({ ...orderData, address: e.target.value })}
+                    style={{ width: '100%', padding: '0.85rem 1rem', borderRadius: '10px', border: '1px solid #E6D5EC', background: '#FAFAFA', fontSize: '0.92rem', outline: 'none', lineHeight: 1.5 }}
+                    placeholder="Full Postal Address with Pincode"
                   />
                 </div>
 
-                {featureError && (
-                  <div
-                    style={{
-                      padding: '0.75rem 1rem',
-                      background: 'var(--color-coral-soft)',
-                      border: '1px solid rgba(224, 93, 93, 0.3)',
-                      borderRadius: 'var(--radius-md)',
-                      color: '#DC2626',
-                      fontSize: '0.85rem',
-                      marginBottom: '1rem',
-                    }}
-                  >
-                    {featureError}
-                  </div>
-                )}
-
-                <CTAButton type="submit" variant="secondary" size="md" block icon={Send} disabled={featureLoading}>
-                  {featureLoading ? 'Submitting Application...' : 'Submit Feature Application'}
-                </CTAButton>
+                <button
+                  type="submit"
+                  disabled={orderLoading}
+                  style={{
+                    width: '100%',
+                    padding: '1.05rem',
+                    borderRadius: '12px',
+                    background: 'linear-gradient(135deg, #6A1B9A 0%, #8E24AA 100%)',
+                    color: '#FFFFFF',
+                    border: 'none',
+                    fontWeight: 800,
+                    fontSize: '0.95rem',
+                    letterSpacing: '0.06em',
+                    textTransform: 'uppercase',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.6rem',
+                    boxShadow: '0 8px 24px rgba(106, 27, 154, 0.3)',
+                    transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                    e.currentTarget.style.boxShadow = '0 12px 28px rgba(106, 27, 154, 0.4)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.transform = 'translateY(0)';
+                    e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.3)';
+                  }}
+                >
+                  <ShoppingBag size={18} />
+                  <span>{orderLoading ? 'Processing Order...' : `Confirm Pre-Order (₹${(quantity * pricePerBook).toLocaleString('en-IN')})`}</span>
+                </button>
               </form>
             )}
           </div>
