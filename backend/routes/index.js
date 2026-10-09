@@ -9,8 +9,13 @@ import storyRoutes from './storyRoutes.js';
 import inquiryRoutes from './inquiryRoutes.js';
 import newsletterRoutes from './newsletterRoutes.js';
 import statsRoutes from './statsRoutes.js';
+import adminRoutes from './adminRoutes.js';
 
 const router = Router();
+
+router.use('/admin', adminRoutes);
+router.use('/blogs', adminRoutes);
+router.use('/voice-videos', adminRoutes);
 
 router.use('/auth', authRoutes);
 router.use('/nominations', nominationRoutes);

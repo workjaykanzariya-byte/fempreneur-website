@@ -10,7 +10,7 @@ export const submitInquiry = async (req, res, next) => {
     }
 
     const result = await query(`
-      INSERT INTO inquiries (type, full_name, email, phone, subject_or_tier, message_or_topic, city, organization)
+      INSERT INTO web_inquiries (inquiry_type, name, email, phone, subject, message, city, organization)
       VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
       RETURNING *
     `, [
@@ -33,12 +33,12 @@ export const submitInquiry = async (req, res, next) => {
 export const getInquiries = async (req, res, next) => {
   try {
     const { type } = req.query;
-    let sql = 'SELECT * FROM inquiries';
+    let sql = 'SELECT * FROM web_inquiries';
     const params = [];
 
     if (type) {
       params.push(type);
-      sql += ' WHERE type = $1';
+      sql += ' WHERE inquiry_type = $1';
     }
 
     sql += ' ORDER BY created_at DESC';

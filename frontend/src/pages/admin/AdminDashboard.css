@@ -1,0 +1,523 @@
+/* ==========================================================================
+   FEMPRENEUR EXECUTIVE ADMIN DASHBOARD STYLES
+   Color Theme: Royal Violet (#5E178C, #3B095E), Gold (#D4AF37, #E5C365), Pure White
+   ========================================================================== */
+
+.fem-admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F8F5FB;
+  font-family: 'Outfit', 'Plus Jakarta Sans', sans-serif;
+  color: #2D143E;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+.fem-admin-sidebar {
+  width: 280px;
+  background: linear-gradient(180deg, #24073B 0%, #170326 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1px solid rgba(212, 175, 55, 0.15);
+  z-index: 40;
+}
+
+.fem-admin-sidebar.collapsed {
+  width: 80px;
+}
+
+.fem-admin-sidebar-header {
+  padding: 24px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.fem-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.fem-admin-brand img {
+  height: 38px;
+  filter: brightness(0) invert(1);
+}
+
+.fem-admin-brand-text {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+.fem-admin-brand-badge {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #D4AF37;
+  font-weight: 700;
+}
+
+.fem-admin-nav-group {
+  padding: 16px 12px 6px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: rgba(212, 175, 55, 0.8);
+  font-weight: 700;
+}
+
+.fem-admin-nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fem-admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 1px solid transparent;
+  user-select: none;
+}
+
+.fem-admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+}
+
+.fem-admin-nav-item.active {
+  background: linear-gradient(90deg, rgba(94, 23, 140, 0.5) 0%, rgba(212, 175, 55, 0.2) 100%);
+  border-color: rgba(212, 175, 55, 0.4);
+  color: #F7E4B2;
+  font-weight: 700;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.fem-admin-sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px 8px;
+}
+
+.fem-admin-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.fem-admin-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+}
+
+.fem-admin-user-card {
+  padding: 16px 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+/* Main Content */
+.fem-admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+}
+
+.fem-admin-topbar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #EAE2F3;
+  padding: 16px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  box-shadow: 0 2px 10px rgba(94, 23, 140, 0.03);
+}
+
+.fem-admin-topbar-title h2 {
+  font-size: 1.45rem;
+  font-weight: 800;
+  color: #24073B;
+  margin: 0;
+  letter-spacing: -0.01em;
+}
+
+.fem-admin-topbar-title p {
+  font-size: 0.82rem;
+  color: #7B6888;
+  margin: 2px 0 0;
+}
+
+.fem-admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fem-admin-content-area {
+  padding: 32px;
+  flex: 1;
+}
+
+/* Controls & Toolbar */
+.fem-admin-toolbar {
+  background: #FFFFFF;
+  border-radius: 16px;
+  padding: 18px 24px;
+  margin-bottom: 24px;
+  box-shadow: 0 4px 20px rgba(94, 23, 140, 0.04);
+  border: 1px solid #EAE2F3;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.fem-admin-search-box {
+  position: relative;
+  min-width: 280px;
+  flex: 1;
+}
+
+.fem-admin-search-box input {
+  width: 100%;
+  padding: 10px 14px 10px 38px;
+  border: 1px solid #DCD0E6;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  outline: none;
+  background: #FAF7FD;
+  transition: all 0.2s;
+}
+
+.fem-admin-search-box input:focus {
+  border-color: #5E178C;
+  background: #FFFFFF;
+  box-shadow: 0 0 0 3px rgba(94, 23, 140, 0.1);
+}
+
+.fem-admin-filters {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.fem-admin-select {
+  padding: 9px 14px;
+  border: 1px solid #DCD0E6;
+  border-radius: 10px;
+  font-size: 0.85rem;
+  color: #2D143E;
+  background: #FAF7FD;
+  outline: none;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.fem-admin-select:focus {
+  border-color: #5E178C;
+}
+
+.fem-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 18px;
+  border-radius: 10px;
+  font-size: 0.88rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s ease;
+  text-decoration: none;
+}
+
+.fem-btn-primary {
+  background: linear-gradient(135deg, #5E178C 0%, #7B1FA2 100%);
+  color: #FFFFFF;
+  box-shadow: 0 4px 12px rgba(94, 23, 140, 0.2);
+}
+
+.fem-btn-primary:hover {
+  background: linear-gradient(135deg, #4D1273 0%, #6A1B9A 100%);
+  box-shadow: 0 6px 16px rgba(94, 23, 140, 0.3);
+}
+
+.fem-btn-gold {
+  background: linear-gradient(135deg, #D4AF37 0%, #E8C15A 100%);
+  color: #24073B;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.25);
+}
+
+.fem-btn-gold:hover {
+  background: linear-gradient(135deg, #C29D29 0%, #DCB54E 100%);
+}
+
+.fem-btn-outline {
+  background: #FFFFFF;
+  border: 1px solid #DCD0E6;
+  color: #4D1273;
+}
+
+.fem-btn-outline:hover {
+  background: #FAF7FD;
+  border-color: #5E178C;
+}
+
+.fem-btn-danger {
+  background: rgba(239, 68, 68, 0.1);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.fem-btn-danger:hover {
+  background: #DC2626;
+  color: #FFFFFF;
+}
+
+/* Bulk Actions Bar */
+.fem-admin-bulk-bar {
+  background: linear-gradient(135deg, #24073B 0%, #3B095E 100%);
+  color: #FFFFFF;
+  padding: 14px 24px;
+  border-radius: 12px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 8px 24px rgba(36, 7, 59, 0.2);
+  animation: slideDown 0.25s ease-out;
+}
+
+@keyframes slideDown {
+  from { opacity: 0; transform: translateY(-10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Table Design */
+.fem-admin-table-card {
+  background: #FFFFFF;
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(94, 23, 140, 0.05);
+  border: 1px solid #EAE2F3;
+  overflow: hidden;
+}
+
+.fem-admin-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 0.88rem;
+}
+
+.fem-admin-table th {
+  background: #FAF7FD;
+  padding: 14px 20px;
+  font-weight: 700;
+  color: #4A1566;
+  border-bottom: 1px solid #EAE2F3;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+}
+
+.fem-admin-table td {
+  padding: 16px 20px;
+  border-bottom: 1px solid #F3EDF8;
+  color: #331A45;
+  vertical-align: middle;
+}
+
+.fem-admin-table tbody tr {
+  transition: background-color 0.15s;
+}
+
+.fem-admin-table tbody tr:hover {
+  background-color: #FAF6FC;
+}
+
+.fem-admin-table tbody tr.unread-row {
+  background-color: rgba(212, 175, 55, 0.04);
+  font-weight: 600;
+}
+
+/* Badges */
+.fem-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 10px;
+  border-radius: 999px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.fem-badge-winner {
+  background: linear-gradient(135deg, rgba(212, 175, 55, 0.2) 0%, rgba(212, 175, 55, 0.3) 100%);
+  color: #8C6D0E;
+  border: 1px solid rgba(212, 175, 55, 0.6);
+}
+
+.fem-badge-approved, .fem-badge-paid {
+  background: rgba(16, 185, 129, 0.15);
+  color: #059669;
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.fem-badge-pending {
+  background: rgba(245, 158, 11, 0.15);
+  color: #D97706;
+  border: 1px solid rgba(245, 158, 11, 0.3);
+}
+
+.fem-badge-rejected {
+  background: rgba(239, 68, 68, 0.15);
+  color: #DC2626;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+/* Modal Overlay */
+.fem-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(20, 4, 34, 0.7);
+  backdrop-filter: blur(6px);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+  overflow-y: auto;
+}
+
+.fem-modal-box {
+  background: #FFFFFF;
+  border-radius: 20px;
+  width: 100%;
+  max-width: 680px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.3);
+  border: 1px solid #EAE2F3;
+  animation: popIn 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes popIn {
+  from { opacity: 0; transform: scale(0.95); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.fem-modal-header {
+  padding: 20px 28px;
+  border-bottom: 1px solid #EAE2F3;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #FAF7FD;
+}
+
+.fem-modal-body {
+  padding: 28px;
+}
+
+.fem-modal-footer {
+  padding: 18px 28px;
+  border-top: 1px solid #EAE2F3;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 12px;
+  background: #FAF7FD;
+}
+
+/* Forms inside modal or standalone */
+.fem-form-group {
+  margin-bottom: 20px;
+}
+
+.fem-form-group label {
+  display: block;
+  font-size: 0.84rem;
+  font-weight: 700;
+  color: #3B095E;
+  margin-bottom: 6px;
+}
+
+.fem-form-control {
+  width: 100%;
+  padding: 11px 16px;
+  border: 1px solid #DCD0E6;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  color: #2D143E;
+  background: #FFFFFF;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.fem-form-control:focus {
+  border-color: #5E178C;
+  box-shadow: 0 0 0 3px rgba(94, 23, 140, 0.1);
+}
+
+/* Empty State inside dashboard */
+.fem-admin-empty {
+  padding: 64px 24px;
+  text-align: center;
+  color: #7B6888;
+}
+
+.fem-admin-empty h3 {
+  color: #3B095E;
+  font-size: 1.2rem;
+  margin: 12px 0 6px;
+  font-weight: 700;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+  .fem-admin-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -290px;
+    z-index: 50;
+  }
+  .fem-admin-sidebar.mobile-open {
+    left: 0;
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+  .fem-admin-content-area {
+    padding: 20px 16px;
+  }
+  .fem-admin-topbar {
+    padding: 14px 20px;
+  }
+}

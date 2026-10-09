@@ -24,10 +24,10 @@ export const createNomination = async (req, res, next) => {
     }
 
     const result = await query(`
-      INSERT INTO nominations (
-        founder_name, venture_name, designation, email, phone, city, state,
-        category_code, category_name, pitch, operational_years, impact_summary, website_url
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13)
+      INSERT INTO web_nominations (
+        nominee_name, business_name, designation, email, phone, city,
+        category_name, description, operational_years, website_link, status, award_year
+      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending', '2027')
       RETURNING *
     `, [
       founderName.trim(),
@@ -36,12 +36,9 @@ export const createNomination = async (req, res, next) => {
       email.toLowerCase().trim(),
       phone.trim(),
       city.trim(),
-      state || 'India',
-      categoryCode.trim(),
       categoryName || categoryCode,
       pitch.trim(),
       operationalYears || '1-3 years',
-      impactSummary || null,
       websiteUrl || null,
     ]);
 
@@ -60,12 +57,12 @@ export const getNominations = async (req, res, next) => {
   try {
     const { category, city, status } = req.query;
 
-    let sql = 'SELECT * FROM nominations WHERE 1=1';
+    let sql = 'SELECT * FROM web_nominations WHERE 1=1';
     const params = [];
 
     if (category) {
       params.push(category);
-      sql += ` AND category_code = $${params.length}`;
+      sql += ` AND category_name = $${params.length}`;
     }
 
     if (city) {
@@ -90,7 +87,7 @@ export const getNominations = async (req, res, next) => {
 export const getNominationById = async (req, res, next) => {
   try {
     const { id } = req.params;
-    const result = await query('SELECT * FROM nominations WHERE id = $1', [id]);
+    const result = await query('SELECT * FROM web_nominations WHERE id = $1', [id]);
 
     if (result.rows.length === 0) {
       return errorResponse(res, 'Nomination record not found.', 404);

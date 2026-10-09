@@ -15,17 +15,17 @@ export const enrollMembership = async (req, res, next) => {
     else if (tierLower.includes('elite')) annualFee = 25000;
 
     const result = await query(`
-      INSERT INTO memberships (full_name, email, phone, tier, annual_fee, business_name, city)
-      VALUES ($1, $2, $3, $4, $5, $6, $7)
+      INSERT INTO web_community_applications (name, email, phone, tier, annual_fee, company, city, sector, interest, why_join, status)
+      VALUES ($1, $2, $3, $4, $5, $6, $7, 'General', 'Community Membership', 'Platform Registration', 'applied')
       RETURNING *
     `, [
       fullName.trim(),
       email.toLowerCase().trim(),
       phone.trim(),
-      tier.trim(),
+      tierLower.includes('pro') ? 'pro' : tierLower.includes('elite') ? 'elite' : 'free',
       annualFee,
-      businessName || null,
-      city || null,
+      businessName || 'Venture',
+      city || 'India',
     ]);
 
     return successResponse(res, result.rows[0], `Successfully registered for ${tier} membership.`, 201);
@@ -36,7 +36,7 @@ export const enrollMembership = async (req, res, next) => {
 
 export const getMemberships = async (req, res, next) => {
   try {
-    const result = await query('SELECT * FROM memberships ORDER BY created_at DESC');
+    const result = await query('SELECT * FROM web_community_applications ORDER BY created_at DESC');
     return successResponse(res, result.rows, 'Memberships retrieved successfully.');
   } catch (err) {
     next(err);

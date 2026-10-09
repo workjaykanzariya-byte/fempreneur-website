@@ -11,14 +11,13 @@ export const subscribe = async (req, res, next) => {
 
     const emailClean = email.toLowerCase().trim();
 
-    // Check if already subscribed
-    const existing = await query('SELECT id FROM newsletter_subscribers WHERE email = $1', [emailClean]);
+    const existing = await query("SELECT id FROM web_inquiries WHERE inquiry_type = 'newsletter' AND email = $1", [emailClean]);
     if (existing.rows.length > 0) {
       return successResponse(res, { email: emailClean }, 'You are already subscribed to the Fempreneur newsletter.');
     }
 
     const result = await query(
-      'INSERT INTO newsletter_subscribers (email) VALUES ($1) RETURNING *',
+      "INSERT INTO web_inquiries (inquiry_type, name, email, subject, message) VALUES ('newsletter', 'Newsletter Subscriber', $1, 'Newsletter Subscription', 'Joined newsletter') RETURNING *",
       [emailClean]
     );
 
@@ -30,7 +29,7 @@ export const subscribe = async (req, res, next) => {
 
 export const getSubscribers = async (req, res, next) => {
   try {
-    const result = await query('SELECT * FROM newsletter_subscribers ORDER BY subscribed_at DESC');
+    const result = await query("SELECT * FROM web_inquiries WHERE inquiry_type = 'newsletter' ORDER BY created_at DESC");
     return successResponse(res, result.rows, 'Subscribers list retrieved.');
   } catch (err) {
     next(err);

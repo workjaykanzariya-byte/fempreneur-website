@@ -10,9 +10,9 @@ export const submitStory = async (req, res, next) => {
     }
 
     const result = await query(`
-      INSERT INTO story_submissions (
-        founder_name, venture_name, email, phone, story_title, narrative, impact_milestone, website_or_social
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+      INSERT INTO web_inquiries (
+        inquiry_type, name, organization, email, phone, subject, message
+      ) VALUES ('publish-story', $1, $2, $3, $4, $5, $6)
       RETURNING *
     `, [
       founderName.trim(),
@@ -20,9 +20,7 @@ export const submitStory = async (req, res, next) => {
       email.toLowerCase().trim(),
       phone.trim(),
       storyTitle || `Story of ${founderName}`,
-      narrative.trim(),
-      impactMilestone || null,
-      websiteOrSocial || null,
+      narrative.trim() + (impactMilestone ? ` | Impact: ${impactMilestone}` : '') + (websiteOrSocial ? ` | Link: ${websiteOrSocial}` : ''),
     ]);
 
     return successResponse(res, result.rows[0], 'Story submitted to the 1,000 Stories Drive successfully.', 201);
@@ -33,7 +31,7 @@ export const submitStory = async (req, res, next) => {
 
 export const getStories = async (req, res, next) => {
   try {
-    const result = await query('SELECT * FROM story_submissions ORDER BY created_at DESC');
+    const result = await query("SELECT * FROM web_inquiries WHERE inquiry_type = 'publish-story' ORDER BY created_at DESC");
     return successResponse(res, result.rows, 'Story submissions retrieved.');
   } catch (err) {
     next(err);

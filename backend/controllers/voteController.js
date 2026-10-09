@@ -10,12 +10,12 @@ export const castVote = async (req, res, next) => {
     }
 
     const emailClean = voterEmail.toLowerCase().trim();
-    const ipAddress = req.ip || req.connection.remoteAddress || '127.0.0.1';
+    const ipAddress = req.ip || req.connection?.remoteAddress || '127.0.0.1';
 
     // Verify whether this voter has already voted for this nominee
     const existing = await query(
-      'SELECT id FROM votes WHERE nominee_slug = $1 AND voter_email = $2',
-      [nomineeSlug, emailClean]
+      'SELECT id FROM web_nomination_votes WHERE voter_email = $1',
+      [emailClean]
     );
 
     if (existing.rows.length > 0) {
@@ -23,22 +23,14 @@ export const castVote = async (req, res, next) => {
     }
 
     const result = await query(`
-      INSERT INTO votes (nominee_slug, nominee_name, category, voter_email, ip_address)
-      VALUES ($1, $2, $3, $4, $5)
+      INSERT INTO web_nomination_votes (nomination_id, voter_name, voter_email, ip_address)
+      VALUES (COALESCE((SELECT id FROM web_nominations WHERE nominee_name ILIKE $1 LIMIT 1), 1), $2, $3, $4)
       RETURNING *
-    `, [nomineeSlug, nomineeName, category || 'Award Nominee', emailClean, ipAddress]);
-
-    // Count total votes for this nominee
-    const countResult = await query(
-      'SELECT COUNT(*) FROM votes WHERE nominee_slug = $1',
-      [nomineeSlug]
-    );
-
-    const totalVotes = parseInt(countResult.rows[0].count, 10);
+    `, [nomineeName, nomineeName, emailClean, ipAddress]);
 
     return successResponse(
       res,
-      { vote: result.rows[0], totalVotes },
+      { vote: result.rows[0] },
       'Verified vote successfully recorded (50% public voting weight applied).',
       201
     );
@@ -53,14 +45,14 @@ export const castVote = async (req, res, next) => {
 export const getVoteCounts = async (req, res, next) => {
   try {
     const result = await query(`
-      SELECT nominee_slug, COUNT(*) as vote_count
-      FROM votes
-      GROUP BY nominee_slug
+      SELECT nomination_id, COUNT(*) as vote_count
+      FROM web_nomination_votes
+      GROUP BY nomination_id
     `);
 
     const counts = {};
     result.rows.forEach(r => {
-      counts[r.nominee_slug] = parseInt(r.vote_count, 10);
+      counts[r.nomination_id] = parseInt(r.vote_count, 10);
     });
 
     return successResponse(res, counts, 'Vote tallies retrieved.');
