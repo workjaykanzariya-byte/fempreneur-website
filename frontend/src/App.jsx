@@ -92,6 +92,10 @@ export default function App() {
             <Route path="/contact" element={<ContactPage />} />
             <Route path="/login" element={<LoginPage />} />
 
+            {/* Direct Admin redirects to Homepage */}
+            <Route path="/admin" element={<Navigate to="/" replace />} />
+            <Route path="/admin/*" element={<Navigate to="/" replace />} />
+
             {/* Catch-all 404 */}
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
