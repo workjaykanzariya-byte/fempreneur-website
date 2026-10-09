@@ -262,7 +262,13 @@ export default function BookPage() {
               <img
                 src="/images/pravin.png"
                 alt="Dr. Pravin Parmar"
-                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'cover',
+                  transform: 'scale(1.65)',
+                  transformOrigin: '50% 32%',
+                }}
               />
             </div>
             <p style={{ fontWeight: 800, color: '#1C1224', fontSize: '0.95rem', margin: '0 0 0.2rem 0' }}>

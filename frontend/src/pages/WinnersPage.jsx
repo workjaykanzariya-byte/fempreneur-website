@@ -337,18 +337,19 @@ export default function WinnersPage() {
 
           {/* Honoree Testimonial Strip */}
           <div
-            className="fem-card fem-card-gold"
+            className="fem-card"
             style={{
               padding: '3rem 2.5rem',
               marginBottom: '4rem',
-              background: 'linear-gradient(135deg, #FFFDF8 0%, #FFF8E7 100%)',
-              border: '1.5px solid rgba(212, 175, 55, 0.4)',
+              background: 'linear-gradient(135deg, #FAF6FC 0%, #FFFFFF 100%)',
+              border: '1.5px solid #EFE4F4',
               borderRadius: 'var(--radius-xl)',
+              boxShadow: '0 8px 30px rgba(46, 8, 72, 0.04)',
             }}
           >
             <div className="grid grid-cols-2 gap-8 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
               <div>
-                <Quote size={32} color="var(--color-gold-rich)" style={{ marginBottom: '0.5rem' }} />
+                <Quote size={32} color="#6A1B9A" style={{ marginBottom: '0.5rem' }} />
                 <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1.35, marginBottom: '0.85rem' }}>
                   "Winning at Fempreneur gave our venture the credibility to secure enterprise corporate contracts."
                 </h3>

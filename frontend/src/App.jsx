@@ -74,7 +74,9 @@ export default function App() {
             {/* Community & Network */}
             <Route path="/directory" element={<DirectoryPage />} />
             <Route path="/membership" element={<MembershipPage />} />
+            <Route path="/community-hub" element={<MembershipPage />} />
             <Route path="/story-drive" element={<StoryDrivePage />} />
+            <Route path="/voice-of-fempreneur" element={<StoryDrivePage />} />
 
             {/* Media & Partnerships */}
             <Route path="/coffee-table-book" element={<BookPage />} />
@@ -82,6 +84,7 @@ export default function App() {
             <Route path="/partners" element={<PartnersPage />} />
             <Route path="/sponsors" element={<Navigate to="/partners" replace />} />
             <Route path="/blog" element={<BlogPage />} />
+            <Route path="/blogs" element={<BlogPage />} />
             <Route path="/impact" element={<ImpactPage />} />
 
             {/* Inbound & Support */}

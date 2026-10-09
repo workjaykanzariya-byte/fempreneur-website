@@ -41,7 +41,7 @@ export default function AwardsPage() {
         description="The 6th edition honors women founders across 35–40+ categories through our dual evaluation engine: 50% Independent Jury Review + 50% Verified Public Voting."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Awards Overview' }]}
         ctaText="Start Free Nomination"
-        ctaTo="/nominate"
+        ctaTo="/awards/apply"
         ctaIcon={null}
         secondaryCtaText="Explore Categories"
         secondaryCtaTo="/categories"
@@ -261,7 +261,7 @@ export default function AwardsPage() {
             </div>
 
             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '1rem', flexWrap: 'wrap' }}>
-              <CTAButton to="/nominate" variant="primary" size="lg">
+              <CTAButton to="/awards/apply" variant="primary" size="lg">
                 Start Free Nomination Form
               </CTAButton>
               <CTAButton to="/categories" variant="secondary" size="lg">

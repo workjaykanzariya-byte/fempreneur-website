@@ -64,25 +64,24 @@ export default function Navbar() {
       label: 'Community',
       id: 'community',
       children: [
-        { label: 'Women Business Directory', path: '/directory' },
-        { label: 'Membership Tiers', path: '/membership' },
-        { label: 'City Chapters (Ahmedabad & Delhi)', path: '/city-chapters' },
-        { label: '1,000 Story Drive', path: '/story-drive' },
+        { label: 'Community Hub', path: '/community-hub' },
+        { label: 'Voice of Fempreneur', path: '/voice-of-fempreneur' },
       ],
     },
     {
       label: 'More',
       id: 'more',
       children: [
-        { label: 'Award Overview & 50/50 Process', path: '/awards' },
-        { label: 'Public Voting System', path: '/voting' },
-        { label: 'Blog & Newsroom', path: '/blog' },
-        { label: 'Impact & SDG Alignment', path: '/impact' },
+        { label: 'Speakers & Jury', path: '/speakers' },
+        { label: 'Partners', path: '/partners' },
+        { label: 'Blogs', path: '/blog' },
       ],
     },
     { label: 'FAQs', path: '/faq' },
     { label: 'Contact', path: '/contact' },
   ];
+
+  const [showTopBar, setShowTopBar] = useState(true);
 
   const handleDropdownToggle = (id) => {
     setOpenDropdown(openDropdown === id ? null : id);
@@ -90,6 +89,89 @@ export default function Navbar() {
 
   return (
     <>
+      {/* Top Announcement Banner Strip (Matching Reference) */}
+      {showTopBar && (
+        <div
+          style={{
+            background: 'linear-gradient(90deg, #2E0848 0%, #4A126D 45%, #6A1B9A 80%, #2E0848 100%)',
+            color: '#FFFFFF',
+            fontSize: '0.82rem',
+            padding: '0.45rem 1.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            position: 'relative',
+            zIndex: 101,
+            boxShadow: '0 2px 10px rgba(46, 8, 72, 0.25)',
+            borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
+          }}
+        >
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap', margin: '0 auto', textAlign: 'center', justifyContent: 'center' }}>
+            <span style={{ fontWeight: 800, color: '#FFF' }}>
+              🇮🇳 In Supporting Viksit Bharat @2047
+            </span>
+            <span style={{ opacity: 0.5 }}>|</span>
+            <span style={{ fontWeight: 600 }}>
+              Fempreneur 2027 — Ahmedabad &amp; Delhi NCR
+            </span>
+            <span style={{ opacity: 0.5 }}>|</span>
+            <Link
+              to="/awards/apply"
+              style={{
+                color: '#FFD54F',
+                fontWeight: 800,
+                textDecoration: 'underline',
+                cursor: 'pointer',
+                letterSpacing: '0.02em',
+              }}
+            >
+              Nominations Open — Apply FREE →
+            </Link>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+            <Link
+              to="/awards/apply"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(0, 0, 0, 0.35)',
+                padding: '0.22rem 0.65rem',
+                borderRadius: '9999px',
+                border: '1px solid rgba(255, 255, 255, 0.25)',
+                color: '#FFFFFF',
+                fontSize: '0.72rem',
+                fontWeight: 800,
+                textDecoration: 'none',
+                letterSpacing: '0.04em',
+              }}
+            >
+              <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#4ADE80', display: 'inline-block' }} />
+              <span>TOTAL NOMINATIONS: 100</span>
+            </Link>
+
+            <button
+              type="button"
+              onClick={() => setShowTopBar(false)}
+              aria-label="Dismiss banner"
+              style={{
+                background: 'transparent',
+                border: 'none',
+                color: 'rgba(255, 255, 255, 0.75)',
+                cursor: 'pointer',
+                padding: '2px',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <X size={15} />
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* Main Sticky Header */}
       <header className={`fem-header ${scrolled ? 'scrolled' : ''}`}>
         <div className="container">
@@ -161,7 +243,7 @@ export default function Navbar() {
 
               {/* Action Buttons */}
               <div className="fem-header-actions">
-                <CTAButton to="/nominate" variant="primary" size="sm" icon={Award}>
+                <CTAButton to="/awards/apply" variant="primary" size="sm" icon={Award}>
                   Nominate
                 </CTAButton>
                 <CTAButton to="/events" variant="primary" size="sm" icon={Ticket}>
@@ -264,7 +346,7 @@ export default function Navbar() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto', paddingTop: '1rem' }}>
-              <CTAButton to="/nominate" variant="primary" block size="lg" icon={Award}>
+              <CTAButton to="/awards/apply" variant="primary" block size="lg" icon={Award}>
                 Nominate for Award (Free)
               </CTAButton>
               <CTAButton to="/events" variant="primary" block size="lg" icon={Ticket}>
