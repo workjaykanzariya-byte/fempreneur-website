@@ -109,7 +109,7 @@ router.post('/login', async (req, res) => {
     // Default master accounts fallback (for seamless first-time access)
     const isDefaultAdmin = 
       (cleanEmail === 'admin@fempreneur.club' || cleanEmail === 'admin@fempreneur.in') &&
-      (password === 'FempreneurAdmin2027!' || password === 'admin123');
+      (password === 'admin@123' || password === 'FempreneurAdmin2027!' || password === 'admin123');
 
     if (!isMatch && !isDefaultAdmin) {
       return res.status(401).json({ success: false, message: 'Invalid email or password.' });
