@@ -46,20 +46,24 @@ app.use((req, res) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
-// Start server after verifying PostgreSQL schema
+// Start server with resilient error handling
 const startServer = async () => {
   try {
-    await initializeDatabase();
+    try {
+      await initializeDatabase();
+    } catch (dbErr) {
+      console.warn('⚠️ Database initialization warning (server continuing in resilient mode):', dbErr.message);
+    }
+
     app.listen(PORT, () => {
       console.log(`====================================================`);
-      console.log(`  Fempreneur 2027 REST API Server`);
+      console.log(`  🚀 Fempreneur 2027 REST API Server`);
       console.log(`  Running on: http://localhost:${PORT}`);
       console.log(`  Health Check: http://localhost:${PORT}/api/health`);
       console.log(`====================================================`);
     });
   } catch (err) {
-    console.error('Fatal: Failed to connect or initialize PostgreSQL database:', err);
-    process.exit(1);
+    console.error('Failed to start server:', err);
   }
 };
 

@@ -14,6 +14,13 @@ import {
 } from 'lucide-react';
 import { PageHeader, CTAButton } from '../components';
 import { orderCoffeeTableBook, submitGeneralInquiry } from '../services/api';
+import { initiateRazorpayPayment } from '../services/razorpay';
+
+// =========================================================================
+// PRICING CONFIGURATION (Set TEST_PRICE_MODE to false to restore original rates)
+// =========================================================================
+export const TEST_PRICE_MODE = true;
+export const PRICE_PER_BOOK = TEST_PRICE_MODE ? 1 : 2999;
 
 export default function BookPage() {
   const [quantity, setQuantity] = useState(1);
@@ -35,7 +42,7 @@ export default function BookPage() {
     message: '',
   });
 
-  const pricePerBook = 2999;
+  const pricePerBook = PRICE_PER_BOOK;
 
   // Feature Slots Table Data (Matching Reference)
   const featurePackages = [
@@ -127,17 +134,36 @@ export default function BookPage() {
     setOrderError(null);
     setOrderLoading(true);
     try {
-      await orderCoffeeTableBook({
+      const res = await orderCoffeeTableBook({
+        customerName: orderData.name,
         name: orderData.name,
         email: orderData.email,
         phone: orderData.phone,
+        deliveryAddress: orderData.address,
         shippingAddress: orderData.address,
         quantity: Number(quantity),
         totalAmount: quantity * pricePerBook,
       });
+
+      const recordId = res?.data?.id || null;
+
+      // Launch Razorpay Payment Gateway
+      await initiateRazorpayPayment({
+        amount: quantity * pricePerBook,
+        module: 'coffee-book',
+        recordId,
+        title: 'Fempreneur Coffee Table Book',
+        description: `Pre-Order for ${quantity} Hardbound Edition(s)`,
+        prefill: {
+          name: orderData.name,
+          email: orderData.email,
+          phone: orderData.phone,
+        },
+      });
+
       setOrderSubmitted(true);
     } catch (err) {
-      setOrderError(err.message || 'Failed to place pre-order. Please try again.');
+      setOrderError(err.message || 'Failed to complete pre-order payment. Please try again.');
     } finally {
       setOrderLoading(false);
     }

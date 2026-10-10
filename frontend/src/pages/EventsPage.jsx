@@ -18,6 +18,17 @@ import {
   Check,
 } from 'lucide-react';
 import { registerEventPass } from '../services/api';
+import { initiateRazorpayPayment } from '../services/razorpay';
+
+// =========================================================================
+// PRICING CONFIGURATION (Set TEST_PRICE_MODE to false to restore original rates)
+// =========================================================================
+export const TEST_PRICE_MODE = true;
+
+export const PASS_PRICES = {
+  no_dinner: TEST_PRICE_MODE ? 1 : 750,
+  with_dinner: TEST_PRICE_MODE ? 1 : 1500,
+};
 
 export default function EventsPage() {
   const [formData, setFormData] = useState({
@@ -42,8 +53,6 @@ export default function EventsPage() {
     { title: 'Corporate Sponsors', icon: Award },
     { title: 'Emerging Innovators', icon: BookOpen },
   ];
-
-
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -72,11 +81,11 @@ export default function EventsPage() {
     }
 
     setIsLoading(true);
-    const amount = passOption === 'with_dinner' ? 1500 : 750;
+    const amount = passOption === 'with_dinner' ? PASS_PRICES.with_dinner : PASS_PRICES.no_dinner;
     const passName = passOption === 'with_dinner' ? 'Delegate (With Dinner)' : 'Delegate (Without Dinner)';
 
     try {
-      await registerEventPass({
+      const res = await registerEventPass({
         attendeeName: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
@@ -86,9 +95,25 @@ export default function EventsPage() {
         price: amount,
       });
 
+      const recordId = res?.data?.id || null;
+
+      // Launch Razorpay Payment Gateway
+      await initiateRazorpayPayment({
+        amount,
+        module: 'events',
+        recordId,
+        title: 'Fempreneur 2027 Event Pass',
+        description: `${passName} (${formData.city.trim()})`,
+        prefill: {
+          name: formData.name,
+          email: formData.email,
+          phone: formData.phone,
+        },
+      });
+
       setIsSuccess(true);
     } catch (err) {
-      setErrorMessage(err.message || 'Registration failed. Please try again.');
+      setErrorMessage(err.message || 'Payment or Registration failed. Please try again.');
     } finally {
       setIsLoading(false);
     }
@@ -624,7 +649,7 @@ export default function EventsPage() {
                         General access to event sessions &amp; awards felicitation.
                       </span>
                       <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-burgundy)', marginTop: 'auto' }}>
-                        ₹750
+                        ₹{PASS_PRICES.no_dinner.toLocaleString('en-IN')}
                       </span>
                     </label>
 
@@ -661,7 +686,7 @@ export default function EventsPage() {
                         Access to event sessions &amp; Gala Networking Dinner.
                       </span>
                       <span style={{ fontSize: '1.15rem', fontWeight: 800, color: 'var(--color-burgundy)', marginTop: 'auto' }}>
-                        ₹1,500
+                        ₹{PASS_PRICES.with_dinner.toLocaleString('en-IN')}
                       </span>
                     </label>
                   </div>
@@ -698,7 +723,7 @@ export default function EventsPage() {
                       gap: '0.5rem',
                     }}
                   >
-                    {isLoading ? 'PROCESSING...' : `PAY & REGISTER (₹${passOption === 'with_dinner' ? '1,500' : '750'})`}
+                    {isLoading ? 'PROCESSING...' : `PAY & REGISTER (₹${(passOption === 'with_dinner' ? PASS_PRICES.with_dinner : PASS_PRICES.no_dinner).toLocaleString('en-IN')})`}
                     <ArrowRight size={16} />
                   </button>
                 </div>

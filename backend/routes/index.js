@@ -10,6 +10,7 @@ import inquiryRoutes from './inquiryRoutes.js';
 import newsletterRoutes from './newsletterRoutes.js';
 import statsRoutes from './statsRoutes.js';
 import adminRoutes from './adminRoutes.js';
+import paymentRoutes from './paymentRoutes.js';
 
 const router = Router();
 
@@ -27,6 +28,7 @@ router.use('/stories', storyRoutes);
 router.use('/inquiries', inquiryRoutes);
 router.use('/newsletter', newsletterRoutes);
 router.use('/stats', statsRoutes);
+router.use('/payment', paymentRoutes);
 
 // Health check endpoint
 router.get('/health', (req, res) => {

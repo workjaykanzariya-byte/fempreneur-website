@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { Users, CheckCircle2, Sparkles, Smartphone, TrendingUp, ArrowRight, ShieldCheck, X, Heart } from 'lucide-react';
 import { PageHeader, SectionTitle, MembershipCard, CTAButton } from '../components';
 import { enrollMembership } from '../services/api';
+import { initiateRazorpayPayment } from '../services/razorpay';
+
+// =========================================================================
+// PRICING CONFIGURATION (Set TEST_PRICE_MODE to false to restore original rates)
+// =========================================================================
+export const TEST_PRICE_MODE = true;
+
+export const MEMBERSHIP_PRICES = {
+  pro: TEST_PRICE_MODE ? 1 : 5000,
+  elite: TEST_PRICE_MODE ? 1 : 25000,
+};
 
 export default function MembershipPage() {
   const [selectedTierModal, setSelectedTierModal] = useState(null);
@@ -26,7 +37,7 @@ export default function MembershipPage() {
     },
     {
       tierName: 'Pro Member',
-      price: '₹5,00,000' === '₹5,000' ? '₹5,000' : '₹5,000',
+      price: `₹${MEMBERSHIP_PRICES.pro.toLocaleString('en-IN')}`,
       billingPeriod: '/year',
       description: 'Accelerate business visibility with priority directory listing, event discounts, and mastermind groups.',
       benefits: [
@@ -36,11 +47,11 @@ export default function MembershipPage() {
         'Access to peer networking & mastermind circles',
       ],
       ctaText: 'Become a Pro Member',
-      isPopular: true,
+      isPopular: false,
     },
     {
       tierName: 'Elite Founder',
-      price: '₹25,000',
+      price: `₹${MEMBERSHIP_PRICES.elite.toLocaleString('en-IN')}`,
       billingPeriod: '/year',
       description: 'For established founders seeking national recognition, VIP event access, and Coffee Table Book evaluation.',
       benefits: [
@@ -65,7 +76,7 @@ export default function MembershipPage() {
     setSubmitting(true);
     setEnrollError(null);
     try {
-      await enrollMembership({
+      const res = await enrollMembership({
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
@@ -73,11 +84,32 @@ export default function MembershipPage() {
         businessName: formData.company ? formData.company.trim() : null,
         city: formData.city || 'Ahmedabad',
       });
+
+      const recordId = res?.data?.id || null;
+      const tierName = selectedTierModal?.tierName || '';
+      const isPaid = tierName.toLowerCase().includes('pro') || tierName.toLowerCase().includes('elite');
+      const amount = tierName.toLowerCase().includes('elite') ? MEMBERSHIP_PRICES.elite : MEMBERSHIP_PRICES.pro;
+
+      if (isPaid) {
+        await initiateRazorpayPayment({
+          amount,
+          module: 'community',
+          recordId,
+          title: 'Fempreneur Membership',
+          description: `${tierName} Annual Membership`,
+          prefill: {
+            name: formData.fullName,
+            email: formData.email,
+            phone: formData.phone,
+          },
+        });
+      }
+
       setSubmitting(false);
       setSubmitted(true);
     } catch (err) {
       setSubmitting(false);
-      setEnrollError(err.message || 'Failed to submit membership registration. Please try again.');
+      setEnrollError(err.message || 'Failed to complete membership enrollment. Please try again.');
     }
   };
 
@@ -171,8 +203,8 @@ export default function MembershipPage() {
           style={{
             position: 'fixed',
             inset: 0,
-            background: 'rgba(58, 12, 39, 0.65)',
-            backdropFilter: 'blur(5px)',
+            background: 'rgba(15, 10, 25, 0.65)',
+            backdropFilter: 'blur(8px)',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
@@ -183,12 +215,12 @@ export default function MembershipPage() {
         >
           <div
             style={{
-              background: '#FFFFFF',
-              borderRadius: 'var(--radius-xl)',
+              background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF5FF 45%, #FDF2F8 100%)',
+              borderRadius: '24px',
               maxWidth: '520px',
               width: '100%',
               padding: '2.25rem',
-              boxShadow: 'var(--shadow-xl)',
+              boxShadow: '0 25px 50px -12px rgba(88, 28, 135, 0.25), 0 0 0 1px rgba(168, 85, 247, 0.15)',
               position: 'relative',
             }}
             onClick={(e) => e.stopPropagation()}

@@ -30,32 +30,6 @@ export default function MembershipCard({
         position: 'relative',
       }}
     >
-      {isPopular && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '0',
-            right: '2rem',
-            transform: 'translateY(-50%)',
-            background: 'var(--gradient-gold)',
-            color: '#241400',
-            fontWeight: 800,
-            fontSize: '0.72rem',
-            textTransform: 'uppercase',
-            letterSpacing: '0.08em',
-            padding: '0.3rem 0.85rem',
-            borderRadius: 'var(--radius-pill)',
-            boxShadow: 'var(--shadow-gold)',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.3rem',
-          }}
-        >
-          <Sparkles size={11} />
-          Most Popular
-        </div>
-      )}
-
       {/* Tier Title */}
       <h3 style={{ fontSize: '1.45rem', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.35rem' }}>
         {tierName}
