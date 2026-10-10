@@ -808,6 +808,9 @@ const handleGetEventRegistrations = async (req, res) => {
 router.get('/event-registrations', verifyAdmin, handleGetEventRegistrations);
 router.get('/events', verifyAdmin, handleGetEventRegistrations);
 router.get('/event-passes', verifyAdmin, handleGetEventRegistrations);
+router.get('/web/event-registrations', verifyAdmin, handleGetEventRegistrations);
+router.get('/web/events', verifyAdmin, handleGetEventRegistrations);
+router.get('/web/event-passes', verifyAdmin, handleGetEventRegistrations);
 
 // GET /api/admin/sponsorships
 router.get('/sponsorships', verifyAdmin, async (req, res) => {

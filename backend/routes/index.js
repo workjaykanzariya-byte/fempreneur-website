@@ -15,6 +15,7 @@ import paymentRoutes from './paymentRoutes.js';
 const router = Router();
 
 router.use('/admin', adminRoutes);
+router.use('/web', adminRoutes);
 router.use('/blogs', adminRoutes);
 router.use('/voice-videos', adminRoutes);
 
