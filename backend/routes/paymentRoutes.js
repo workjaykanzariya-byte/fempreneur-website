@@ -119,86 +119,116 @@ router.post('/verify', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Payment verification failed: Invalid Razorpay signature.' });
     }
 
-    // Update database record only after verified signature
-    if (record_id && module) {
-      const recId = parseInt(record_id, 10) || record_id;
+    // Update or ensure database record only after verified signature
+    if (module) {
+      const recId = record_id ? (parseInt(record_id, 10) || record_id) : null;
+      const attendeePrefill = req.body.prefill || {};
+      const orderNotes = req.body.notes || {};
+      const contactEmail = (attendeePrefill.email || orderNotes.email || '')?.toLowerCase()?.trim();
+      const contactName = attendeePrefill.name || orderNotes.attendeeName || orderNotes.name || 'Delegate';
+      const contactPhone = attendeePrefill.contact || attendeePrefill.phone || orderNotes.phone || '';
 
       try {
         switch (module) {
-          case 'coffee-book':
-          case 'book':
-            try {
-              await query(
-                `UPDATE web_coffee_table_book_orders SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
+          case 'events':
+          case 'event': {
+            let isUpdated = false;
+            if (recId) {
+              const resUpd = await query(
+                `UPDATE web_event_registrations SET payment_status = 'paid', payment_ref = $1, status = 'confirmed' WHERE id = $2 RETURNING *`,
                 [razorpay_payment_id, recId]
               );
-            } catch (e) {
-              await query(
-                `UPDATE coffee_table_book_orders SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
-                [razorpay_payment_id, recId]
-              ).catch(() => {});
+              if (resUpd && resUpd.rowCount > 0) isUpdated = true;
+            }
+            if (!isUpdated && contactEmail) {
+              const cityHub = orderNotes.cityHub || orderNotes.city || 'Ahmedabad';
+              const passTier = orderNotes.passTier || 'Delegate (With Dinner)';
+              const org = orderNotes.attendeeSegment || orderNotes.organization || 'General';
+              await query(`
+                INSERT INTO web_event_registrations (
+                  name, email, phone, organization, city_hub, pass_type, pass_amount, city, payment_status, payment_ref, status
+                ) VALUES ($1, $2, $3, $4, $5, $6, 1, $7, 'paid', $8, 'confirmed')
+                RETURNING *
+              `, [
+                contactName, contactEmail, contactPhone, org, cityHub,
+                passTier.toLowerCase().includes('vip') ? 'vip' : 'general',
+                cityHub, razorpay_payment_id
+              ]);
             }
             break;
+          }
 
           case 'community':
-          case 'membership':
-            try {
-              await query(
-                `UPDATE web_community_applications SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
+          case 'membership': {
+            let isUpdated = false;
+            if (recId) {
+              const resUpd = await query(
+                `UPDATE web_community_applications SET payment_status = 'paid', payment_ref = $1, status = 'confirmed' WHERE id = $2 RETURNING *`,
                 [razorpay_payment_id, recId]
               );
-            } catch (e) {
-              await query(
-                `UPDATE community_applications SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
-                [razorpay_payment_id, recId]
-              ).catch(() => {});
+              if (resUpd && resUpd.rowCount > 0) isUpdated = true;
+            }
+            if (!isUpdated && contactEmail) {
+              const tier = orderNotes.tier || 'Pro Member';
+              await query(`
+                INSERT INTO web_community_applications (
+                  name, email, phone, tier, annual_fee, company, city, sector, interest, why_join, payment_status, payment_ref, status
+                ) VALUES ($1, $2, $3, $4, 1, $5, $6, 'General', 'Community Membership', 'Platform Registration', 'paid', $7, 'confirmed')
+                RETURNING *
+              `, [
+                contactName, contactEmail, contactPhone,
+                tier.toLowerCase().includes('elite') ? 'elite' : 'pro',
+                orderNotes.company || 'Venture', orderNotes.city || 'India', razorpay_payment_id
+              ]);
             }
             break;
+          }
 
-          case 'events':
-          case 'event':
-            try {
-              await query(
-                `UPDATE web_event_registrations SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
+          case 'coffee-book':
+          case 'book': {
+            let isUpdated = false;
+            if (recId) {
+              const resUpd = await query(
+                `UPDATE web_coffee_table_book_orders SET payment_status = 'paid', payment_ref = $1, status = 'confirmed' WHERE id = $2 RETURNING *`,
                 [razorpay_payment_id, recId]
               );
-            } catch (e) {
-              await query(
-                `UPDATE event_registrations SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
-                [razorpay_payment_id, recId]
-              ).catch(() => {});
+              if (resUpd && resUpd.rowCount > 0) isUpdated = true;
+            }
+            if (!isUpdated && contactEmail) {
+              await query(`
+                INSERT INTO web_coffee_table_book_orders (
+                  name, email, phone, company, quantity, package_price, total_amount, delivery_address, payment_status, payment_ref, status
+                ) VALUES ($1, $2, $3, $4, 1, 1, 1, $5, 'paid', $6, 'confirmed')
+                RETURNING *
+              `, [
+                contactName, contactEmail, contactPhone,
+                orderNotes.company || 'Venture', orderNotes.deliveryAddress || 'India', razorpay_payment_id
+              ]);
             }
             break;
+          }
 
           case 'sponsorships':
-          case 'sponsorship':
-            try {
+          case 'sponsorship': {
+            if (recId) {
               await query(
                 `UPDATE web_sponsorships SET payment_received = 1, payment_ref = $1, status = 'confirmed' WHERE id = $2`,
                 [razorpay_payment_id, recId]
               );
-            } catch (e) {
-              await query(
-                `UPDATE sponsorships SET payment_received = 1, payment_ref = $1, status = 'confirmed' WHERE id = $2`,
-                [razorpay_payment_id, recId]
-              ).catch(() => {});
             }
             break;
+          }
 
           case 'nominations':
-          case 'nomination':
-            try {
+          case 'nomination': {
+            if (recId) {
               await query(
                 `UPDATE web_nominations SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
                 [razorpay_payment_id, recId]
               );
-            } catch (e) {
-              await query(
-                `UPDATE nominations SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
-                [razorpay_payment_id, recId]
-              ).catch(() => {});
             }
             break;
+          }
 
           default:
             break;

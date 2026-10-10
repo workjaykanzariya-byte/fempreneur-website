@@ -105,9 +105,17 @@ export default function EventsPage() {
         title: 'Fempreneur 2027 Event Pass',
         description: `${passName} (${formData.city.trim()})`,
         prefill: {
-          name: formData.name,
-          email: formData.email,
-          phone: formData.phone,
+          name: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+        },
+        notes: {
+          attendeeName: formData.name.trim(),
+          email: formData.email.trim(),
+          phone: formData.phone.trim(),
+          cityHub: formData.city.trim(),
+          passTier: passName,
+          attendeeSegment: formData.segment || 'Women Entrepreneur',
         },
       });
 

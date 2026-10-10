@@ -130,6 +130,8 @@ export const initiateRazorpayPayment = async ({
               razorpay_signature: response.razorpay_signature,
               module,
               record_id: recordId,
+              prefill,
+              notes,
             }),
           });
 

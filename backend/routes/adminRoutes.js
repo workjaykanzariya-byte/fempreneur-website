@@ -684,29 +684,82 @@ router.delete('/voice-videos/:id', verifyAdmin, async (req, res) => {
 // 7. EVENT REGISTRATIONS, SPONSORSHIPS, COMMUNITY MEMBERSHIPS
 // =============================================================================
 
-// GET /api/admin/event-registrations
-router.get('/event-registrations', verifyAdmin, async (req, res) => {
+// GET /api/admin/event-registrations (and aliases /events, /event-passes)
+const handleGetEventRegistrations = async (req, res) => {
   try {
     let rows = [];
     try {
-      const result = await query(`SELECT * FROM web_event_registrations ORDER BY created_at DESC`);
+      const result = await query(`
+        SELECT 
+          id,
+          name,
+          name as attendee_name,
+          email,
+          phone,
+          COALESCE(organization, 'General') as organization,
+          COALESCE(organization, 'General') as attendee_segment,
+          COALESCE(city_hub, city, 'Ahmedabad') as city_hub,
+          COALESCE(city, city_hub, 'Ahmedabad') as city,
+          COALESCE(pass_type, 'general') as pass_type,
+          COALESCE(pass_type, 'general') as pass_tier,
+          COALESCE(pass_amount, 0) as pass_amount,
+          COALESCE(pass_amount, 0) as price,
+          COALESCE(pass_amount, 0) as amount,
+          COALESCE(payment_status, 'pending') as payment_status,
+          payment_ref,
+          payment_ref as payment_id,
+          COALESCE(status, 'registered') as status,
+          created_at
+        FROM web_event_registrations 
+        ORDER BY created_at DESC
+      `);
       rows = result.rows;
     } catch (e) {
-      try {
-        const result = await query(`
-          SELECT id, attendee_name as name, email, phone, city_hub as city, pass_tier as pass_type, price as pass_amount, status as payment_status, created_at
-          FROM event_registrations ORDER BY created_at DESC
-        `);
-        rows = result.rows;
-      } catch (err2) {
-        rows = [];
-      }
+      rows = [];
     }
+
+    try {
+      const fbRes = await query(`
+        SELECT 
+          id,
+          attendee_name as name,
+          attendee_name,
+          email,
+          phone,
+          'General' as organization,
+          'General' as attendee_segment,
+          city_hub as city,
+          city_hub,
+          pass_tier as pass_type,
+          pass_tier,
+          price as pass_amount,
+          price,
+          price as amount,
+          status as payment_status,
+          status,
+          created_at
+        FROM event_registrations 
+        ORDER BY created_at DESC
+      `);
+      if (fbRes && fbRes.rows) {
+        const existingEmails = new Set(rows.map(r => r.email?.toLowerCase()));
+        fbRes.rows.forEach(r => {
+          if (!existingEmails.has(r.email?.toLowerCase())) {
+            rows.push(r);
+          }
+        });
+      }
+    } catch (errFb) {}
+
     res.json({ success: true, data: rows });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error fetching event registrations' });
   }
-});
+};
+
+router.get('/event-registrations', verifyAdmin, handleGetEventRegistrations);
+router.get('/events', verifyAdmin, handleGetEventRegistrations);
+router.get('/event-passes', verifyAdmin, handleGetEventRegistrations);
 
 // GET /api/admin/sponsorships
 router.get('/sponsorships', verifyAdmin, async (req, res) => {
