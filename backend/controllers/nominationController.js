@@ -23,28 +23,57 @@ export const createNomination = async (req, res, next) => {
       return errorResponse(res, 'Please provide all mandatory fields: founderName, ventureName, email, phone, city, categoryCode, and pitch.', 400);
     }
 
-    const result = await query(`
-      INSERT INTO web_nominations (
-        nominee_name, business_name, designation, email, phone, city,
-        category_name, description, operational_years, website_link, status, award_year
-      ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending', '2027')
-      RETURNING *
-    `, [
-      founderName.trim(),
-      ventureName.trim(),
-      designation || 'Founder',
-      email.toLowerCase().trim(),
-      phone.trim(),
-      city.trim(),
-      categoryName || categoryCode,
-      pitch.trim(),
-      operationalYears || '1-3 years',
-      websiteUrl || null,
-    ]);
+    let insertedRow = null;
+    try {
+      const result = await query(`
+        INSERT INTO web_nominations (
+          nominee_name, business_name, designation, email, phone, city,
+          category_name, description, operational_years, website_link, status, award_year
+        ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending', '2027')
+        RETURNING *
+      `, [
+        founderName.trim(),
+        ventureName.trim(),
+        designation || 'Founder',
+        email.toLowerCase().trim(),
+        phone.trim(),
+        city.trim(),
+        categoryName || categoryCode,
+        pitch.trim(),
+        operationalYears || '1-3 years',
+        websiteUrl || null,
+      ]);
+      insertedRow = result.rows[0];
+    } catch (dbErr) {
+      console.warn('web_nominations insert attempt:', dbErr.message);
+      try {
+        const fbRes = await query(`
+          INSERT INTO nominations (
+            founder_name, venture_name, designation, email, phone, city,
+            category_name, pitch, operational_years, website_url, status
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending')
+          RETURNING *
+        `, [
+          founderName.trim(),
+          ventureName.trim(),
+          designation || 'Founder',
+          email.toLowerCase().trim(),
+          phone.trim(),
+          city.trim(),
+          categoryName || categoryCode,
+          pitch.trim(),
+          operationalYears || '1-3 years',
+          websiteUrl || null,
+        ]);
+        insertedRow = fbRes.rows[0];
+      } catch (fbErr) {
+        throw dbErr;
+      }
+    }
 
     return successResponse(
       res,
-      result.rows[0],
+      insertedRow,
       'Nomination submitted successfully with 100% free processing.',
       201
     );

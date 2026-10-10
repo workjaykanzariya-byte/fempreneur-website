@@ -136,6 +136,86 @@ export const initializeDatabase = async () => {
         status VARCHAR(50) DEFAULT 'pending',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      -- 9. Winners
+      CREATE TABLE IF NOT EXISTS web_winners (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        company VARCHAR(255),
+        category_name VARCHAR(255),
+        city VARCHAR(100),
+        award_year VARCHAR(10) DEFAULT '2027',
+        track VARCHAR(50) DEFAULT 'honorary',
+        impact_text TEXT,
+        quote TEXT,
+        photo_url VARCHAR(500),
+        website_url VARCHAR(500),
+        is_published INTEGER DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 10. Sponsors (Gallery)
+      CREATE TABLE IF NOT EXISTS web_sponsors (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        role VARCHAR(100) DEFAULT 'Sponsor',
+        org VARCHAR(255) NOT NULL,
+        tags VARCHAR(255),
+        photo_url VARCHAR(500),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 11. Partners
+      CREATE TABLE IF NOT EXISTS web_partners (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        role VARCHAR(100) NOT NULL,
+        org VARCHAR(255) NOT NULL,
+        tags VARCHAR(255),
+        photo_url VARCHAR(500),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 12. Jury Members
+      CREATE TABLE IF NOT EXISTS web_jury (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        role VARCHAR(100) NOT NULL,
+        org VARCHAR(255) NOT NULL,
+        tags VARCHAR(255),
+        photo_url VARCHAR(500),
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 13. Blogs & Articles
+      CREATE TABLE IF NOT EXISTS web_blogs (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(500) NOT NULL,
+        slug VARCHAR(500) UNIQUE NOT NULL,
+        category VARCHAR(100) DEFAULT 'Leadership',
+        author VARCHAR(255) DEFAULT 'Fempreneur Team',
+        excerpt TEXT,
+        content TEXT NOT NULL,
+        featured_image VARCHAR(500),
+        is_published INTEGER DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
+
+      -- 14. Voice of Fempreneur Videos
+      CREATE TABLE IF NOT EXISTS web_voice_videos (
+        id SERIAL PRIMARY KEY,
+        title VARCHAR(500) NOT NULL,
+        youtube_url VARCHAR(500) NOT NULL,
+        youtube_id VARCHAR(100) NOT NULL,
+        thumbnail_url VARCHAR(500),
+        speaker_name VARCHAR(255),
+        company_name VARCHAR(255),
+        display_order INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
     `);
     console.log('✓ Verified and initialized all web_* tables in PostgreSQL');
   } catch (err) {
