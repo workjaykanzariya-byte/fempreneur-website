@@ -10,8 +10,7 @@
  * 5. Rejects on dismissal or failure to prevent unverified registrations
  */
 
-const isLocal = typeof window !== 'undefined' && (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1');
-const API_BASE = import.meta.env.VITE_API_URL || (isLocal ? 'http://localhost:5000/api' : '/api');
+const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
 /**
  * Dynamically loads the official Razorpay checkout script if not already present.
@@ -63,7 +62,7 @@ export const initiateRazorpayPayment = async ({
       }),
     });
   } catch (netErr) {
-    throw new Error('Unable to connect to the backend server (http://localhost:5000). Please ensure the backend is running.');
+    throw new Error('Unable to connect to the backend server. Please ensure the backend is running.');
   }
 
   let orderData;
