@@ -24,13 +24,20 @@ export const initializeDatabase = async () => {
         organization VARCHAR(255),
         city_hub VARCHAR(100),
         city VARCHAR(100),
-        pass_type VARCHAR(50) DEFAULT 'general',
+        pass_type VARCHAR(100) DEFAULT 'Delegate (With Dinner)',
         pass_amount NUMERIC(10, 2) DEFAULT 0,
+        event_date TIMESTAMP WITH TIME ZONE DEFAULT '2027-03-08 18:30:00+00',
+        event_venue VARCHAR(255) DEFAULT 'Renaissance by Marriott, S.G. Highway, Ahmedabad',
+        attendee_segment VARCHAR(255),
         payment_status VARCHAR(50) DEFAULT 'pending',
         payment_ref VARCHAR(255),
         status VARCHAR(50) DEFAULT 'registered',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS event_date TIMESTAMP WITH TIME ZONE DEFAULT '2027-03-08 18:30:00+00';
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS event_venue VARCHAR(255) DEFAULT 'Renaissance by Marriott, S.G. Highway, Ahmedabad';
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS attendee_segment VARCHAR(255);
 
       -- 2. Community Applications (Memberships)
       CREATE TABLE IF NOT EXISTS web_community_applications (

@@ -704,16 +704,20 @@ const handleGetEventRegistrations = async (req, res) => {
       const result = await query(`
         SELECT 
           id,
+          '2027' as year,
+          '2027' as award_year,
+          COALESCE(event_date, '2027-03-08 18:30:00+00'::timestamptz) as event_date,
+          COALESCE(event_venue, 'Renaissance by Marriott, S.G. Highway, Ahmedabad') as event_venue,
           name,
           name as attendee_name,
           email,
           phone,
-          COALESCE(organization, 'General') as organization,
-          COALESCE(organization, 'General') as attendee_segment,
-          COALESCE(city_hub, city, 'Ahmedabad') as city_hub,
-          COALESCE(city, city_hub, 'Ahmedabad') as city,
-          COALESCE(pass_type, 'general') as pass_type,
-          COALESCE(pass_type, 'general') as pass_tier,
+          COALESCE(organization, attendee_segment, 'Women Entrepreneur') as organization,
+          COALESCE(attendee_segment, organization, 'Women Entrepreneur') as attendee_segment,
+          COALESCE(city_hub, city, 'Ahmedabad, Gujarat') as city_hub,
+          COALESCE(city, city_hub, 'Ahmedabad, Gujarat') as city,
+          COALESCE(pass_type, 'Delegate (With Dinner)') as pass_type,
+          COALESCE(pass_type, 'Delegate (With Dinner)') as pass_tier,
           COALESCE(pass_amount, 0) as pass_amount,
           COALESCE(pass_amount, 0) as price,
           COALESCE(pass_amount, 0) as amount,
@@ -727,19 +731,51 @@ const handleGetEventRegistrations = async (req, res) => {
       `);
       rows = result.rows;
     } catch (e) {
-      rows = [];
+      try {
+        const result = await query(`SELECT * FROM web_event_registrations ORDER BY created_at DESC`);
+        rows = (result.rows || []).map(r => ({
+          id: r.id,
+          year: '2027',
+          award_year: '2027',
+          event_date: r.event_date || '2027-03-08T18:30:00.000Z',
+          event_venue: r.event_venue || 'Renaissance by Marriott, S.G. Highway, Ahmedabad',
+          name: r.name,
+          attendee_name: r.name,
+          email: r.email,
+          phone: r.phone,
+          organization: r.organization || 'Women Entrepreneur',
+          attendee_segment: r.attendee_segment || r.organization || 'Women Entrepreneur',
+          city_hub: r.city_hub || r.city || 'Ahmedabad, Gujarat',
+          city: r.city || r.city_hub || 'Ahmedabad, Gujarat',
+          pass_type: r.pass_type || 'Delegate (With Dinner)',
+          pass_tier: r.pass_type || 'Delegate (With Dinner)',
+          pass_amount: r.pass_amount || 0,
+          price: r.pass_amount || 0,
+          amount: r.pass_amount || 0,
+          payment_status: r.payment_status || 'pending',
+          payment_ref: r.payment_ref,
+          payment_id: r.payment_ref,
+          status: r.status || 'registered',
+          created_at: r.created_at,
+        }));
+      } catch (err2) {
+        rows = [];
+      }
     }
 
     try {
       const fbRes = await query(`
         SELECT 
           id,
+          '2027' as year,
+          '2027-03-08 18:30:00+00'::timestamptz as event_date,
+          'Renaissance by Marriott, S.G. Highway, Ahmedabad' as event_venue,
           attendee_name as name,
           attendee_name,
           email,
           phone,
-          'General' as organization,
-          'General' as attendee_segment,
+          'Women Entrepreneur' as organization,
+          'Women Entrepreneur' as attendee_segment,
           city_hub as city,
           city_hub,
           pass_tier as pass_type,

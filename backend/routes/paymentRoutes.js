@@ -132,28 +132,54 @@ router.post('/verify', async (req, res) => {
         switch (module) {
           case 'events':
           case 'event': {
+            const cityHub = orderNotes.cityHub || orderNotes.city || 'Ahmedabad, Gujarat';
+            const passTier = orderNotes.passTier || 'Delegate (With Dinner)';
+            const org = orderNotes.attendeeSegment || orderNotes.organization || 'Women Entrepreneur';
+            const passAmount = orderNotes.originalAmount || orderNotes.amount || (passTier.toLowerCase().includes('dinner') ? 1500 : 750);
+
             let isUpdated = false;
             if (recId) {
-              const resUpd = await query(
-                `UPDATE web_event_registrations SET payment_status = 'paid', payment_ref = $1, status = 'confirmed' WHERE id = $2 RETURNING *`,
-                [razorpay_payment_id, recId]
-              );
-              if (resUpd && resUpd.rowCount > 0) isUpdated = true;
+              try {
+                const resUpd = await query(
+                  `UPDATE web_event_registrations 
+                   SET payment_status = 'paid', payment_ref = $1, status = 'confirmed',
+                       pass_type = COALESCE(pass_type, $2),
+                       pass_amount = COALESCE(pass_amount, $3)
+                   WHERE id = $4 RETURNING *`,
+                  [razorpay_payment_id, passTier, passAmount, recId]
+                );
+                if (resUpd && resUpd.rowCount > 0) isUpdated = true;
+              } catch (errUpd) {
+                console.warn('Update web_event_registrations error:', errUpd.message);
+              }
             }
+
             if (!isUpdated && contactEmail) {
-              const cityHub = orderNotes.cityHub || orderNotes.city || 'Ahmedabad';
-              const passTier = orderNotes.passTier || 'Delegate (With Dinner)';
-              const org = orderNotes.attendeeSegment || orderNotes.organization || 'General';
-              await query(`
-                INSERT INTO web_event_registrations (
-                  name, email, phone, organization, city_hub, pass_type, pass_amount, city, payment_status, payment_ref, status
-                ) VALUES ($1, $2, $3, $4, $5, $6, 1, $7, 'paid', $8, 'confirmed')
-                RETURNING *
-              `, [
-                contactName, contactEmail, contactPhone, org, cityHub,
-                passTier.toLowerCase().includes('vip') ? 'vip' : 'general',
-                cityHub, razorpay_payment_id
-              ]);
+              try {
+                await query(`
+                  INSERT INTO web_event_registrations (
+                    name, email, phone, organization, attendee_segment, city_hub, city, pass_type, pass_amount, event_date, event_venue, payment_status, payment_ref, status
+                  ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, '2027-03-08 18:30:00+00', 'Renaissance by Marriott, S.G. Highway, Ahmedabad', 'paid', $10, 'confirmed')
+                  RETURNING *
+                `, [
+                  contactName, contactEmail, contactPhone, org, org, cityHub, cityHub,
+                  passTier, passAmount, razorpay_payment_id
+                ]);
+              } catch (errIns1) {
+                try {
+                  await query(`
+                    INSERT INTO web_event_registrations (
+                      name, email, phone, organization, city_hub, pass_type, pass_amount, city, payment_status, payment_ref, status
+                    ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'paid', $9, 'confirmed')
+                    RETURNING *
+                  `, [
+                    contactName, contactEmail, contactPhone, org, cityHub,
+                    passTier, passAmount, cityHub, razorpay_payment_id
+                  ]);
+                } catch (errIns2) {
+                  console.error('Insert fallback error:', errIns2.message);
+                }
+              }
             }
             break;
           }
