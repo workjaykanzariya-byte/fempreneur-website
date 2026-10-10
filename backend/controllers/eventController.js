@@ -3,10 +3,16 @@ import { successResponse, errorResponse } from '../utils/response.js';
 
 export const registerEventPass = async (req, res, next) => {
   try {
-    const { attendeeName, email, phone, organization, cityHub, passTier, price } = req.body;
+    const attendeeName = req.body.attendeeName || req.body.name;
+    const email = req.body.email;
+    const phone = req.body.phone;
+    const organization = req.body.organization || req.body.segment || req.body.attendeeSegment || 'Women Entrepreneur';
+    const cityHub = req.body.cityHub || req.body.city || 'Ahmedabad, Gujarat';
+    const passTier = req.body.passTier || req.body.passOption || req.body.pass_type || 'Delegate (With Dinner)';
+    const price = req.body.price !== undefined ? req.body.price : req.body.amount;
 
-    if (!attendeeName || !email || !phone || !cityHub || !passTier) {
-      return errorResponse(res, 'Attendee name, email, phone, cityHub, and passTier are required.', 400);
+    if (!attendeeName || !email || !phone) {
+      return errorResponse(res, 'Attendee name, email, and phone are required.', 400);
     }
 
     const cleanPassTier = passTier.trim();
