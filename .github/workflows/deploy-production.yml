@@ -94,8 +94,18 @@ jobs:
           echo "$KNOWN_HOSTS_ENTRY" > ~/.ssh/known_hosts
           chmod 644 ~/.ssh/known_hosts
 
-          echo "Testing strict SSH connectivity to production VPS..."
-          ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} -o BatchMode=yes ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} "echo '✓ SSH connection to production VPS authenticated successfully'"
+          echo "Testing SSH connectivity to production VPS with retries..."
+          for i in 1 2 3; do
+            echo "Attempt $i to connect to production VPS..."
+            if ssh -i ~/.ssh/deploy_key -p ${{ secrets.PROD_SSH_PORT || '22' }} -o ConnectTimeout=20 -o ConnectionAttempts=3 -o ServerAliveInterval=15 -o StrictHostKeyChecking=accept-new -o BatchMode=yes ${{ secrets.PROD_SSH_USER || 'fempreneur' }}@${{ secrets.PROD_SSH_HOST || '187.127.181.73' }} "echo '✓ SSH connection to production VPS authenticated successfully'"; then
+              echo "✅ SSH connected successfully on attempt $i."
+              exit 0
+            fi
+            echo "⚠️ Attempt $i failed, waiting 5 seconds before retry..."
+            sleep 5
+          done
+          echo "❌ Fatal: Could not connect to production VPS via SSH after 3 attempts."
+          exit 1
 
       # =========================================================================
       # 4. PRE-DEPLOYMENT SNAPSHOT (SAFETY & ROLLBACK PREPARATION)
