@@ -171,9 +171,10 @@ router.get('/nominations', verifyAdmin, async (req, res) => {
       const dbRes = await query(`SELECT * FROM web_nominations ORDER BY created_at DESC`);
       rows = (dbRes.rows || []).map(n => ({
         id: n.id,
+        track: n.track || 'honorary',
         nominee_name: n.nominee_name || n.founder_name || '',
         business_name: n.business_name || n.venture_name || '',
-        designation: n.designation || 'Founder',
+        designation: n.designation || 'Founder & CEO',
         email: n.email || '',
         phone: n.phone || '',
         city: n.city || '',
@@ -185,17 +186,16 @@ router.get('/nominations', verifyAdmin, async (req, res) => {
         profile_picture: n.profile_picture || '',
         business_logo: n.business_logo || '',
         voting_url: n.voting_url || '',
-        track: n.track || 'honorary',
-        package: n.package || 'identity',
+        package: n.package || (n.track === 'rated' ? 'identity' : 'honorary'),
         package_amount: n.package_amount || 0,
         status: n.status || 'pending',
-        payment_status: n.payment_status || 'not_applicable',
-        payment_ref: n.payment_ref || '',
-        jury_score: n.jury_score || 0,
+        payment_status: n.payment_status || (n.track === 'rated' ? 'pending' : 'not_applicable'),
+        payment_ref: n.payment_ref || null,
+        jury_score: n.jury_score || null,
         public_votes: n.public_votes || 0,
         award_year: n.award_year || '2027',
         created_at: n.created_at,
-        updated_at: n.updated_at || n.created_at,
+        updated_at: n.updated_at,
       }));
     } catch (e) {
       try {

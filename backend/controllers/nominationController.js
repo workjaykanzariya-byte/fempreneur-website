@@ -12,7 +12,7 @@ export const createNomination = async (req, res, next) => {
       businessName,
       ventureName,
       companyName,
-      designation = 'Founder & Leader',
+      designation = 'Founder & CEO',
       email,
       phone,
       city,
@@ -20,55 +20,81 @@ export const createNomination = async (req, res, next) => {
       category,
       categoryCode,
       categoryName,
+      categoryId,
+      category_id,
       description,
       pitch,
       operationalYears,
+      operational_years,
       impactSummary,
       link,
       websiteUrl,
       websiteLink,
       profilePicture,
+      profile_picture,
       businessLogo,
+      business_logo,
       package: pkg = 'identity',
       packageAmount: customPackageAmount,
+      package_amount,
       paymentRef,
       payment_ref,
       paymentStatus,
       payment_status,
+      status = 'pending',
+      notes,
     } = req.body;
 
     const finalNomineeName = (name || nomineeName || founderName || '').trim();
     const finalBusinessName = (business || businessName || ventureName || companyName || '').trim();
+    const finalDesignation = (designation || 'Founder & CEO').trim();
     const finalEmail = (email || '').toLowerCase().trim();
     const finalPhone = (phone || '').trim();
-    const finalCity = (city || '').trim();
+    const finalCity = (city || (state ? `${city}, ${state}` : '') || '').trim();
     const finalCategory = (category || categoryName || categoryCode || 'Woman Entrepreneur of the Year').trim();
-    const finalDescription = (description || pitch || '').trim();
+    const finalCategoryId = categoryId || category_id || null;
+    const finalDescription = (description || pitch || impactSummary || '').trim();
+    const finalOperationalYears = operationalYears || operational_years || '1-3 years';
     const finalLink = (link || websiteUrl || websiteLink || '').trim() || null;
-    const finalTrack = (track === 'rated' || track === 'challenge' || track === 'identity') ? 'rated' : 'honorary';
+    const finalProfilePicture = profilePicture || profile_picture || null;
+    const finalBusinessLogo = businessLogo || business_logo || null;
+    const finalTrack = track === 'rated' ? 'rated' : 'honorary';
+    const finalPkg = finalTrack === 'rated' ? (pkg || 'identity') : 'honorary';
 
     if (!finalNomineeName || !finalBusinessName || !finalEmail || !finalPhone || !finalCity) {
       return errorResponse(res, 'Please provide all mandatory fields: Nominee Full Name, Business Name, Email, Phone, and City & State.', 400);
     }
 
     // Determine package amount if rated
-    let packageAmount = 0;
+    let finalPackageAmount = 0;
     if (finalTrack === 'rated') {
-      if (customPackageAmount && Number(customPackageAmount) > 0) {
-        packageAmount = Number(customPackageAmount);
-      } else if (pkg === 'identity') packageAmount = 2000;
-      else if (pkg === 'change_maker') packageAmount = 3000;
-      else if (pkg === 'fame_india') packageAmount = 5000;
-      else if (pkg === 'impact_creator') packageAmount = 10000;
-      else packageAmount = 2000;
+      if (customPackageAmount !== undefined && customPackageAmount !== null) {
+        finalPackageAmount = Number(customPackageAmount);
+      } else if (package_amount !== undefined && package_amount !== null) {
+        finalPackageAmount = Number(package_amount);
+      } else if (finalPkg === 'identity') finalPackageAmount = 2000;
+      else if (finalPkg === 'change_maker') finalPackageAmount = 3000;
+      else if (finalPkg === 'fame_india') finalPackageAmount = 5000;
+      else if (finalPkg === 'impact_creator') finalPackageAmount = 10000;
+      else finalPackageAmount = 2000;
     }
 
-    const finalPaymentRef = paymentRef || payment_ref || (finalTrack === 'rated' ? 'PAID_VERIFIED' : null);
-    const finalPaymentStatus = (finalTrack === 'rated' && finalPaymentRef) ? 'paid' : (finalTrack === 'rated' ? 'pending' : 'not_applicable');
-    const finalStatus = 'pending';
+    const finalPaymentRef = (paymentRef || payment_ref || '').trim() || null;
+    let finalPaymentStatus = 'not_applicable';
+    if (finalTrack === 'rated') {
+      if (finalPaymentRef || paymentStatus === 'paid' || payment_status === 'paid') {
+        finalPaymentStatus = 'paid';
+      } else {
+        finalPaymentStatus = 'pending';
+      }
+    } else {
+      finalPaymentStatus = paymentStatus || payment_status || 'not_applicable';
+    }
+
+    const finalStatus = finalPaymentStatus === 'paid' ? 'confirmed' : (status || 'pending');
 
     // Clean voting URL
-    const slug = finalNomineeName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
+    const slug = (finalNomineeName || 'nominee').toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
     const votingUrl = `/voting?nominee=${slug}-${Date.now().toString().slice(-4)}`;
 
     let insertedRow = null;
@@ -76,74 +102,75 @@ export const createNomination = async (req, res, next) => {
       const result = await query(`
         INSERT INTO web_nominations (
           track, nominee_name, founder_name, business_name, venture_name, designation,
-          phone, email, city, category_name, category_code, description, pitch,
-          operational_years, website_link, website_url, profile_picture, business_logo,
-          voting_url, package, package_amount, status, payment_status, payment_ref,
-          award_year, updated_at
+          phone, email, city, category_id, category_name, category_code,
+          description, pitch, operational_years, website_link, website_url,
+          profile_picture, business_logo, voting_url, package, package_amount,
+          status, payment_status, payment_ref, notes, award_year, created_at, updated_at
         ) VALUES (
-          $1, $2, $2, $3, $3, $4,
-          $5, $6, $7, $8, $8, $9, $9,
-          $10, $11, $11, $12, $13,
-          $14, $15, $16, $17, $18, $19,
-          '2027', NOW()
+          $1, $2, $3, $4, $5, $6,
+          $7, $8, $9, $10, $11, $12,
+          $13, $14, $15, $16, $17,
+          $18, $19, $20, $21, $22,
+          $23, $24, $25, $26, '2027', NOW(), NOW()
         )
         RETURNING *
       `, [
         finalTrack,
         finalNomineeName,
+        finalNomineeName,
         finalBusinessName,
-        designation || 'Founder & CEO',
+        finalBusinessName,
+        finalDesignation,
         finalPhone,
         finalEmail,
         finalCity,
+        finalCategoryId,
+        finalCategory,
         finalCategory,
         finalDescription,
-        operationalYears || '1-3 years',
+        finalDescription,
+        finalOperationalYears,
         finalLink,
-        profilePicture || null,
-        businessLogo || null,
+        finalLink,
+        finalProfilePicture,
+        finalBusinessLogo,
         votingUrl,
-        pkg,
-        packageAmount,
+        finalPkg,
+        finalPackageAmount,
         finalStatus,
         finalPaymentStatus,
-        finalPaymentRef
+        finalPaymentRef,
+        notes || null,
       ]);
       insertedRow = result.rows[0];
     } catch (dbErr) {
-      console.warn('Primary web_nominations insert attempt error:', dbErr.message);
+      console.warn('Full web_nominations insert attempt error:', dbErr.message);
       try {
         const fbRes = await query(`
           INSERT INTO web_nominations (
-            track, nominee_name, founder_name, business_name, venture_name, designation,
-            phone, email, city, category_name, category_code, description, pitch,
-            operational_years, website_link, website_url, voting_url, package, package_amount,
-            status, payment_status, payment_ref, award_year, updated_at
-          ) VALUES (
-            $1, $2, $2, $3, $3, $4,
-            $5, $6, $7, $8, $8, $9, $9,
-            $10, $11, $11, $12, $13, $14,
-            $15, $16, $17, '2027', NOW()
-          )
+            track, nominee_name, business_name, designation, email, phone, city,
+            category_name, description, operational_years, website_link,
+            package, package_amount, status, payment_status, payment_ref, voting_url, award_year
+          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15, $16, $17, '2027')
           RETURNING *
         `, [
           finalTrack,
           finalNomineeName,
           finalBusinessName,
-          designation || 'Founder & CEO',
-          finalPhone,
+          finalDesignation,
           finalEmail,
+          finalPhone,
           finalCity,
           finalCategory,
           finalDescription,
-          operationalYears || '1-3 years',
+          finalOperationalYears,
           finalLink,
-          votingUrl,
-          pkg,
-          packageAmount,
+          finalPkg,
+          finalPackageAmount,
           finalStatus,
           finalPaymentStatus,
-          finalPaymentRef
+          finalPaymentRef,
+          votingUrl,
         ]);
         insertedRow = fbRes.rows[0];
       } catch (fbErr) {
@@ -157,13 +184,13 @@ export const createNomination = async (req, res, next) => {
         `, [
           finalNomineeName,
           finalBusinessName,
-          designation || 'Founder & CEO',
+          finalDesignation,
           finalEmail,
           finalPhone,
           finalCity,
           finalCategory,
           finalDescription,
-          operationalYears || '1-3 years',
+          finalOperationalYears,
           finalLink,
         ]);
         insertedRow = legRes.rows[0];
@@ -174,9 +201,9 @@ export const createNomination = async (req, res, next) => {
       res,
       {
         ...insertedRow,
-        voting_url: votingUrl,
+        voting_url: insertedRow?.voting_url || votingUrl,
       },
-      'Nomination submitted successfully with 100% free processing.',
+      'Nomination submitted and recorded successfully.',
       201
     );
   } catch (err) {
@@ -186,14 +213,14 @@ export const createNomination = async (req, res, next) => {
 
 export const getNominations = async (req, res, next) => {
   try {
-    const { category, city, status } = req.query;
+    const { category, city, status, track } = req.query;
 
     let sql = 'SELECT * FROM web_nominations WHERE 1=1';
     const params = [];
 
     if (category) {
       params.push(category);
-      sql += ` AND category_name = $${params.length}`;
+      sql += ` AND (category_name = $${params.length} OR category_code = $${params.length})`;
     }
 
     if (city) {
@@ -204,6 +231,11 @@ export const getNominations = async (req, res, next) => {
     if (status) {
       params.push(status);
       sql += ` AND status = $${params.length}`;
+    }
+
+    if (track) {
+      params.push(track);
+      sql += ` AND track = $${params.length}`;
     }
 
     sql += ' ORDER BY created_at DESC';

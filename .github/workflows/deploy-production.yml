@@ -177,24 +177,6 @@ jobs:
             cd /home/fempreneur/apps/fempreneur/backend
             npm ci --omit=dev --prefer-offline --no-audit
 
-            echo "=== [2.5/4] Aligning PostgreSQL schema for web_nominations ==="
-            sudo -n -u postgres psql -d fempreneurbackend -c "
-              ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS founder_name VARCHAR(150);
-              ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS venture_name VARCHAR(200);
-              ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_code VARCHAR(150);
-              ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS pitch TEXT;
-              ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_url VARCHAR(500);
-              ALTER TABLE web_nominations ALTER COLUMN profile_picture TYPE TEXT;
-              ALTER TABLE web_nominations ALTER COLUMN business_logo TYPE TEXT;
-              UPDATE web_nominations SET 
-                founder_name = COALESCE(founder_name, nominee_name),
-                venture_name = COALESCE(venture_name, business_name),
-                category_code = COALESCE(category_code, category_name),
-                pitch = COALESCE(pitch, description),
-                website_url = COALESCE(website_url, website_link)
-              WHERE founder_name IS NULL OR venture_name IS NULL OR category_code IS NULL;
-            " || echo "Notice: psql schema step executed or bypassed"
-
             echo "=== [3/4] Restarting systemd service fempreneur-backend ==="
             sudo /usr/bin/systemctl restart fempreneur-backend
 
