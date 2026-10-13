@@ -1,0 +1,574 @@
+/* ==========================================================================
+   FEMPRENEUR AWARD NOMINATIONS ADMIN DASHBOARD STYLES
+   Recreated matching Greenpreneur layout with Fempreneur luxury branding:
+   Royal Purple (#24073B, #5E178C), Amber Gold (#D4AF37, #C99738), Crisp White (#FFFFFF)
+   ========================================================================== */
+
+.fem-admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+  background-color: #F8F9FA;
+  font-family: 'Outfit', 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+  color: #1F2937;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Sidebar */
+.fem-admin-sidebar {
+  width: 260px;
+  background: linear-gradient(180deg, #180326 0%, #10021c 100%);
+  color: #FFFFFF;
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  border-right: 1px solid rgba(212, 175, 55, 0.15);
+  z-index: 50;
+}
+
+.fem-admin-sidebar.collapsed {
+  width: 76px;
+}
+
+.fem-admin-sidebar-header {
+  padding: 24px 20px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fem-admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+}
+
+.fem-admin-brand-text {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 800;
+  color: #D4AF37;
+  letter-spacing: 0.08em;
+  line-height: 1;
+}
+
+.fem-admin-user-welcome {
+  padding: 8px 20px 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.fem-admin-user-welcome .welcome-lbl {
+  font-size: 0.8rem;
+  color: #9CA3AF;
+  margin-bottom: 2px;
+}
+
+.fem-admin-user-welcome .welcome-name {
+  font-size: 1.05rem;
+  font-weight: 700;
+  color: #FFFFFF;
+  letter-spacing: 0.01em;
+}
+
+.fem-admin-nav-group {
+  padding: 16px 20px 8px;
+  font-size: 0.72rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #9CA3AF;
+  font-weight: 700;
+}
+
+.fem-admin-nav-list {
+  list-style: none;
+  padding: 0 12px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.fem-admin-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  border-radius: 8px;
+  color: #E2E8F0;
+  font-size: 0.88rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.fem-admin-nav-item:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+}
+
+/* Greenpreneur-identical Active Menu item: Rich Gold Pill with Dark Text */
+.fem-admin-nav-item.active {
+  background: #c99738 !important;
+  color: #18181B !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(201, 151, 56, 0.35);
+}
+
+.fem-admin-nav-item.active svg {
+  color: #18181B !important;
+}
+
+.fem-admin-sidebar-scroll {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 20px;
+}
+
+.fem-admin-sidebar-scroll::-webkit-scrollbar {
+  width: 4px;
+}
+.fem-admin-sidebar-scroll::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 4px;
+}
+
+.fem-admin-logout-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 16px 22px;
+  background: transparent;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.06);
+  color: #EF4444;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+  width: 100%;
+  transition: background 0.15s ease;
+}
+
+.fem-admin-logout-btn:hover {
+  background: rgba(239, 68, 68, 0.08);
+}
+
+/* Main Content Area */
+.fem-admin-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  overflow-y: auto;
+  background-color: #F8F9FA;
+}
+
+/* Top White Header with Breadcrumbs */
+.fem-admin-topbar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 18px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+}
+
+.fem-admin-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.fem-admin-breadcrumb .bc-parent {
+  font-size: 1.25rem;
+  font-weight: 500;
+  color: #6B7280;
+}
+
+.fem-admin-breadcrumb .bc-sep {
+  font-size: 1.15rem;
+  color: #9CA3AF;
+  font-weight: 300;
+}
+
+.fem-admin-breadcrumb .bc-active {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.fem-admin-topbar-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Compact Filter Toolbar */
+.fem-filter-toolbar {
+  background: #FFFFFF;
+  border-bottom: 1px solid #E5E7EB;
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.fem-filter-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.fem-filter-label {
+  font-size: 0.76rem;
+  font-weight: 700;
+  color: #6B7280;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.fem-filter-select {
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 7px 32px 7px 12px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #374151;
+  outline: none;
+  cursor: pointer;
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236B7280' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+  background-repeat: no-repeat;
+  background-position: right 8px center;
+  background-size: 14px;
+  transition: border-color 0.15s ease;
+}
+
+.fem-filter-select:focus {
+  border-color: #9C27B0;
+}
+
+.fem-read-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  padding: 7px 14px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.fem-read-btn:hover {
+  background: #F3F4F6;
+  border-color: #9CA3AF;
+}
+
+.fem-entry-count {
+  font-size: 0.84rem;
+  color: #6B7280;
+  font-weight: 500;
+}
+
+/* Wide Clean Nominations Table */
+.fem-table-container {
+  background: #FFFFFF;
+  width: 100%;
+  overflow-x: auto;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.fem-clean-table {
+  width: 100%;
+  border-collapse: collapse;
+  min-width: 980px;
+  text-align: left;
+}
+
+.fem-clean-table th {
+  padding: 14px 18px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #6B7280;
+  border-bottom: 1px solid #E5E7EB;
+  background: #FFFFFF;
+}
+
+.fem-clean-table td {
+  padding: 18px 18px;
+  border-bottom: 1px solid #F3F4F6;
+  vertical-align: middle;
+  font-size: 0.88rem;
+  color: #374151;
+}
+
+.fem-clean-table tbody tr {
+  transition: background-color 0.15s ease;
+}
+
+.fem-clean-table tbody tr:hover {
+  background-color: #FAFAFB;
+}
+
+/* Table Column Details */
+.nominee-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #111827;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.nominee-email {
+  font-size: 0.82rem;
+  color: #6B7280;
+  margin-top: 4px;
+}
+
+.company-title {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.company-city {
+  font-size: 0.82rem;
+  color: #6B7280;
+  margin-top: 3px;
+}
+
+.category-text {
+  font-size: 0.88rem;
+  color: #374151;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 260px;
+}
+
+.votes-display {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.votes-subtitle {
+  font-size: 0.78rem;
+  color: #6B7280;
+  margin-top: 3px;
+}
+
+/* Badges */
+.badge-new {
+  background: #E6F4EA;
+  color: #137333;
+  font-size: 0.65rem;
+  font-weight: 700;
+  padding: 2px 6px;
+  border-radius: 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-track-honorary {
+  display: inline-block;
+  background: #EFF6FF;
+  color: #1D4ED8;
+  border: 1px solid #BFDBFE;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+.badge-track-rated {
+  display: inline-block;
+  background: #FEF3C7;
+  color: #B45309;
+  border: 1px solid #FDE68A;
+  font-size: 0.68rem;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 4px;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-right: 8px;
+}
+
+.badge-payment-na {
+  display: inline-block;
+  background: #F9FAFB;
+  color: #9CA3AF;
+  border: 1px solid #E5E7EB;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+.badge-payment-paid {
+  display: inline-block;
+  background: #DEF7EC;
+  color: #03543F;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+.badge-payment-pending {
+  display: inline-block;
+  background: #FEF08A;
+  color: #854D0E;
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 3px 12px;
+  border-radius: 9999px;
+  text-align: center;
+}
+
+/* Buttons */
+.fem-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  border: none;
+  transition: all 0.15s ease;
+}
+
+.fem-btn-outline {
+  background: #FFFFFF;
+  border: 1px solid #D1D5DB;
+  color: #374151;
+}
+
+.fem-btn-outline:hover {
+  background: #F9FAFB;
+  border-color: #9CA3AF;
+}
+
+.fem-btn-gold {
+  background: #c99738;
+  color: #18181B;
+  font-weight: 700;
+}
+
+.fem-btn-gold:hover {
+  background: #b5852d;
+}
+
+.fem-btn-primary {
+  background: linear-gradient(135deg, #6A1B9A 0%, #9C27B0 45%, #E91E63 100%);
+  color: #FFFFFF;
+}
+
+.fem-btn-danger {
+  background: #EF4444;
+  color: #FFFFFF;
+}
+
+/* Modals & Forms */
+.fem-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  z-index: 100;
+  backdrop-filter: blur(3px);
+}
+
+.fem-modal-box {
+  background: #FFFFFF;
+  border-radius: 14px;
+  width: 100%;
+  max-width: 650px;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+}
+
+.fem-modal-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #E5E7EB;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.fem-modal-body {
+  padding: 24px;
+}
+
+.fem-form-group {
+  margin-bottom: 16px;
+}
+
+.fem-form-group label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #374151;
+  margin-bottom: 6px;
+}
+
+.fem-form-control {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid #D1D5DB;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  outline: none;
+  font-family: inherit;
+  transition: border-color 0.15s ease;
+  box-sizing: border-box;
+}
+
+.fem-form-control:focus {
+  border-color: #9C27B0;
+}
+
+/* Responsive Table */
+@media (max-width: 1024px) {
+  .fem-admin-sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: -280px;
+  }
+  .fem-admin-sidebar.mobile-open {
+    left: 0;
+  }
+}
