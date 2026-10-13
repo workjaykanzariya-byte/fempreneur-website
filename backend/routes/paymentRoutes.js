@@ -306,11 +306,31 @@ export const syncPaymentToDatabase = async ({
     case 'nomination': {
       if (recId) {
         try {
-          await query(
-            `UPDATE web_nominations SET payment_status = 'paid', payment_ref = $1 WHERE id = $2`,
+          const resUpd = await query(
+            `UPDATE web_nominations SET payment_status = 'paid', payment_ref = $1, status = 'confirmed' WHERE id = $2 RETURNING *`,
             [paymentId, recId]
           );
-          isUpdated = true;
+          if (resUpd && resUpd.rowCount > 0) {
+            isUpdated = true;
+            updatedRecord = resUpd.rows[0];
+          }
+        } catch (e) {}
+      }
+      if (!isUpdated && (contactEmail || contactPhone)) {
+        try {
+          const resUpd2 = await query(
+            `UPDATE web_nominations SET payment_status = 'paid', payment_ref = $1, status = 'confirmed'
+             WHERE id = (
+               SELECT id FROM web_nominations 
+               WHERE (LOWER(email) = LOWER($2) OR phone = $3)
+               ORDER BY created_at DESC LIMIT 1
+             ) RETURNING *`,
+            [paymentId, contactEmail, contactPhone]
+          );
+          if (resUpd2 && resUpd2.rowCount > 0) {
+            isUpdated = true;
+            updatedRecord = resUpd2.rows[0];
+          }
         } catch (e) {}
       }
       break;
