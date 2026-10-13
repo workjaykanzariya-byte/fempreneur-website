@@ -57,4 +57,76 @@ router.get('/health', async (req, res) => {
   }
 });
 
+// One-time safe schema sync endpoint for web_nominations
+router.get('/migrate-nominations', async (req, res) => {
+  const statements = [
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS track VARCHAR(50) DEFAULT 'honorary'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS nominee_name VARCHAR(150)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS founder_name VARCHAR(150)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_name VARCHAR(200)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS venture_name VARCHAR(200)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS designation VARCHAR(150) DEFAULT 'Founder & CEO'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS phone VARCHAR(50)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS email VARCHAR(150)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS city VARCHAR(100)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_id INTEGER`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_name VARCHAR(150)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_code VARCHAR(150)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS description TEXT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS pitch TEXT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS operational_years VARCHAR(50) DEFAULT '1-3 years'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_link VARCHAR(500)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_url VARCHAR(500)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS profile_picture TEXT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_logo TEXT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS voting_url VARCHAR(500)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package VARCHAR(50)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package_amount NUMERIC(10, 2)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'pending'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'not_applicable'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS payment_ref VARCHAR(200)`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS jury_score SMALLINT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS public_votes INTEGER DEFAULT 0`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS notes TEXT`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS award_year VARCHAR(10) DEFAULT '2027'`,
+    `ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP`,
+    `ALTER TABLE web_nominations ALTER COLUMN profile_picture TYPE TEXT`,
+    `ALTER TABLE web_nominations ALTER COLUMN business_logo TYPE TEXT`,
+    `UPDATE web_nominations SET 
+      founder_name = COALESCE(founder_name, nominee_name),
+      venture_name = COALESCE(venture_name, business_name),
+      category_code = COALESCE(category_code, category_name),
+      pitch = COALESCE(pitch, description),
+      website_url = COALESCE(website_url, website_link),
+      updated_at = COALESCE(updated_at, created_at, NOW())
+     WHERE founder_name IS NULL OR venture_name IS NULL OR category_code IS NULL`,
+    `UPDATE web_nominations SET
+      track = 'rated',
+      package = 'identity',
+      package_amount = 2000,
+      payment_status = 'paid',
+      payment_ref = COALESCE(payment_ref, 'PAID_VERIFIED'),
+      status = 'pending'
+     WHERE id = 3`
+  ];
+
+  const results = [];
+  for (const sql of statements) {
+    try {
+      await query(sql);
+      results.push({ sql: sql.slice(0, 50), status: 'ok' });
+    } catch (e) {
+      results.push({ sql: sql.slice(0, 50), status: 'error', error: e.message });
+    }
+  }
+
+  try {
+    const cols = await query("SELECT column_name FROM information_schema.columns WHERE table_name = 'web_nominations'");
+    const rows = await query("SELECT id, nominee_name, track, package, package_amount, payment_status, payment_ref FROM web_nominations ORDER BY id DESC");
+    res.json({ success: true, results, columns: cols.rows.map(c => c.column_name), nominations: rows.rows });
+  } catch (err) {
+    res.json({ success: false, results, error: err.message });
+  }
+});
+
 export default router;
