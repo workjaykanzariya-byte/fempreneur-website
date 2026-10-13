@@ -273,6 +273,70 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleUpdateStatus = async (id, newStatus) => {
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${API_PREFIX}/api/admin/nominations/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ status: newStatus })
+      });
+      const result = await res.json();
+      if (result.success) {
+        setData(prev => prev.map(item => item.id === id ? { ...item, status: newStatus } : item));
+        if (selectedRecord && selectedRecord.id === id) {
+          setSelectedRecord(prev => ({ ...prev, status: newStatus }));
+        }
+      } else {
+        alert(result.message || 'Status update failed.');
+      }
+    } catch (err) {
+      console.error('Error updating status:', err);
+      setData(prev => prev.map(item => item.id === id ? { ...item, status: newStatus } : item));
+      if (selectedRecord && selectedRecord.id === id) {
+        setSelectedRecord(prev => ({ ...prev, status: newStatus }));
+      }
+    }
+  };
+
+  const handleSaveEdit = async (e) => {
+    e.preventDefault();
+    if (!editForm.id) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('nominee_name', editForm.nominee_name || '');
+      formData.append('business_name', editForm.business_name || '');
+      formData.append('email', editForm.email || '');
+      formData.append('phone', editForm.phone || '');
+      formData.append('city', editForm.city || '');
+      formData.append('description', editForm.description || '');
+      if (editForm.profilePictureFile) {
+        formData.append('profilePicture', editForm.profilePictureFile);
+      }
+
+      const res = await fetch(`${API_PREFIX}/api/admin/nominations/${editForm.id}`, {
+        method: 'PATCH',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Record updated successfully.');
+        setIsEditing(false);
+        fetchData(activeTab);
+      } else {
+        alert(result.message || 'Update failed.');
+      }
+    } catch (err) {
+      console.error('Error updating record:', err);
+      alert('Save operation encountered an error.');
+    }
+  };
+
   return (
     <div className="fem-admin-wrapper">
       {/* Sidebar with Fempreneur Branding & Greenpreneur Layout */}
@@ -476,7 +540,17 @@ export default function AdminDashboard() {
                           </td>
                           <td>
                             <div className="nominee-title">
-                              <span>{row.nominee_name || row.founder_name || 'Nominee'}</span>
+                              <span
+                                className="nominee-name-link"
+                                onClick={() => {
+                                  markAsRead(`${activeTab}-${row.id}`);
+                                  setSelectedRecord(row);
+                                  setIsEditing(false);
+                                }}
+                                title="Click to view full record details"
+                              >
+                                {row.nominee_name || row.founder_name || 'Nominee'}
+                              </span>
                               {!isRead && <span className="badge-new">NEW</span>}
                             </div>
                             <div style={{ marginTop: '4px', display: 'flex', alignItems: 'center' }}>
@@ -589,96 +663,368 @@ export default function AdminDashboard() {
         </div>
       </main>
 
-      {/* Record View Modal */}
+      {/* Greenpreneur 1:1 Record Details Modal */}
       {selectedRecord && !isEditing && (
         <div className="fem-modal-backdrop" onClick={() => setSelectedRecord(null)}>
-          <div className="fem-modal-box" onClick={(e) => e.stopPropagation()}>
-            <div className="fem-modal-header">
-              <div>
-                <h3 style={{ margin: 0, fontWeight: 800, color: '#111827' }}>Nomination Details</h3>
-                <span style={{ fontSize: '0.8rem', color: '#6B7280' }}>Application ID: FEM-2027-{String(selectedRecord.id).padStart(4, '0')}</span>
-              </div>
+          <div className="fem-modal-box record-details-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="record-details-header">
+              <h3 className="record-details-title">Record Details</h3>
               <button
                 type="button"
                 onClick={() => setSelectedRecord(null)}
-                style={{ background: 'transparent', border: 'none', cursor: 'pointer', color: '#6B7280' }}
+                className="record-details-close-btn"
+                aria-label="Close"
               >
-                <X size={20} />
+                <X size={18} />
               </button>
             </div>
-            <div className="fem-modal-body">
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>NOMINEE FULL NAME</label>
-                  <div style={{ fontWeight: 700, fontSize: '1rem', color: '#111827' }}>
-                    {selectedRecord.nominee_name || selectedRecord.founder_name}
-                  </div>
-                </div>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>VENTURE / ORGANISATION</label>
-                  <div style={{ fontWeight: 700, fontSize: '1rem', color: '#111827' }}>
-                    {selectedRecord.business_name || selectedRecord.venture_name}
-                  </div>
-                </div>
-              </div>
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>EMAIL ADDRESS</label>
-                  <div style={{ fontSize: '0.9rem', color: '#374151' }}>{selectedRecord.email}</div>
+            <div className="record-details-body">
+              {/* Row 1: ID & Nominee Name */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">ID</label>
+                  <div className="record-field-box">{selectedRecord.id}</div>
                 </div>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>PHONE NUMBER</label>
-                  <div style={{ fontSize: '0.9rem', color: '#374151' }}>{selectedRecord.phone}</div>
-                </div>
-              </div>
-
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>CITY & STATE</label>
-                  <div style={{ fontSize: '0.9rem', color: '#374151' }}>{selectedRecord.city}</div>
-                </div>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>AWARD TRACK</label>
-                  <div style={{ fontWeight: 700, color: selectedRecord.track === 'rated' ? '#B45309' : '#1D4ED8' }}>
-                    {(selectedRecord.track || 'honorary').toUpperCase()}
+                <div className="record-field-col">
+                  <label className="record-field-label">NOMINEE NAME</label>
+                  <div className="record-field-box">
+                    {selectedRecord.nominee_name || selectedRecord.founder_name || <span className="not-provided">Not provided</span>}
                   </div>
                 </div>
               </div>
 
-              <div style={{ marginBottom: '16px' }}>
-                <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>AWARD CATEGORY</label>
-                <div style={{ fontSize: '0.95rem', fontWeight: 600, color: '#6A1B9A' }}>
-                  {selectedRecord.category_name || selectedRecord.category}
+              {/* Row 2: Business Name & Email */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">BUSINESS NAME</label>
+                  <div className="record-field-box">
+                    {selectedRecord.business_name || selectedRecord.venture_name || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">EMAIL</label>
+                  <div className="record-field-box">
+                    {selectedRecord.email || <span className="not-provided">Not provided</span>}
+                  </div>
                 </div>
               </div>
 
+              {/* Row 3: Phone & City */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">PHONE</label>
+                  <div className="record-field-box">
+                    {selectedRecord.phone || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">CITY</label>
+                  <div className="record-field-box">
+                    {selectedRecord.city || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 4: Category & Category Group */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">CATEGORY</label>
+                  <div className="record-field-box">
+                    {selectedRecord.category_name || selectedRecord.category || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">CATEGORY GROUP</label>
+                  <div className="record-field-box">
+                    {selectedRecord.domain || selectedRecord.category_group || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 5: Track & Package */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">TRACK</label>
+                  <div className="record-field-box">
+                    {selectedRecord.track || 'honorary'}
+                  </div>
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">PACKAGE</label>
+                  <div className="record-field-box">
+                    {selectedRecord.package || <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+              </div>
+
+              {/* Row 6: Package Amount & Status */}
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">PACKAGE AMOUNT</label>
+                  <div className="record-field-box">
+                    {selectedRecord.package_amount ? `₹${Number(selectedRecord.package_amount).toLocaleString()}` : <span className="not-provided">Not provided</span>}
+                  </div>
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">STATUS</label>
+                  <div className="record-field-box">
+                    {selectedRecord.status || 'pending'}
+                  </div>
+                </div>
+              </div>
+
+              {/* Nominee Photo Section */}
+              <div className="record-media-section">
+                <div className="record-media-header">
+                  <label className="record-field-label">NOMINEE PHOTO</label>
+                  {selectedRecord.profile_picture && (
+                    <a 
+                      href={selectedRecord.profile_picture} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="view-download-link"
+                    >
+                      View / Download File
+                    </a>
+                  )}
+                </div>
+                <div className="record-media-box">
+                  {selectedRecord.profile_picture ? (
+                    <img 
+                      src={selectedRecord.profile_picture} 
+                      alt="Nominee" 
+                      className="record-photo-preview"
+                    />
+                  ) : (
+                    <div className="not-provided-media">
+                      <Users size={28} color="#94a3b8" />
+                      <span>Not provided</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Business Logo Section */}
+              <div className="record-media-section">
+                <div className="record-media-header">
+                  <label className="record-field-label">BUSINESS LOGO</label>
+                  {selectedRecord.business_logo && (
+                    <a 
+                      href={selectedRecord.business_logo} 
+                      target="_blank" 
+                      rel="noreferrer" 
+                      className="view-download-link"
+                    >
+                      View / Download File
+                    </a>
+                  )}
+                </div>
+                <div className="record-media-box">
+                  {selectedRecord.business_logo ? (
+                    <img 
+                      src={selectedRecord.business_logo} 
+                      alt="Business Logo" 
+                      className="record-logo-preview"
+                    />
+                  ) : (
+                    <div className="not-provided-media">
+                      <FileText size={28} color="#94a3b8" />
+                      <span>Not provided</span>
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Description / Pitch (if provided) */}
               {selectedRecord.description && (
-                <div style={{ marginBottom: '16px' }}>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>WORK & IMPACT SUMMARY</label>
-                  <div style={{ fontSize: '0.88rem', color: '#374151', background: '#F9FAFB', padding: '12px', borderRadius: '8px', border: '1px solid #E5E7EB', lineHeight: 1.5 }}>
+                <div style={{ marginTop: '16px' }}>
+                  <label className="record-field-label">WORK & IMPACT / PITCH</label>
+                  <div className="record-field-box" style={{ minHeight: '80px', alignItems: 'flex-start', lineHeight: 1.6, padding: '12px 14px' }}>
                     {selectedRecord.description}
                   </div>
                 </div>
               )}
 
-              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>PAYMENT STATUS</label>
-                  <div>
-                    <span className={selectedRecord.payment_status === 'paid' ? 'badge-payment-paid' : 'badge-payment-pending'}>
-                      {(selectedRecord.payment_status || 'not_applicable').toUpperCase()}
-                    </span>
+              {/* Created At & Updated At Row */}
+              <div className="record-field-row" style={{ marginTop: '16px' }}>
+                <div className="record-field-col">
+                  <label className="record-field-label">CREATED AT</label>
+                  <div className="record-field-box">
+                    {selectedRecord.created_at ? new Date(selectedRecord.created_at).toISOString() : <span className="not-provided">Not provided</span>}
                   </div>
                 </div>
-                <div>
-                  <label style={{ fontSize: '0.75rem', color: '#6B7280', fontWeight: 600 }}>PUBLIC VOTES</label>
-                  <div style={{ fontWeight: 700, fontSize: '1rem', color: '#111827' }}>
-                    {selectedRecord.public_votes || 0} votes
+                <div className="record-field-col">
+                  <label className="record-field-label">UPDATED AT</label>
+                  <div className="record-field-box">
+                    {selectedRecord.updated_at ? new Date(selectedRecord.updated_at).toISOString() : (selectedRecord.created_at ? new Date(selectedRecord.created_at).toISOString() : <span className="not-provided">Not provided</span>)}
                   </div>
                 </div>
               </div>
+
+              {/* Bottom Actions: Manage Nomination Status & Edit Button */}
+              <div className="record-details-footer">
+                <div className="manage-status-group">
+                  <div className="record-field-label" style={{ marginBottom: '8px' }}>MANAGE NOMINATION STATUS</div>
+                  <div className="status-buttons-row">
+                    {['pending', 'vetting', 'approved', 'rejected'].map((st) => {
+                      const isActive = (selectedRecord.status || 'pending').toLowerCase() === st;
+                      return (
+                        <button
+                          key={st}
+                          type="button"
+                          onClick={() => handleUpdateStatus(selectedRecord.id, st)}
+                          className={`status-action-pill ${st} ${isActive ? 'active' : ''}`}
+                        >
+                          {st.charAt(0).toUpperCase() + st.slice(1)}
+                        </button>
+                      );
+                    })}
+                    <button
+                      type="button"
+                      onClick={() => handleUpdateStatus(selectedRecord.id, 'winner')}
+                      className={`status-action-pill winner ${(selectedRecord.status || '').toLowerCase() === 'winner' ? 'active' : ''}`}
+                    >
+                      🏆 Make Winner
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    setEditForm({
+                      id: selectedRecord.id,
+                      nominee_name: selectedRecord.nominee_name || selectedRecord.founder_name || '',
+                      business_name: selectedRecord.business_name || selectedRecord.venture_name || '',
+                      email: selectedRecord.email || '',
+                      phone: selectedRecord.phone || '',
+                      city: selectedRecord.city || '',
+                      description: selectedRecord.description || '',
+                    });
+                    setIsEditing(true);
+                  }}
+                  className="edit-details-btn"
+                >
+                  EDIT DETAILS / PHOTO
+                </button>
+              </div>
             </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Details & Photo Modal */}
+      {isEditing && editForm && (
+        <div className="fem-modal-backdrop" onClick={() => setIsEditing(false)}>
+          <div className="fem-modal-box record-details-modal" onClick={(e) => e.stopPropagation()}>
+            <div className="record-details-header">
+              <h3 className="record-details-title">Edit Record Details</h3>
+              <button
+                type="button"
+                onClick={() => setIsEditing(false)}
+                className="record-details-close-btn"
+              >
+                <X size={18} />
+              </button>
+            </div>
+
+            <form onSubmit={handleSaveEdit} className="record-details-body">
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">NOMINEE NAME</label>
+                  <input
+                    type="text"
+                    value={editForm.nominee_name || ''}
+                    onChange={(e) => setEditForm({ ...editForm, nominee_name: e.target.value })}
+                    className="record-edit-input"
+                    required
+                  />
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">BUSINESS NAME</label>
+                  <input
+                    type="text"
+                    value={editForm.business_name || ''}
+                    onChange={(e) => setEditForm({ ...editForm, business_name: e.target.value })}
+                    className="record-edit-input"
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">EMAIL</label>
+                  <input
+                    type="email"
+                    value={editForm.email || ''}
+                    onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                    className="record-edit-input"
+                    required
+                  />
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">PHONE</label>
+                  <input
+                    type="text"
+                    value={editForm.phone || ''}
+                    onChange={(e) => setEditForm({ ...editForm, phone: e.target.value })}
+                    className="record-edit-input"
+                  />
+                </div>
+              </div>
+
+              <div className="record-field-row">
+                <div className="record-field-col">
+                  <label className="record-field-label">CITY & STATE</label>
+                  <input
+                    type="text"
+                    value={editForm.city || ''}
+                    onChange={(e) => setEditForm({ ...editForm, city: e.target.value })}
+                    className="record-edit-input"
+                  />
+                </div>
+                <div className="record-field-col">
+                  <label className="record-field-label">UPDATE NOMINEE PHOTO</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => setEditForm({ ...editForm, profilePictureFile: e.target.files[0] })}
+                    className="record-edit-input"
+                    style={{ padding: '7px 10px' }}
+                  />
+                </div>
+              </div>
+
+              <div style={{ marginTop: '12px' }}>
+                <label className="record-field-label">WORK & IMPACT SUMMARY / PITCH</label>
+                <textarea
+                  value={editForm.description || ''}
+                  onChange={(e) => setEditForm({ ...editForm, description: e.target.value })}
+                  className="record-edit-input"
+                  rows={4}
+                  style={{ resize: 'vertical' }}
+                />
+              </div>
+
+              <div className="record-details-footer" style={{ justifyContent: 'flex-end', gap: '12px' }}>
+                <button
+                  type="button"
+                  onClick={() => setIsEditing(false)}
+                  className="fem-btn fem-btn-outline"
+                  style={{ padding: '10px 18px' }}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  className="edit-details-btn"
+                >
+                  Save Changes
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
