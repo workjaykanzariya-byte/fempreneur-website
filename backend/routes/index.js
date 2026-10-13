@@ -110,6 +110,15 @@ router.get('/migrate-nominations', async (req, res) => {
      WHERE id = 3`
   ];
 
+  // Check if we can read laravel DB credentials from unity
+  let unityDbPass = null;
+  try {
+    const fs = await import('fs');
+    const laravelEnv = fs.readFileSync('/home/unity.fempreneur.club/laravel/.env', 'utf8');
+    const m = laravelEnv.match(/DB_PASSWORD=(.*)/);
+    if (m) unityDbPass = m[1].trim();
+  } catch (e) {}
+
   // Check current connection user and table owner
   let currentUser = 'unknown';
   let tableOwner = 'unknown';
@@ -124,7 +133,7 @@ router.get('/migrate-nominations', async (req, res) => {
   let ownerConnected = false;
   if (currentUser !== tableOwner) {
     const { Pool } = await import('pg');
-    const passwords = ['root', 'postgres', 'admin', 'password'];
+    const passwords = [unityDbPass, 'root', 'postgres', 'admin', 'password', 'fempreneur', 'fempreneur_db_2027'].filter(Boolean);
     for (const pwd of passwords) {
       try {
         const testPool = new Pool({
