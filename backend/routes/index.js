@@ -31,14 +31,31 @@ router.use('/newsletter', newsletterRoutes);
 router.use('/stats', statsRoutes);
 router.use('/payment', paymentRoutes);
 
-// Health check endpoint
-router.get('/health', (req, res) => {
-  res.json({
-    status: 'healthy',
-    timestamp: new Date().toISOString(),
-    service: 'Fempreneur 2027 REST API',
-    database: 'PostgreSQL Connected',
-  });
+import { query } from '../config/db.js';
+
+// Health check endpoint with live database connectivity verification
+router.get('/health', async (req, res) => {
+  try {
+    const dbCheck = await query('SELECT current_database(), current_schema(), NOW() as server_time');
+    const dbName = dbCheck.rows[0]?.current_database || 'unknown';
+    res.json({
+      status: 'healthy',
+      timestamp: new Date().toISOString(),
+      service: 'Fempreneur 2027 REST API',
+      database: 'PostgreSQL Connected',
+      connected_database: dbName,
+      schema: dbCheck.rows[0]?.current_schema || 'public',
+      server_time: dbCheck.rows[0]?.server_time,
+    });
+  } catch (err) {
+    res.status(503).json({
+      status: 'degraded',
+      timestamp: new Date().toISOString(),
+      service: 'Fempreneur 2027 REST API',
+      database: 'PostgreSQL Disconnected',
+      error: err.message,
+    });
+  }
 });
 
 export default router;

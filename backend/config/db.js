@@ -17,18 +17,29 @@ try {
 } catch (e) {}
 
 const defaultDbUrl = 'postgresql://postgres:root@localhost:5432/fempreneurbackend';
-const connectionString = process.env.DATABASE_URL || defaultDbUrl;
+let connectionString = process.env.DATABASE_URL || defaultDbUrl;
+
+// Ensure database name targets the unified live database: fempreneurbackend
+// (Redirects from legacy isolated fempreneur_2027 database if configured)
+if (connectionString && connectionString.includes('fempreneur_2027')) {
+  console.warn('⚠️ Redirecting DATABASE_URL from fempreneur_2027 to unified database: fempreneurbackend');
+  connectionString = connectionString.replace('fempreneur_2027', 'fempreneurbackend');
+}
 
 const pool = new Pool({
   connectionString,
+  max: 20,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
 });
 
 pool.on('connect', () => {
-  console.log(`✓ Connected to PostgreSQL database: ${connectionString.split('/').pop()?.split('?')[0] || 'fempreneurbackend'}`);
+  const dbName = connectionString.split('/').pop()?.split('?')[0] || 'fempreneurbackend';
+  console.log(`✓ Connected to PostgreSQL database: ${dbName}`);
 });
 
 pool.on('error', (err) => {
-  console.error('Unexpected error on idle PostgreSQL client', err.message);
+  console.error('Unexpected error on idle PostgreSQL client:', err.message);
 });
 
 export const query = (text, params) => pool.query(text, params);

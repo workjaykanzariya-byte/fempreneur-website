@@ -19,6 +19,7 @@ CREATE TABLE IF NOT EXISTS web_event_registrations (
   attendee_segment VARCHAR(255),
   payment_status VARCHAR(50) DEFAULT 'pending',
   payment_ref VARCHAR(255),
+  order_id VARCHAR(255),
   status VARCHAR(50) DEFAULT 'registered',
   created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );

@@ -7,7 +7,7 @@
 - **Web Server**: Apache 2.4 (VirtualHost reverse proxy & static file server)
 - **Frontend**: React 19 Single Page Application (SPA), built via Vite 8, served directly by Apache with `.htaccess` rewrite rules.
 - **Backend**: Node.js & Express.js REST API listening locally on `127.0.0.1:5001` (avoiding conflict with existing port 5000 services), proxied via Apache at `/api`.
-- **Database**: PostgreSQL with dedicated database `fempreneur_2027` (isolated from other websites), initialized idempotently via `backend/models/initDb.js`.
+- **Database**: PostgreSQL with unified database `fempreneurbackend` (shared with Adminer & Unity Admin Panel, safe via `web_` prefix), initialized idempotently via `backend/models/initDb.js`.
 - **Process Manager**: Systemd service (`fempreneur-backend.service`) running under dedicated user `fempreneur`.
 
 ---
@@ -57,7 +57,7 @@
 | :--- | :--- | :--- |
 | `NODE_ENV` | Runtime environment | `production` |
 | `PORT` | Local internal backend port | `5001` |
-| `DATABASE_URL` | PostgreSQL connection string | `postgresql://fempreneur_user:<DB_PASSWORD>@localhost:5432/fempreneur_2027` |
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://postgres:<DB_PASSWORD>@localhost:5432/fempreneurbackend` |
 | `JWT_SECRET` | Cryptographically secure secret | Configured |
 | `CORS_ORIGIN` | Allowed front-end origin | `https://fempreneur.club` |
 
@@ -73,8 +73,8 @@ Add the following reverse proxy directives inside the SSL VirtualHost block (`<V
 # --- Fempreneur API Reverse Proxy Configuration ---
 ProxyRequests Off
 ProxyPreserveHost On
-ProxyPass /api http://127.0.0.1:5000/api
-ProxyPassReverse /api http://127.0.0.1:5000/api
+ProxyPass /api http://127.0.0.1:5001/api
+ProxyPassReverse /api http://127.0.0.1:5001/api
 
 <Location /api>
     Require all granted

@@ -31,6 +31,7 @@ export const initializeDatabase = async () => {
         attendee_segment VARCHAR(255),
         payment_status VARCHAR(50) DEFAULT 'pending',
         payment_ref VARCHAR(255),
+        order_id VARCHAR(255),
         status VARCHAR(50) DEFAULT 'registered',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
@@ -38,6 +39,10 @@ export const initializeDatabase = async () => {
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS event_date TIMESTAMP WITH TIME ZONE DEFAULT '2027-03-08 18:30:00+00';
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS event_venue VARCHAR(255) DEFAULT 'Renaissance by Marriott, S.G. Highway, Ahmedabad';
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS attendee_segment VARCHAR(255);
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS order_id VARCHAR(255);
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS payment_ref VARCHAR(255);
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'pending';
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'registered';
 
       -- 2. Community Applications (Memberships)
       CREATE TABLE IF NOT EXISTS web_community_applications (
