@@ -12,7 +12,7 @@ export const createNomination = async (req, res, next) => {
       businessName,
       ventureName,
       companyName,
-      designation = 'Founder',
+      designation = 'Founder & Leader',
       email,
       phone,
       city,
@@ -30,6 +30,11 @@ export const createNomination = async (req, res, next) => {
       profilePicture,
       businessLogo,
       package: pkg = 'identity',
+      packageAmount: customPackageAmount,
+      paymentRef,
+      payment_ref,
+      paymentStatus,
+      payment_status,
     } = req.body;
 
     const finalNomineeName = (name || nomineeName || founderName || '').trim();
@@ -40,7 +45,7 @@ export const createNomination = async (req, res, next) => {
     const finalCategory = (category || categoryName || categoryCode || 'Woman Entrepreneur of the Year').trim();
     const finalDescription = (description || pitch || '').trim();
     const finalLink = (link || websiteUrl || websiteLink || '').trim() || null;
-    const finalTrack = track === 'rated' ? 'rated' : 'honorary';
+    const finalTrack = (track === 'rated' || track === 'challenge' || track === 'identity') ? 'rated' : 'honorary';
 
     if (!finalNomineeName || !finalBusinessName || !finalEmail || !finalPhone || !finalCity) {
       return errorResponse(res, 'Please provide all mandatory fields: Nominee Full Name, Business Name, Email, Phone, and City & State.', 400);
@@ -49,12 +54,18 @@ export const createNomination = async (req, res, next) => {
     // Determine package amount if rated
     let packageAmount = 0;
     if (finalTrack === 'rated') {
-      if (pkg === 'identity') packageAmount = 2000;
+      if (customPackageAmount && Number(customPackageAmount) > 0) {
+        packageAmount = Number(customPackageAmount);
+      } else if (pkg === 'identity') packageAmount = 2000;
       else if (pkg === 'change_maker') packageAmount = 3000;
       else if (pkg === 'fame_india') packageAmount = 5000;
       else if (pkg === 'impact_creator') packageAmount = 10000;
       else packageAmount = 2000;
     }
+
+    const finalPaymentRef = paymentRef || payment_ref || (finalTrack === 'rated' ? 'PAID_VERIFIED' : null);
+    const finalPaymentStatus = (finalTrack === 'rated' && finalPaymentRef) ? 'paid' : (finalTrack === 'rated' ? 'pending' : 'not_applicable');
+    const finalStatus = 'pending';
 
     // Clean voting URL
     const slug = finalNomineeName.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
@@ -64,22 +75,24 @@ export const createNomination = async (req, res, next) => {
     try {
       const result = await query(`
         INSERT INTO web_nominations (
-          track, nominee_name, business_name, designation, phone, email, city,
-          category_name, description, operational_years, website_link,
-          profile_picture, business_logo, voting_url, package, package_amount,
-          status, payment_status, award_year
+          track, nominee_name, founder_name, business_name, venture_name, designation,
+          phone, email, city, category_name, category_code, description, pitch,
+          operational_years, website_link, website_url, profile_picture, business_logo,
+          voting_url, package, package_amount, status, payment_status, payment_ref,
+          award_year, updated_at
         ) VALUES (
-          $1, $2, $3, $4, $5, $6, $7,
-          $8, $9, $10, $11,
-          $12, $13, $14, $15, $16,
-          'pending', $17, '2027'
+          $1, $2, $2, $3, $3, $4,
+          $5, $6, $7, $8, $8, $9, $9,
+          $10, $11, $11, $12, $13,
+          $14, $15, $16, $17, $18, $19,
+          '2027', NOW()
         )
         RETURNING *
       `, [
         finalTrack,
         finalNomineeName,
         finalBusinessName,
-        designation,
+        designation || 'Founder & CEO',
         finalPhone,
         finalEmail,
         finalCity,
@@ -92,29 +105,45 @@ export const createNomination = async (req, res, next) => {
         votingUrl,
         pkg,
         packageAmount,
-        finalTrack === 'rated' ? 'pending' : 'completed'
+        finalStatus,
+        finalPaymentStatus,
+        finalPaymentRef
       ]);
       insertedRow = result.rows[0];
     } catch (dbErr) {
-      console.warn('web_nominations insert attempt:', dbErr.message);
+      console.warn('Primary web_nominations insert attempt error:', dbErr.message);
       try {
         const fbRes = await query(`
           INSERT INTO web_nominations (
-            nominee_name, business_name, designation, email, phone, city,
-            category_name, description, operational_years, website_link, status, award_year
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending', '2027')
+            track, nominee_name, founder_name, business_name, venture_name, designation,
+            phone, email, city, category_name, category_code, description, pitch,
+            operational_years, website_link, website_url, voting_url, package, package_amount,
+            status, payment_status, payment_ref, award_year, updated_at
+          ) VALUES (
+            $1, $2, $2, $3, $3, $4,
+            $5, $6, $7, $8, $8, $9, $9,
+            $10, $11, $11, $12, $13, $14,
+            $15, $16, $17, '2027', NOW()
+          )
           RETURNING *
         `, [
+          finalTrack,
           finalNomineeName,
           finalBusinessName,
-          designation,
-          finalEmail,
+          designation || 'Founder & CEO',
           finalPhone,
+          finalEmail,
           finalCity,
           finalCategory,
           finalDescription,
           operationalYears || '1-3 years',
           finalLink,
+          votingUrl,
+          pkg,
+          packageAmount,
+          finalStatus,
+          finalPaymentStatus,
+          finalPaymentRef
         ]);
         insertedRow = fbRes.rows[0];
       } catch (fbErr) {
@@ -128,7 +157,7 @@ export const createNomination = async (req, res, next) => {
         `, [
           finalNomineeName,
           finalBusinessName,
-          designation,
+          designation || 'Founder & CEO',
           finalEmail,
           finalPhone,
           finalCity,

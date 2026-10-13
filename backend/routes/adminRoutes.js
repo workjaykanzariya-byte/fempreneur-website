@@ -185,15 +185,17 @@ router.get('/nominations', verifyAdmin, async (req, res) => {
         profile_picture: n.profile_picture || '',
         business_logo: n.business_logo || '',
         voting_url: n.voting_url || '',
-        track: n.track || 'general',
-        package: n.package || 'free',
+        track: n.track || 'honorary',
+        package: n.package || 'identity',
         package_amount: n.package_amount || 0,
         status: n.status || 'pending',
-        payment_status: n.payment_status || 'free',
+        payment_status: n.payment_status || 'not_applicable',
+        payment_ref: n.payment_ref || '',
         jury_score: n.jury_score || 0,
         public_votes: n.public_votes || 0,
         award_year: n.award_year || '2027',
         created_at: n.created_at,
+        updated_at: n.updated_at || n.created_at,
       }));
     } catch (e) {
       try {

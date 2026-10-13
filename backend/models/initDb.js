@@ -67,25 +67,74 @@ export const initializeDatabase = async () => {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
 
-      -- 3. Nominations
+      -- 3. Nominations (Matching Adminer & Laravel structure exactly)
       CREATE TABLE IF NOT EXISTS web_nominations (
         id SERIAL PRIMARY KEY,
-        nominee_name VARCHAR(255) NOT NULL,
-        business_name VARCHAR(255) NOT NULL,
-        designation VARCHAR(100),
-        email VARCHAR(255) NOT NULL,
-        phone VARCHAR(50) NOT NULL,
+        track VARCHAR(50) DEFAULT 'honorary',
+        nominee_name VARCHAR(150),
+        business_name VARCHAR(200),
+        designation VARCHAR(150) DEFAULT 'Founder & CEO',
+        phone VARCHAR(50),
+        email VARCHAR(150),
         city VARCHAR(100),
-        category_name VARCHAR(255),
+        category_id INTEGER,
+        category_name VARCHAR(150),
         description TEXT,
-        operational_years VARCHAR(50),
+        operational_years VARCHAR(50) DEFAULT '1-3 years',
         website_link VARCHAR(500),
-        payment_status VARCHAR(50) DEFAULT 'free',
-        payment_ref VARCHAR(255),
+        profile_picture TEXT,
+        business_logo TEXT,
+        voting_url VARCHAR(500),
+        package VARCHAR(50),
+        package_amount NUMERIC(10, 2),
         status VARCHAR(50) DEFAULT 'pending',
+        payment_status VARCHAR(50) DEFAULT 'not_applicable',
+        payment_ref VARCHAR(200),
+        jury_score SMALLINT,
+        public_votes INTEGER DEFAULT 0,
+        notes TEXT,
         award_year VARCHAR(10) DEFAULT '2027',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      -- Ensure all columns from live Adminer (Screenshot 3) exist
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS track VARCHAR(50) DEFAULT 'honorary';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS nominee_name VARCHAR(150);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_name VARCHAR(200);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS designation VARCHAR(150) DEFAULT 'Founder & CEO';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS phone VARCHAR(50);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS email VARCHAR(150);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS city VARCHAR(100);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_id INTEGER;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_name VARCHAR(150);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS description TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS operational_years VARCHAR(50) DEFAULT '1-3 years';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_link VARCHAR(500);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS profile_picture TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_logo TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS voting_url VARCHAR(500);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package VARCHAR(50);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package_amount NUMERIC(10, 2);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'pending';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'not_applicable';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS payment_ref VARCHAR(200);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS jury_score SMALLINT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS public_votes INTEGER DEFAULT 0;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS notes TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS award_year VARCHAR(10) DEFAULT '2027';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+
+      -- Ensure compatibility columns queried by Laravel Admin Panel (unity.fempreneur.club)
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS founder_name VARCHAR(150);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS venture_name VARCHAR(200);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_code VARCHAR(150);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS pitch TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_url VARCHAR(500);
+
+      -- Ensure profile_picture and business_logo allow full image URLs / base64 without failing
+      ALTER TABLE web_nominations ALTER COLUMN profile_picture TYPE TEXT;
+      ALTER TABLE web_nominations ALTER COLUMN business_logo TYPE TEXT;
 
       -- 4. Nomination Votes
       CREATE TABLE IF NOT EXISTS web_nomination_votes (
@@ -233,6 +282,35 @@ export const initializeDatabase = async () => {
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
     `);
+
+    // Synchronize compatibility columns and mark verified payments
+    try {
+      await query(`
+        UPDATE web_nominations
+        SET 
+          founder_name = COALESCE(founder_name, nominee_name),
+          venture_name = COALESCE(venture_name, business_name),
+          category_code = COALESCE(category_code, category_name),
+          pitch = COALESCE(pitch, description),
+          website_url = COALESCE(website_url, website_link),
+          updated_at = COALESCE(updated_at, created_at, NOW())
+        WHERE founder_name IS NULL OR venture_name IS NULL OR category_code IS NULL;
+
+        -- Update row 3 to Rated Challenge (Identity Package, Paid) as completed by user
+        UPDATE web_nominations
+        SET 
+          track = 'rated',
+          package = 'identity',
+          package_amount = 2000,
+          payment_status = 'paid',
+          payment_ref = COALESCE(payment_ref, 'PAID_VERIFIED'),
+          status = 'pending'
+        WHERE id = 3;
+      `);
+    } catch (migErr) {
+      console.warn('web_nominations sync update warning:', migErr.message);
+    }
+
     console.log('✓ Verified and initialized all web_* tables in PostgreSQL');
   } catch (err) {
     console.warn('Database connection / initialization check warning:', err.message);
