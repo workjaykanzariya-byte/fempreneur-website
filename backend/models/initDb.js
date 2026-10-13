@@ -43,6 +43,10 @@ export const initializeDatabase = async () => {
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS payment_ref VARCHAR(255);
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS payment_status VARCHAR(50) DEFAULT 'pending';
       ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS status VARCHAR(50) DEFAULT 'registered';
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS city_hub VARCHAR(100);
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS city VARCHAR(100);
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS pass_type VARCHAR(100) DEFAULT 'Delegate (With Dinner)';
+      ALTER TABLE web_event_registrations ADD COLUMN IF NOT EXISTS pass_amount NUMERIC(10, 2) DEFAULT 0;
 
       -- 2. Community Applications (Memberships)
       CREATE TABLE IF NOT EXISTS web_community_applications (
