@@ -177,7 +177,19 @@ export default function Navbar() {
         <div className="container">
           <div className="fem-header-inner" ref={dropdownRef}>
             {/* Brand Logo */}
-            <Link to="/" className="fem-brand" aria-label="Fempreneur Home">
+            <Link
+              to="/"
+              className="fem-brand"
+              aria-label="Fempreneur Home"
+              onClick={(e) => {
+                if (window.location.pathname === '/') {
+                  e.preventDefault();
+                  window.location.reload();
+                } else {
+                  window.location.href = '/';
+                }
+              }}
+            >
               <img
                 src="/fempreneur-logo.png"
                 alt="Fempreneur"
@@ -241,14 +253,14 @@ export default function Navbar() {
                 );
               })}
 
-              {/* Action Buttons */}
+              {/* Action Buttons (Matching Reference) */}
               <div className="fem-header-actions">
-                <CTAButton to="/awards/apply" variant="primary" size="sm" icon={Award}>
-                  Nominate
-                </CTAButton>
-                <CTAButton to="/events" variant="primary" size="sm" icon={Ticket}>
-                  Get Pass
-                </CTAButton>
+                <Link to="/events" className="fem-btn-getpass">
+                  GET PASS
+                </Link>
+                <Link to="/awards/apply" className="fem-btn-nominate">
+                  NOMINATE
+                </Link>
               </div>
             </nav>
 
@@ -346,12 +358,22 @@ export default function Navbar() {
             </div>
 
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: 'auto', paddingTop: '1rem' }}>
-              <CTAButton to="/awards/apply" variant="primary" block size="lg" icon={Award}>
-                Nominate for Award (Free)
-              </CTAButton>
-              <CTAButton to="/events" variant="primary" block size="lg" icon={Ticket}>
-                Get Event Pass
-              </CTAButton>
+              <Link
+                to="/events"
+                className="fem-btn-getpass"
+                style={{ textAlign: 'center', padding: '0.65rem 1rem', justifyContent: 'center' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                GET PASS
+              </Link>
+              <Link
+                to="/awards/apply"
+                className="fem-btn-nominate"
+                style={{ textAlign: 'center', padding: '0.65rem 1rem', justifyContent: 'center' }}
+                onClick={() => setMobileMenuOpen(false)}
+              >
+                NOMINATE
+              </Link>
             </div>
           </div>
         )}

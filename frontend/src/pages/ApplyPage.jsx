@@ -462,28 +462,8 @@ export default function ApplyPage() {
       </div>
 
       {/* HERO HEADER SECTION */}
-      <section style={{ padding: '3.2rem 1.5rem 2rem', textAlign: 'center' }}>
+      <section style={{ padding: '2rem 1.5rem 2rem', textAlign: 'center' }}>
         <div style={{ maxWidth: '820px', margin: '0 auto' }}>
-          
-          {/* Centered Green Dot Badge */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.45rem',
-              padding: '0.35rem 0.95rem',
-              borderRadius: '9999px',
-              background: '#FFFFFF',
-              border: '1px solid #E8D9EE',
-              boxShadow: '0 2px 8px rgba(46, 8, 72, 0.04)',
-              marginBottom: '1.25rem',
-            }}
-          >
-            <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#10B981' }} />
-            <span style={{ fontSize: '0.75rem', fontWeight: 800, color: '#6A1B9A', letterSpacing: '0.12em', textTransform: 'uppercase' }}>
-              Nominations Open for 2027
-            </span>
-          </div>
 
           <h1
             style={{

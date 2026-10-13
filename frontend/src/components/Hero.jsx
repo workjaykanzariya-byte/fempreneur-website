@@ -23,15 +23,15 @@ export default function Hero({
   featuredQuestion = "Will YOU Be Featured in Fempreneur 2027?",
   subtitle = "India's most comprehensive women-entrepreneurship platform. Dual-city edition in Ahmedabad & Delhi NCR. Built to recognise, connect, and amplify women leaders shaping the future of business, communities, and India.",
   cities = "Ahmedabad & Delhi NCR Hubs",
-  primaryCtaText = "Apply Now",
+  primaryCtaText = "NOMINATE YOURSELF",
   primaryCtaTo = "/nominate",
-  primaryIcon = ArrowRight,
-  secondaryCtaText = "Watch Video",
+  primaryIcon = null,
+  secondaryCtaText = "GET DELEGATE PASS",
   secondaryCtaTo = "/events",
-  secondaryIcon = Play,
-  tertiaryCtaText = "Get Event Pass",
-  tertiaryCtaTo = "/events",
-  tertiaryIcon = Ticket,
+  secondaryIcon = null,
+  tertiaryCtaText = "JOIN OUR COMMUNITY",
+  tertiaryCtaTo = "/community-hub",
+  tertiaryIcon = null,
   showTrustBadges = true,
 }) {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
@@ -43,8 +43,8 @@ export default function Hero({
     <section
       style={{
         position: 'relative',
-        paddingTop: '3.5rem',
-        paddingBottom: '4.5rem',
+        paddingTop: '1.25rem',
+        paddingBottom: '3.25rem',
         background: 'linear-gradient(180deg, #FDFBFE 0%, #F9F2FB 40%, #FAF5FC 100%)',
         borderBottom: '1px solid rgba(106, 27, 154, 0.1)',
         overflow: 'hidden',
@@ -56,7 +56,7 @@ export default function Hero({
           display: grid;
           grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
           gap: 3.5rem;
-          align-items: center;
+          align-items: flex-start;
         }
         @media (max-width: 1080px) {
           .hero-main-grid {
@@ -130,55 +130,6 @@ export default function Hero({
         <div className="hero-main-grid">
           {/* LEFT COLUMN: Headings, Callout, Paragraph, CTAs */}
           <div className="hero-left-content" style={{ textAlign: 'left' }}>
-            {/* Top Badges Row */}
-            <div
-              className="hero-pills-row"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.65rem',
-                marginBottom: '1.5rem',
-                flexWrap: 'wrap',
-              }}
-            >
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  fontSize: '0.8rem',
-                  fontWeight: 700,
-                  color: 'var(--color-burgundy)',
-                  background: 'rgba(106, 27, 154, 0.08)',
-                  padding: '0.4rem 1rem',
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid rgba(106, 27, 154, 0.18)',
-                  letterSpacing: '0.02em',
-                }}
-              >
-                <Star size={13} fill="currentColor" />
-                <span>{badge}</span>
-              </span>
-
-              <span
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.45rem',
-                  fontSize: '0.8rem',
-                  fontWeight: 600,
-                  color: 'var(--color-burgundy)',
-                  background: 'rgba(106, 27, 154, 0.08)',
-                  padding: '0.4rem 1rem',
-                  borderRadius: 'var(--radius-pill)',
-                  border: '1px solid rgba(106, 27, 154, 0.18)',
-                }}
-              >
-                <MapPin size={13} />
-                <span>{cities}</span>
-              </span>
-            </div>
-
             {/* Main Headline */}
             <h1
               style={{
@@ -244,32 +195,28 @@ export default function Hero({
                 marginBottom: '1rem',
               }}
             >
-              <CTAButton to={primaryCtaTo} variant="primary" size="lg" icon={PrimaryIcon} iconPosition="right">
+              <CTAButton to={primaryCtaTo} variant="primary" size="lg">
                 {primaryCtaText}
               </CTAButton>
-              <button
-                type="button"
-                onClick={() => setVideoModalOpen(true)}
-                className="btn btn-secondary btn-lg"
+              <CTAButton
+                to={secondaryCtaTo}
+                variant="secondary"
+                size="lg"
                 style={{
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  cursor: 'pointer',
                   borderColor: 'rgba(106, 27, 154, 0.28)',
                   color: 'var(--color-burgundy)',
                   fontWeight: 700,
                 }}
               >
-                <Play size={18} fill="currentColor" />
-                <span>{secondaryCtaText}</span>
-              </button>
+                {secondaryCtaText}
+              </CTAButton>
               <CTAButton
                 to={tertiaryCtaTo}
                 variant="outline"
                 size="lg"
-                icon={TertiaryIcon}
-                iconPosition="right"
                 style={{
                   borderColor: 'rgba(106, 27, 154, 0.35)',
                   color: 'var(--color-burgundy)',

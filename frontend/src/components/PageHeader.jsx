@@ -42,9 +42,9 @@ export default function PageHeader({
     <section
       style={{
         position: 'relative',
-        paddingTop: image || customVisual ? '4rem' : '5rem',
-        paddingBottom: image || customVisual ? '4.5rem' : '5.5rem',
-        minHeight: image || customVisual ? 'auto' : '62vh',
+        paddingTop: image || customVisual ? '2.75rem' : '3.5rem',
+        paddingBottom: image || customVisual ? '4.25rem' : '5rem',
+        minHeight: image || customVisual ? 'auto' : '58vh',
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
@@ -144,59 +144,8 @@ export default function PageHeader({
              TWO-COLUMN LAYOUT (WHEN IMAGE OR CUSTOM VISUAL IS SUPPLIED)
              ============================================================== */
           <div className="pageheader-grid">
-            {/* Left Column: Badges, Title, Description, CTAs */}
+            {/* Left Column: Title, Description, CTAs */}
             <div className="pageheader-left-col" style={{ textAlign: 'left' }}>
-              {/* Badges Row */}
-              <div
-                className="pageheader-pills-row"
-                style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.65rem',
-                  marginBottom: '1.4rem',
-                  flexWrap: 'wrap',
-                }}
-              >
-                {badge && (
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.45rem',
-                      fontSize: '0.8rem',
-                      fontWeight: 700,
-                      color: 'var(--color-burgundy)',
-                      background: 'rgba(106, 27, 154, 0.08)',
-                      padding: '0.4rem 1rem',
-                      borderRadius: 'var(--radius-pill)',
-                      border: '1px solid rgba(106, 27, 154, 0.18)',
-                      letterSpacing: '0.02em',
-                    }}
-                  >
-                    <ResolvedBadgeIcon size={13} fill={ResolvedBadgeIcon === Star ? "currentColor" : "none"} />
-                    <span>{badge}</span>
-                  </span>
-                )}
-                {cities && (
-                  <span
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.45rem',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      color: 'var(--color-burgundy)',
-                      background: 'rgba(106, 27, 154, 0.08)',
-                      padding: '0.4rem 1rem',
-                      borderRadius: 'var(--radius-pill)',
-                      border: '1px solid rgba(106, 27, 154, 0.18)',
-                    }}
-                  >
-                    <MapPin size={13} />
-                    <span>{cities}</span>
-                  </span>
-                )}
-              </div>
 
               {/* Title */}
               <h1
@@ -529,43 +478,6 @@ export default function PageHeader({
              ORIGINAL CENTERED LAYOUT (FOR PAGES WITHOUT IMAGE PROP)
              ============================================================== */
           <div style={{ maxWidth: '920px', margin: '0 auto', textAlign: 'center' }}>
-            {/* Top Location & Edition Pill Row */}
-            <div
-              style={{
-                display: 'inline-flex',
-                alignItems: 'center',
-                gap: '0.6rem',
-                marginBottom: '1.5rem',
-                flexWrap: 'wrap',
-                justifyContent: 'center',
-              }}
-            >
-              {badge && (
-                <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.35rem' }}>
-                  <Sparkles size={13} />
-                  {badge}
-                </span>
-              )}
-              {cities && (
-                <span
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '0.35rem',
-                    fontSize: '0.82rem',
-                    color: 'var(--color-burgundy)',
-                    fontWeight: 600,
-                    background: 'rgba(106, 27, 154, 0.06)',
-                    padding: '0.25rem 0.75rem',
-                    borderRadius: 'var(--radius-pill)',
-                    border: '1px solid rgba(106, 27, 154, 0.12)',
-                  }}
-                >
-                  <MapPin size={13} />
-                  {cities}
-                </span>
-              )}
-            </div>
 
             {/* Main Title Centered & Wide */}
             <h1

@@ -135,7 +135,7 @@ export default function EventsPage() {
           position: 'relative',
           background: 'linear-gradient(180deg, #FDFBFE 0%, #F9F2FB 40%, #FAF5FC 100%)',
           color: 'var(--text-primary)',
-          padding: '5rem 1.5rem 6.5rem',
+          padding: '3rem 1.5rem 5.5rem',
           textAlign: 'center',
           overflow: 'hidden',
           borderBottom: '1px solid rgba(106, 27, 154, 0.12)',
@@ -168,42 +168,6 @@ export default function EventsPage() {
         />
 
         <div style={{ maxWidth: '1100px', margin: '0 auto', position: 'relative', zIndex: 10 }}>
-          {/* Pulsing Badge */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.65rem',
-              padding: '0.45rem 1.25rem',
-              border: '1px solid rgba(106, 27, 154, 0.18)',
-              borderRadius: '999px',
-              marginBottom: '2rem',
-              background: 'rgba(106, 27, 154, 0.07)',
-            }}
-          >
-            <span
-              style={{
-                width: '9px',
-                height: '9px',
-                borderRadius: '50%',
-                background: 'var(--color-burgundy)',
-                display: 'inline-block',
-                boxShadow: '0 0 8px rgba(106, 27, 154, 0.5)',
-              }}
-            />
-            <span
-              style={{
-                color: 'var(--color-burgundy)',
-                fontWeight: 800,
-                fontSize: '0.75rem',
-                textTransform: 'uppercase',
-                letterSpacing: '0.2em',
-              }}
-            >
-              6th Annual Edition — Coming Soon
-            </span>
-          </div>
-
           {/* Main Title */}
           <h1
             style={{
