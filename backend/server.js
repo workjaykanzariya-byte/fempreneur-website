@@ -6,10 +6,22 @@ import apiRoutes from './routes/index.js';
 import { initializeDatabase } from './models/initDb.js';
 import { errorHandler } from './middleware/errorHandler.js';
 
-dotenv.config();
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
+
+// Load environment variables across standard local & production paths
+try {
+  dotenv.config({ path: path.resolve(process.cwd(), '.env') });
+  dotenv.config({ path: path.resolve(process.cwd(), '../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../../.env') });
+  dotenv.config({ path: path.resolve(__dirname, '../.env') });
+  dotenv.config({ path: '/home/fempreneur/apps/fempreneur/.env' });
+} catch (e) {}
 
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = parseInt(process.env.PORT, 10) || 5001;
 
 // Security & Parsing Middleware
 app.use(cors({
@@ -46,6 +58,26 @@ app.use((req, res) => {
 // Centralized Error Handling Middleware
 app.use(errorHandler);
 
+// Helper to bind server with graceful EADDRINUSE fallback
+const listenWithFallback = (port, retries = 5) => {
+  const server = app.listen(port, () => {
+    console.log(`====================================================`);
+    console.log(`  🚀 Fempreneur 2027 REST API Server`);
+    console.log(`  Running on: http://localhost:${port}`);
+    console.log(`  Health Check: http://localhost:${port}/api/health`);
+    console.log(`====================================================`);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE' && retries > 0) {
+      console.warn(`⚠️ Port ${port} is in use by another service. Retrying on port ${port + 1}...`);
+      listenWithFallback(port + 1, retries - 1);
+    } else {
+      console.error('Fatal server listen error:', err);
+    }
+  });
+};
+
 // Start server with resilient error handling
 const startServer = async () => {
   try {
@@ -55,13 +87,7 @@ const startServer = async () => {
       console.warn('⚠️ Database initialization warning (server continuing in resilient mode):', dbErr.message);
     }
 
-    app.listen(PORT, () => {
-      console.log(`====================================================`);
-      console.log(`  🚀 Fempreneur 2027 REST API Server`);
-      console.log(`  Running on: http://localhost:${PORT}`);
-      console.log(`  Health Check: http://localhost:${PORT}/api/health`);
-      console.log(`====================================================`);
-    });
+    listenWithFallback(PORT);
   } catch (err) {
     console.error('Failed to start server:', err);
   }

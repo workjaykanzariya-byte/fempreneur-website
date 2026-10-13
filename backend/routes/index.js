@@ -1,4 +1,5 @@
 import { Router } from 'express';
+import { query } from '../config/db.js';
 import authRoutes from './authRoutes.js';
 import nominationRoutes from './nominationRoutes.js';
 import voteRoutes from './voteRoutes.js';
@@ -30,8 +31,6 @@ router.use('/inquiries', inquiryRoutes);
 router.use('/newsletter', newsletterRoutes);
 router.use('/stats', statsRoutes);
 router.use('/payment', paymentRoutes);
-
-import { query } from '../config/db.js';
 
 // Health check endpoint with live database connectivity verification
 router.get('/health', async (req, res) => {
