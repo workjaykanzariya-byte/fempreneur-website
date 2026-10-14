@@ -1,4 +1,5 @@
 import React from 'react';
+import { getWinnerPhotoConfig } from '../data/winnerPhotos';
 
 /**
  * WinnerCard Component
@@ -15,9 +16,13 @@ export default function WinnerCard({
   category,
   awardTitle,
   image,
+  objectPosition,
   className = '',
 }) {
   const displayCategory = category || awardTitle;
+  const photoConfig = getWinnerPhotoConfig(name);
+  const resolvedImage = image || photoConfig.src;
+  const resolvedPosition = objectPosition || photoConfig.objectPosition || 'center top';
 
   // Check if business name exists and is distinct from the winner's own name
   const hasBusinessName =
@@ -28,12 +33,13 @@ export default function WinnerCard({
   return (
     <div className={`fem-ref-winner-card ${className}`}>
       {/* 1. Large Portrait Photo Area with rounded top corners */}
-      {image ? (
+      {resolvedImage ? (
         <div className="fem-ref-winner-photo-wrapper">
           <img
-            src={image}
+            src={resolvedImage}
             alt={name}
             className="fem-ref-winner-photo"
+            style={{ objectPosition: resolvedPosition }}
             loading="lazy"
             onError={(e) => {
               // Hide image cleanly if failed; leave area blank without placeholder, initials, or broken icon

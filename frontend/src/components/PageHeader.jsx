@@ -99,15 +99,35 @@ export default function PageHeader({
         }
         @media (max-width: 600px) {
           .floating-collage-box {
-            transform: scale(0.76);
-            transform-origin: center center;
-            margin-top: -30px;
-            margin-bottom: -40px;
+            transform: scale(0.72);
+            transform-origin: center top;
+            margin-top: -20px;
+            margin-bottom: -70px;
+          }
+          .pageheader-right-col {
+            overflow: hidden;
+            max-width: 100%;
           }
           .pageheader-trust-bar {
             flex-direction: column;
             align-items: flex-start !important;
             gap: 1.25rem !important;
+          }
+        }
+        @media (max-width: 440px) {
+          .floating-collage-box {
+            transform: scale(0.60);
+            transform-origin: center top;
+            margin-top: -15px;
+            margin-bottom: -110px;
+          }
+        }
+        @media (max-width: 370px) {
+          .floating-collage-box {
+            transform: scale(0.50);
+            transform-origin: center top;
+            margin-top: -10px;
+            margin-bottom: -150px;
           }
         }
       `}</style>

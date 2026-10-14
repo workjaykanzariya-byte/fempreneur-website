@@ -1,32 +1,77 @@
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 
 // Layout & Global Components
 import { Navbar, Footer, ScrollToTop, EmptyState } from './components';
 
-// Page Components
-import HomePage from './pages/HomePage';
-import AboutPage from './pages/AboutPage';
-import AwardsPage from './pages/AwardsPage';
-import CategoriesPage from './pages/CategoriesPage';
-import NominatePage from './pages/NominatePage';
-import ApplyPage from './pages/ApplyPage';
-import VotingPage from './pages/VotingPage';
-import WinnersPage from './pages/WinnersPage';
-import EventsPage from './pages/EventsPage';
-import SpeakersPage from './pages/SpeakersPage';
-import PartnersPage from './pages/PartnersPage';
-import BookPage from './pages/BookPage';
-import StoryDrivePage from './pages/StoryDrivePage';
-import CityChaptersPage from './pages/CityChaptersPage';
-import DirectoryPage from './pages/DirectoryPage';
-import MembershipPage from './pages/MembershipPage';
-import BlogPage from './pages/BlogPage';
-import ImpactPage from './pages/ImpactPage';
-import FaqPage from './pages/FaqPage';
-import ContactPage from './pages/ContactPage';
-import LoginPage from './pages/LoginPage';
-import AdminDashboard from './pages/admin/AdminDashboard';
+// Lightweight, Non-Intrusive Page Loading Indicator
+function PageLoader() {
+  return (
+    <div
+      style={{
+        minHeight: '50vh',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'transparent',
+      }}
+    >
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          gap: '0.85rem',
+        }}
+      >
+        <div
+          style={{
+            width: '36px',
+            height: '36px',
+            borderRadius: '50%',
+            border: '3px solid rgba(106, 27, 154, 0.15)',
+            borderTopColor: '#6A1B9A',
+            animation: 'fem-spin 0.75s linear infinite',
+          }}
+        />
+        <span
+          style={{
+            fontSize: '0.82rem',
+            color: '#6A1B9A',
+            fontWeight: 600,
+            letterSpacing: '0.04em',
+          }}
+        >
+          Loading...
+        </span>
+      </div>
+    </div>
+  );
+}
+
+// Lazy-Loaded Page Components (Optimized for instant initial render & fast routing)
+const HomePage = lazy(() => import('./pages/HomePage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const AwardsPage = lazy(() => import('./pages/AwardsPage'));
+const CategoriesPage = lazy(() => import('./pages/CategoriesPage'));
+const NominatePage = lazy(() => import('./pages/NominatePage'));
+const ApplyPage = lazy(() => import('./pages/ApplyPage'));
+const VotingPage = lazy(() => import('./pages/VotingPage'));
+const WinnersPage = lazy(() => import('./pages/WinnersPage'));
+const EventsPage = lazy(() => import('./pages/EventsPage'));
+const SpeakersPage = lazy(() => import('./pages/SpeakersPage'));
+const PartnersPage = lazy(() => import('./pages/PartnersPage'));
+const BookPage = lazy(() => import('./pages/BookPage'));
+const StoryDrivePage = lazy(() => import('./pages/StoryDrivePage'));
+const CityChaptersPage = lazy(() => import('./pages/CityChaptersPage'));
+const DirectoryPage = lazy(() => import('./pages/DirectoryPage'));
+const MembershipPage = lazy(() => import('./pages/MembershipPage'));
+const BlogPage = lazy(() => import('./pages/BlogPage'));
+const ImpactPage = lazy(() => import('./pages/ImpactPage'));
+const FaqPage = lazy(() => import('./pages/FaqPage'));
+const ContactPage = lazy(() => import('./pages/ContactPage'));
+const LoginPage = lazy(() => import('./pages/LoginPage'));
+const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 // 404 Fallback Page
 function NotFoundPage() {
@@ -51,11 +96,13 @@ function AppContent() {
 
   if (isAdmin) {
     return (
-      <Routes>
-        <Route path="/admin" element={<AdminDashboard />} />
-        <Route path="/admin/web" element={<AdminDashboard />} />
-        <Route path="/admin/*" element={<AdminDashboard />} />
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/admin/web" element={<AdminDashboard />} />
+          <Route path="/admin/*" element={<AdminDashboard />} />
+        </Routes>
+      </Suspense>
     );
   }
 
@@ -63,7 +110,8 @@ function AppContent() {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column' }}>
       <Navbar />
       <main style={{ flex: 1 }}>
-        <Routes>
+        <Suspense fallback={<PageLoader />}>
+          <Routes>
           {/* Core Public Pages */}
           <Route path="/" element={<HomePage />} />
           <Route path="/about" element={<AboutPage />} />
@@ -107,6 +155,7 @@ function AppContent() {
           {/* Catch-all 404 */}
           <Route path="*" element={<NotFoundPage />} />
         </Routes>
+        </Suspense>
       </main>
       <Footer />
     </div>

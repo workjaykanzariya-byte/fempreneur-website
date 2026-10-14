@@ -111,6 +111,9 @@ html {
   scroll-behavior: smooth;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
+  max-width: 100vw;
+  -webkit-tap-highlight-color: transparent;
 }
 
 body {
@@ -120,6 +123,8 @@ body {
   line-height: 1.6;
   min-height: 100vh;
   overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
   background-image: 
     radial-gradient(at 10% 10%, rgba(106, 27, 154, 0.03) 0px, transparent 50%),
     radial-gradient(at 90% 20%, rgba(142, 36, 170, 0.03) 0px, transparent 50%),
@@ -127,8 +132,18 @@ body {
   background-attachment: fixed;
 }
 
-img, svg {
+@keyframes fem-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+img {
   display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+svg {
   max-width: 100%;
 }
 
@@ -966,12 +981,12 @@ h6 { font-size: 1rem; }
   }
 
   .section-spacing {
-    padding-top: 2.75rem;
-    padding-bottom: 2.75rem;
+    padding-top: 2.5rem;
+    padding-bottom: 2.5rem;
   }
 
   .grid-cols-4, .grid-cols-3, .grid-cols-2 {
-    grid-template-columns: repeat(1, minmax(0, 1fr));
+    grid-template-columns: repeat(1, minmax(0, 1fr)) !important;
   }
 
   .fem-card {
@@ -981,6 +996,84 @@ h6 { font-size: 1rem; }
   .btn {
     padding: 0.65rem 1.25rem;
     font-size: 0.9rem;
+  }
+
+  /* Top Announcement Bar Responsive Collapse */
+  .fem-top-announcement {
+    padding: 0.35rem 0.75rem !important;
+    font-size: 0.76rem !important;
+  }
+  .fem-top-announcement-counter {
+    display: none !important;
+  }
+  .fem-top-announcement-divider {
+    display: none !important;
+  }
+  .fem-top-announcement-content {
+    gap: 0.35rem !important;
+    line-height: 1.35 !important;
+  }
+}
+
+/* Compact Mobile (< 640px) */
+@media (max-width: 640px) {
+  /* Prevent any inline minmax grids from causing horizontal scroll */
+  div[style*="minmax(2"],
+  div[style*="minmax(3"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  .fem-ref-year-row {
+    gap: 0.65rem !important;
+    padding-bottom: 1.25rem !important;
+    margin-bottom: 1.75rem !important;
+  }
+
+  .fem-ref-year-btn {
+    min-width: 170px !important;
+    padding: 0.75rem 1rem !important;
+  }
+
+  .fem-ref-year-btn span {
+    font-size: 0.9rem !important;
+  }
+
+  .fem-ref-year-btn svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .fem-winners-testimonial-card {
+    padding: 1.5rem 1.25rem !important;
+  }
+
+  .fem-winners-callout {
+    padding: 1.75rem 1.25rem !important;
+  }
+}
+
+/* Small Screens (< 480px) */
+@media (max-width: 480px) {
+  .fem-newsletter-input-group {
+    flex-direction: column !important;
+    border-radius: var(--radius-lg) !important;
+    padding: 0.65rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .fem-newsletter-input-group input {
+    width: 100% !important;
+    padding: 0.4rem 0 !important;
+  }
+
+  .fem-newsletter-input-group .btn {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .fem-mobile-toggle {
+    width: 42px;
+    height: 42px;
   }
 }
 

@@ -35,7 +35,7 @@ export const WINNER_PHOTOS = {
   'Toral Shah': '/images/winners-2022/toral-shah.png',
   'Toral Shah (Cutistic Gifts)': '/images/winners-2022/toral-shah.png',
   'Madhusatta Chaudhury': '/images/winners-2022/madhusatta-chaudhury.png',
-  'Vimal S Shah': '/images/winners-2022/vimal-s-shah.png',
+  // Vimal S Shah has no dedicated headshot in composite archive; unmapped so container stays cleanly blank
   'Janki Raina': '/images/winners-2022/janki-raina.png',
 
   // 2025, 2024, 2023 Existing Verified Project Photos
@@ -47,6 +47,40 @@ export const WINNER_PHOTOS = {
   'Radhika Menon': '/images/entrepreneurs/radhika-menon.jpg',
   'Pooja Mehta': '/images/entrepreneurs/pooja-mehta.jpg',
 };
+
+/**
+ * Individual focal positioning overrides to guarantee faces are never clipped
+ * across different screen dimensions while maintaining half-body portrait framing.
+ */
+export const WINNER_PHOTO_POSITIONS = {
+  'Dr. Shalini Guggnani': '38% 6%',
+  'Rutu Sunil Sangani': 'center 10%',
+  'Nidhi Virmani': 'center 8%',
+  'Nancy jain': 'center 8%',
+  'Nancy Jain': 'center 8%',
+  'Angel Foundation': 'center 10%',
+  'Belaa Mitthani': 'center 8%',
+  'Dr. Ishani Hanspal': 'center 8%',
+  'Kanisha patel': 'center 8%',
+  'Kanisha Patel': 'center 8%',
+  'Susmita Das Gupta': 'center 10%',
+  'Toral Shah': 'center 10%',
+  'Namrata shah': 'center 8%',
+  'Namrata Shah': 'center 8%',
+};
+
+/**
+ * Returns photo configuration (src and objectPosition) for a given winner name.
+ * @param {string} name - Winner name
+ * @returns {{ src: string|undefined, objectPosition: string }}
+ */
+export function getWinnerPhotoConfig(name) {
+  if (!name) return { src: undefined, objectPosition: 'center top' };
+  const cleanName = name.trim();
+  const src = WINNER_PHOTOS[name] || WINNER_PHOTOS[cleanName] || undefined;
+  const objectPosition = WINNER_PHOTO_POSITIONS[name] || WINNER_PHOTO_POSITIONS[cleanName] || 'center top';
+  return { src, objectPosition };
+}
 
 /**
  * Returns the photo URL for a given winner name, or undefined if no photo exists.

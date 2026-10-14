@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Users, Heart, Trophy, ArrowRight } from 'lucide-react';
+import RecognitionHubModal from './RecognitionHubModal';
 
 /**
  * FempreneurMovementStage Component
@@ -8,12 +9,13 @@ import { Sparkles, Users, Heart, Trophy, ArrowRight } from 'lucide-react';
  * - Deep royal purple ambient stage with glowing radial orbs and curved arcs
  * - Centered editorial headline with luminous gradient "2 Cities"
  * - 3 circular glowing stat highlights (Jury Evaluation, Public Voting, Curated Categories)
- * - Gradient & glass CTA buttons
+ * - Gradient & glass CTA buttons opening the on-page Recognition Hub (Winners & Categories)
  * - 500+ Social proof avatar stack
  * - Left & Right staggered floating cards featuring verified women leaders
  *   sourced strictly from the local Desktop collection (winners-2022).
  */
 export default function FempreneurMovementStage() {
+  const [recognitionModalTab, setRecognitionModalTab] = useState(null);
   return (
     <section
       className="fem-movement-stage-section"
@@ -485,6 +487,20 @@ export default function FempreneurMovementStage() {
           .fem-stage-stats-bar {
             gap: 1.25rem;
           }
+          .fem-stage-title br {
+            display: none;
+          }
+        }
+        @media (max-width: 480px) {
+          .fem-stage-actions {
+            flex-direction: column;
+            width: 100%;
+          }
+          .fem-stage-btn-gradient,
+          .fem-stage-btn-outline {
+            width: 100%;
+            justify-content: center;
+          }
         }
       `}</style>
 
@@ -494,49 +510,69 @@ export default function FempreneurMovementStage() {
           {/* Card 1: Top Outer (Naisargi Shah) */}
           <div className="fem-stage-card-slot fem-slot-l1" title="Naisargi Shah • Founder of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/naisargi-shah.png"
                 alt="Naisargi Shah"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 2: Top Inner (Shweta Raval) */}
           <div className="fem-stage-card-slot fem-slot-l2" title="Shweta Raval • Business Leader of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/shweta-raval.png"
                 alt="Shweta Raval"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 3: Bottom Outer (Dr. Seema Yadav - yellow saree, exact match to Image 1) */}
           <div className="fem-stage-card-slot fem-slot-l3" title="Dr. Seema Yadav • Community Service Leader">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/dr-seema-yadav.png"
                 alt="Dr. Seema Yadav"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 4: Bottom Inner (Adv Ashwini C - striped shirt, exact match to Image 1) */}
           <div className="fem-stage-card-slot fem-slot-l4" title="Adv Ashwini C • Trend Setter of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/adv-ashwini-c.png"
                 alt="Adv Ashwini C"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
         </div>
 
@@ -601,15 +637,27 @@ export default function FempreneurMovementStage() {
             </div>
           </div>
 
-          {/* Buttons: Primary Gradient + Secondary Glass */}
+          {/* Buttons: Open on the SAME PAGE without redirecting */}
           <div className="fem-stage-actions">
-            <Link to="/winners" className="fem-stage-btn-gradient">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-btn-gradient"
+              style={{ cursor: 'pointer', border: 'none' }}
+              title="Explore all Honoree Winners on this page"
+            >
               <span>View Winners</span>
               <ArrowRight size={17} />
-            </Link>
-            <Link to="/categories" className="fem-stage-btn-outline">
+            </button>
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('categories')}
+              className="fem-stage-btn-outline"
+              style={{ cursor: 'pointer', background: 'transparent' }}
+              title="Explore 35+ Award Categories on this page"
+            >
               <span>See Categories</span>
-            </Link>
+            </button>
           </div>
 
           {/* Social Proof Avatars & Tagline */}
@@ -649,9 +697,10 @@ export default function FempreneurMovementStage() {
               { name: 'Shweta Raval', img: '/images/winners-2022/shweta-raval.png' },
               { name: 'Belaa Mitthani', img: '/images/winners-2022/belaa-mitthani.png' },
             ].map((w, idx) => (
-              <Link
+              <button
                 key={idx}
-                to="/winners"
+                type="button"
+                onClick={() => setRecognitionModalTab('winners')}
                 style={{
                   display: 'block',
                   borderRadius: '16px',
@@ -659,6 +708,10 @@ export default function FempreneurMovementStage() {
                   border: '1.5px solid rgba(233, 30, 99, 0.4)',
                   boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
                   height: '175px',
+                  padding: 0,
+                  background: 'none',
+                  cursor: 'pointer',
+                  width: '100%',
                 }}
               >
                 <img
@@ -666,7 +719,7 @@ export default function FempreneurMovementStage() {
                   alt={w.name}
                   style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
                 />
-              </Link>
+              </button>
             ))}
           </div>
         </div>
@@ -676,64 +729,97 @@ export default function FempreneurMovementStage() {
           {/* Card 5: Top Inner (Nancy Jain) */}
           <div className="fem-stage-card-slot fem-slot-r1" title="Nancy Jain • Social Entrepreneur">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/nancy-jain.png"
                 alt="Nancy Jain"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 6: Top Outer (Belaa Mitthani) */}
           <div className="fem-stage-card-slot fem-slot-r2" title="Belaa Mitthani • CEO of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/belaa-mitthani.png"
                 alt="Belaa Mitthani"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 7: Middle (Pallavi Walia Raj - black dress, exact match to Image 1) */}
           <div className="fem-stage-card-slot fem-slot-r3" title="Pallavi Walia Raj • Trend Setter Woman of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/pallavi-walia-raj.png"
                 alt="Pallavi Walia Raj"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 8: Lower Outer (Ami Shah - saree, exact match to Image 1) */}
           <div className="fem-stage-card-slot fem-slot-r4" title="Ami Shah • Rising Entrepreneur">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/ami-shah.png"
                 alt="Ami Shah"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
 
           {/* Card 9: Bottom Inner (Meghana Mojjada - blue blazer, exact match to Image 1) */}
           <div className="fem-stage-card-slot fem-slot-r5" title="Meghana Mojjada • Young Business Woman of the Year">
             <div className="fem-stage-card-backdrop" />
-            <Link to="/winners" className="fem-stage-card-front">
+            <button
+              type="button"
+              onClick={() => setRecognitionModalTab('winners')}
+              className="fem-stage-card-front"
+              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
+            >
               <img
                 src="/images/winners-2022/meghana-mojjada.png"
                 alt="Meghana Mojjada"
                 className="fem-stage-img"
               />
-            </Link>
+            </button>
           </div>
         </div>
       </div>
+
+      {/* On-Page Recognition Hub Modal (Opens on the same page with zero redirect) */}
+      <RecognitionHubModal
+        isOpen={!!recognitionModalTab}
+        initialTab={recognitionModalTab || 'winners'}
+        onClose={() => setRecognitionModalTab(null)}
+      />
     </section>
   );
 }
+

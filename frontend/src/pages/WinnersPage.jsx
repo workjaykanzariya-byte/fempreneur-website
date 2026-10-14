@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CalendarClock,
@@ -371,12 +371,14 @@ export default function WinnersPage() {
     },
   ];
 
-  const filteredWinners = allWinners
-    .filter((winner) => winner.year === selectedYear)
-    .map((winner) => ({
-      ...winner,
-      image: winner.image || getWinnerPhoto(winner.name),
-    }));
+  const filteredWinners = useMemo(() => {
+    return allWinners
+      .filter((winner) => winner.year === selectedYear)
+      .map((winner) => ({
+        ...winner,
+        image: winner.image || getWinnerPhoto(winner.name),
+      }));
+  }, [selectedYear]);
 
 
   return (
@@ -563,7 +565,7 @@ export default function WinnersPage() {
 
           {/* 4. HONOREE TESTIMONIAL STRIP (Preserved) */}
           <div
-            className="fem-card"
+            className="fem-card fem-winners-testimonial-card"
             style={{
               padding: '3rem 2.5rem',
               marginBottom: '3.5rem',
@@ -607,6 +609,7 @@ export default function WinnersPage() {
 
           {/* 6. NEXT EDITION CALLOUT */}
           <div
+            className="fem-winners-callout"
             style={{
               marginTop: '4rem',
               background: 'linear-gradient(135deg, var(--color-plum-deep) 0%, var(--color-burgundy) 100%)',

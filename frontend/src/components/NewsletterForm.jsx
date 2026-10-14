@@ -59,6 +59,7 @@ export default function NewsletterForm({
   return (
     <form onSubmit={handleSubmit} className={className} style={{ width: '100%', maxWidth: '480px' }}>
       <div
+        className="fem-newsletter-input-group"
         style={{
           display: 'flex',
           alignItems: 'center',

@@ -31,6 +31,18 @@ export default function Navbar() {
     setOpenDropdown(null);
   }, [location.pathname]);
 
+  // Lock background scroll when mobile menu is active
+  useEffect(() => {
+    if (mobileMenuOpen) {
+      document.body.style.overflow = 'hidden';
+    } else {
+      document.body.style.overflow = '';
+    }
+    return () => {
+      document.body.style.overflow = '';
+    };
+  }, [mobileMenuOpen]);
+
   // Click outside to close desktop dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -92,6 +104,7 @@ export default function Navbar() {
       {/* Top Announcement Banner Strip (Matching Reference) */}
       {showTopBar && (
         <div
+          className="fem-top-announcement"
           style={{
             background: 'linear-gradient(90deg, #2E0848 0%, #4A126D 45%, #6A1B9A 80%, #2E0848 100%)',
             color: '#FFFFFF',
@@ -106,15 +119,15 @@ export default function Navbar() {
             borderBottom: '1px solid rgba(255, 255, 255, 0.12)',
           }}
         >
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap', margin: '0 auto', textAlign: 'center', justifyContent: 'center' }}>
+          <div className="fem-top-announcement-content" style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', flexWrap: 'wrap', margin: '0 auto', textAlign: 'center', justifyContent: 'center' }}>
             <span style={{ fontWeight: 800, color: '#FFF' }}>
-              🇮🇳 In Supporting Viksit Bharat @2047
+              🇮🇳 Supporting Viksit Bharat @2047
             </span>
-            <span style={{ opacity: 0.5 }}>|</span>
+            <span className="fem-top-announcement-divider" style={{ opacity: 0.5 }}>|</span>
             <span style={{ fontWeight: 600 }}>
               Fempreneur 2027 - Ahmedabad &amp; Delhi NCR
             </span>
-            <span style={{ opacity: 0.5 }}>|</span>
+            <span className="fem-top-announcement-divider" style={{ opacity: 0.5 }}>|</span>
             <Link
               to="/awards/apply"
               style={{
@@ -129,7 +142,7 @@ export default function Navbar() {
             </Link>
           </div>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
+          <div className="fem-top-announcement-counter" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexShrink: 0 }}>
             <Link
               to="/awards/apply"
               style={{
@@ -181,13 +194,9 @@ export default function Navbar() {
               to="/"
               className="fem-brand"
               aria-label="Fempreneur Home"
-              onClick={(e) => {
-                if (window.location.pathname === '/') {
-                  e.preventDefault();
-                  window.location.reload();
-                } else {
-                  window.location.href = '/';
-                }
+              onClick={() => {
+                setMobileMenuOpen(false);
+                setOpenDropdown(null);
               }}
             >
               <img
@@ -316,6 +325,7 @@ export default function Navbar() {
                           <Link
                             key={child.path}
                             to={child.path}
+                            onClick={() => setMobileMenuOpen(false)}
                             style={{
                               fontSize: '0.92rem',
                               fontWeight: 600,
@@ -339,6 +349,7 @@ export default function Navbar() {
                   <Link
                     key={item.path}
                     to={item.path}
+                    onClick={() => setMobileMenuOpen(false)}
                     style={{
                       fontSize: '1rem',
                       fontWeight: 700,
