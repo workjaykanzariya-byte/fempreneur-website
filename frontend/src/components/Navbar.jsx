@@ -112,7 +112,7 @@ export default function Navbar() {
             </span>
             <span style={{ opacity: 0.5 }}>|</span>
             <span style={{ fontWeight: 600 }}>
-              Fempreneur 2027 — Ahmedabad &amp; Delhi NCR
+              Fempreneur 2027 - Ahmedabad &amp; Delhi NCR
             </span>
             <span style={{ opacity: 0.5 }}>|</span>
             <Link
@@ -125,7 +125,7 @@ export default function Navbar() {
                 letterSpacing: '0.02em',
               }}
             >
-              Nominations Open — Apply FREE →
+              Nominations Open - Apply FREE →
             </Link>
           </div>
 

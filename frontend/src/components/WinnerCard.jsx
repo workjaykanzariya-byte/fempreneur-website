@@ -1,117 +1,72 @@
 import React from 'react';
-import { Award, MapPin, Calendar, ExternalLink } from 'lucide-react';
 
 /**
  * WinnerCard Component
- * Displays past award winners with category, edition year, city, and verified achievements.
+ * Displays award winner with ONLY:
+ * - Portrait photo (or clean blank area if no photo exists)
+ * - Winner Name
+ * - Award Category
+ * - Business Name (if available)
+ * With interactive royal purple hover effect and zero extra badges/citations/links.
  */
 export default function WinnerCard({
   name,
   company,
   category,
-  year,
-  city,
-  highlight,
-  storyUrl,
+  awardTitle,
   image,
   className = '',
 }) {
+  const displayCategory = category || awardTitle;
+
+  // Check if business name exists and is distinct from the winner's own name
+  const hasBusinessName =
+    company &&
+    company.trim().length > 0 &&
+    company.trim().toLowerCase() !== (name || '').trim().toLowerCase();
+
   return (
-    <div
-      className={`fem-card ${className}`}
-      style={{
-        display: 'flex',
-        flexDirection: 'column',
-        height: '100%',
-        padding: '1.5rem',
-      }}
-    >
-      {/* Top Media / Avatar Strip */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1.2rem' }}>
-        <div
-          style={{
-            width: '64px',
-            height: '64px',
-            borderRadius: '16px',
-            background: 'var(--gradient-plum-berry)',
-            color: '#FFFFFF',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontFamily: 'var(--font-display)',
-            fontSize: '1.4rem',
-            fontWeight: 800,
-            flexShrink: 0,
-            overflow: 'hidden',
-            border: '2px solid var(--color-burgundy, #6A1B9A)',
-            boxShadow: '0 4px 12px rgba(106, 27, 154, 0.12)',
-          }}
-        >
-          {image ? (
-            <img src={image} alt={name} style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }} />
-          ) : (
-            name?.charAt(0) || 'F'
-          )}
-        </div>
-
-        <div>
-          <h4 style={{ fontSize: '1.15rem', fontWeight: 700, color: 'var(--color-plum-deep)', marginBottom: '0.2rem' }}>
-            {name}
-          </h4>
-          <div style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--color-burgundy)' }}>
-            {company}
-          </div>
-        </div>
-      </div>
-
-      {/* Badges: Category & Year */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', marginBottom: '0.85rem' }}>
-        <span className="badge badge-gold" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.72rem' }}>
-          <Award size={12} />
-          {category}
-        </span>
-        <span className="badge badge-gray" style={{ display: 'inline-flex', alignItems: 'center', gap: '0.25rem', fontSize: '0.72rem' }}>
-          <Calendar size={12} />
-          {year} Edition
-        </span>
-      </div>
-
-      {/* City Location */}
-      {city && (
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', fontSize: '0.82rem', color: 'var(--text-muted)', marginBottom: '0.85rem' }}>
-          <MapPin size={14} color="var(--color-burgundy)" />
-          <span>{city}</span>
-        </div>
-      )}
-
-      {/* Highlight / Achievement */}
-      {highlight && (
-        <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '1.25rem' }}>
-          {highlight}
-        </p>
-      )}
-
-      {/* Action Link to VyapaarJagat Story */}
-      {storyUrl && (
-        <div style={{ marginTop: 'auto', paddingTop: '0.75rem', borderTop: '1px solid var(--border-subtle)' }}>
-          <a
-            href={storyUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '0.35rem',
-              fontSize: '0.84rem',
-              fontWeight: 700,
-              color: 'var(--color-burgundy)',
+    <div className={`fem-ref-winner-card ${className}`}>
+      {/* 1. Large Portrait Photo Area with rounded top corners */}
+      {image ? (
+        <div className="fem-ref-winner-photo-wrapper">
+          <img
+            src={image}
+            alt={name}
+            className="fem-ref-winner-photo"
+            loading="lazy"
+            onError={(e) => {
+              // Hide image cleanly if failed; leave area blank without placeholder, initials, or broken icon
+              e.currentTarget.style.display = 'none';
+              if (e.currentTarget.parentElement) {
+                e.currentTarget.parentElement.classList.add('fem-ref-photo-blank');
+              }
             }}
-          >
-            <span>Read Story on VyapaarJagat</span>
-            <ExternalLink size={13} />
-          </a>
+          />
         </div>
+      ) : (
+        /* Blank photo area when no matching photo exists (no placeholder images, initials, or broken icons) */
+        <div className="fem-ref-winner-photo-wrapper fem-ref-photo-blank" />
       )}
+
+      {/* 2. Winner Information Body: ONLY Name, Category, and Business Name */}
+      <div className="fem-ref-winner-body">
+        {/* Prominent Winner Name */}
+        <h3 className="fem-ref-winner-name">{name}</h3>
+
+        {/* Award Category */}
+        {displayCategory && (
+          <div className="fem-ref-winner-category">{displayCategory}</div>
+        )}
+
+        {/* Business Name (if available) */}
+        {hasBusinessName && (
+          <div className="fem-ref-winner-business">
+            <span className="fem-ref-business-prefix">Business: </span>
+            <span>{company}</span>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
