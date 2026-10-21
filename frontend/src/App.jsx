@@ -71,6 +71,8 @@ const ImpactPage = lazy(() => import('./pages/ImpactPage'));
 const FaqPage = lazy(() => import('./pages/FaqPage'));
 const ContactPage = lazy(() => import('./pages/ContactPage'));
 const LoginPage = lazy(() => import('./pages/LoginPage'));
+const PrivacyPolicyPage = lazy(() => import('./pages/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('./pages/TermsPage'));
 const AdminDashboard = lazy(() => import('./pages/admin/AdminDashboard'));
 
 // 404 Fallback Page
@@ -151,6 +153,13 @@ function AppContent() {
           <Route path="/faq" element={<FaqPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
+
+          {/* Legal Pages */}
+          <Route path="/privacy-policy" element={<PrivacyPolicyPage />} />
+          <Route path="/privacy" element={<Navigate to="/privacy-policy" replace />} />
+          <Route path="/terms" element={<TermsPage />} />
+          <Route path="/terms-of-use" element={<Navigate to="/terms" replace />} />
+          <Route path="/terms-and-conditions" element={<Navigate to="/terms" replace />} />
 
           {/* Catch-all 404 */}
           <Route path="*" element={<NotFoundPage />} />

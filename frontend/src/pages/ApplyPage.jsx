@@ -1678,7 +1678,14 @@ export default function ApplyPage() {
                       style={{ marginTop: '3px', width: '16px', height: '16px', accentColor: '#6A1B9A', cursor: 'pointer' }}
                     />
                     <span>
-                      I declare that all the information provided is accurate and authentic. I understand and agree to the Fempreneur evaluation criteria and code of conduct.
+                      I declare that all the information provided is accurate and authentic. I understand and agree to the Fempreneur{' '}
+                      <a href="/terms" target="_blank" rel="noopener noreferrer" style={{ color: '#6A1B9A', fontWeight: 600, textDecoration: 'underline' }}>
+                        Terms of Use
+                      </a>{' '}
+                      and{' '}
+                      <a href="/privacy-policy" target="_blank" rel="noopener noreferrer" style={{ color: '#6A1B9A', fontWeight: 600, textDecoration: 'underline' }}>
+                        Privacy Policy
+                      </a>.
                     </span>
                   </label>
                   {stepErrors.agreed && (

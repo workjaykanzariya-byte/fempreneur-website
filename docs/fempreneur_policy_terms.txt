@@ -1,0 +1,109 @@
+﻿FEMPRENEUR
+Privacy & Cookie Policy and Terms of Use
+
+
+Website: https://fempreneur.club/ 
+
+
+Adapted from the Greenpreneur policy text supplied by the website owner. This draft replaces Greenpreneur-specific names, domains, contact details, and service descriptions with Fempreneur wording. Review the operator/legal entity, actual services, privacy practices, contact details, and fees before publishing.
+________________
+
+
+Privacy & Cookie Policy
+Fempreneur
+Last Updated: June 2026
+Fempreneur (owned and operated by [insert legal entity name]) values your privacy. This policy describes how we collect, use, store, and process your personal details when you interact with our website https://fempreneur.club/.
+1. Information We Collect
+We collect information that you actively provide to us during various interactions:
+* Membership & Forms: Name, Email, Phone, Company, Designation, Sector, City, Website Link, and custom questionnaire answers.
+* Images & Media: Uploaded profile pictures, promoter images, or organization logos.
+* Transaction details: Payment references (e.g. payment gateway transaction ID), subscription levels, and billing indicators. We do not store card numbers or banking passwords directly on our servers, unless our actual payment architecture and compliance arrangements expressly state otherwise.
+2. How We Use Your Information
+The information we collect is utilized to deliver high-quality, professional services:
+* To evaluate and process award nominations and community membership applications.
+* To trigger confirmation and notification emails regarding your submissions.
+* To set up public voting and winner showcase pages. Only promotional details such as nominee names, company, and category are shared publicly, subject to the relevant programme rules and permissions.
+* To communicate agenda updates, event passes, or coordinate event logistics.
+* To list businesses in relevant directories and help build authority and exposure, where applicable.
+3. Protection of Data
+We employ reasonable administrative, technical, and organisational security measures to protect your personal information. Database access is restricted to authorised administrators, and data transmitted through the website should be protected using secure TLS/SSL protocols. No online transmission or storage method can be guaranteed completely secure.
+4. Sharing with Third Parties
+We do not sell or lease your personal data. We may share information with trusted third-party providers necessary to complete business operations, such as:
+* Payment gateway providers for secure payment processing.
+* Email service providers for confirmation and notification emails.
+* Media, directory, event, or programme partners, including VyapaarJagat.com where relevant to the service or submission.
+5. Cookies & Tracking
+We may use cookie technologies to store your preferences, maintain login sessions, support administrative functions, and analyse website traffic. You can adjust your browser settings to refuse cookies, though some website features may not function correctly as a result.
+6. Parental Consent
+If you are under the age of 18, or where applicable law requires special consent for minors, verifiable parental or guardian consent must be obtained before you create a membership account or submit applications. Any additional age-related requirements will be applied in accordance with applicable law.
+For data protection inquiries or to request deletion of your information from our database, contact: [Insert official Fempreneur privacy email].
+________________
+
+
+Terms of Use
+Fempreneur
+Last Updated: June 2026
+1. Introduction
+Fempreneur.club (operated by [insert legal entity name]) (“Fempreneur”, “we”, “us” or “our”) provides content, community opportunities, networking, recognition and related services for women entrepreneurs, professionals and leaders, as described in these Terms of Use.
+By accessing https://fempreneur.club/ (“Website”) or any content or services on the Website, you (“you”, “your” or “user”) agree to these Terms of Use, whether or not you have registered with the Website. Please read these Terms before using the Website or downloading content, as they describe important rights and obligations.
+Where required by applicable law, verifiable parental or guardian consent is required before a person under 18 creates a membership account or submits an application.
+We may revise these Terms from time to time. Please review this page when you visit. Continued use after revised Terms are posted indicates acceptance where legally valid. Please also review the Privacy Policy to understand how information is used. If you do not agree, do not register for or use the Website.
+2. Use of Website
+The Website may facilitate access to services and content for women entrepreneurs, professionals and young leaders, including the following categories where offered:
+Meetings & Network Building
+* Virtual meetings with local and national members and industry leaders.
+* In-person business workshops and networking sessions.
+* Local conferences, awards and networking events.
+* Member meetups, training sessions and webinars.
+Media Exposure
+* Opportunities to feature an entrepreneur’s journey, business story or interview on Fempreneur or relevant partner media.
+* Business directory listings and product or service showcases where available.
+* Opportunities to build authority, credibility, audience relationships and visibility.
+Forums & Advisory Community
+* A community for sharing entrepreneurial experiences, discussing challenges and exploring opportunities.
+* Connections with entrepreneurs, professionals, mentors and decision-makers.
+* Collaborative learning and peer perspectives to support professional growth.
+Business Power Teams
+* Where offered, groups of complementary, non-competing professionals who share referrals and business opportunities.
+* Regular meetings and collaborative activities designed to support members’ business networks.
+Access to a Wider Network
+* Opportunities to connect with like-minded entrepreneurs and leaders.
+* Sharing experience, learning from industry trends and developing professional relationships.
+* Access to networking sessions or platform features made available to eligible members.
+Events
+* Conferences, workshops, business tours, networking events and awards.
+* Speaker, partner, sponsor or participant opportunities where offered.
+* Event-specific learning programmes and community activities.
+Recognition and Awards
+* Award nominations, jury or speaker assessment, and public voting where the particular programme provides them.
+* Nominee creatives, voting links, online promotion, event participation, media exposure or award badges where specified for that award.
+* The applicable award page will define eligibility, assessment stages, voting weight, benefits and rules for each programme; no specific weighting or outcome is guaranteed unless expressly stated.
+Upcoming content or programme information may be viewable by unregistered visitors. Access to certain features may require an account or membership. Public promotional details may be visible on the Website or partner platforms according to the relevant programme rules and permissions.
+Fempreneur provides a platform through which content, connections and communications may be generated by Fempreneur or obtained, aggregated or licensed from third-party sources. Our responsibilities are limited to those expressly described for each service. We aim to respond to queries about accounts and services within a reasonable time.
+3. Membership Account
+To access certain content or services, you may need to create a membership account. You represent and warrant that information you provide:
+* Is owned by you or you have all necessary rights and permissions to provide and use it under these Terms.
+* Is true, accurate, current, complete and not misleading.
+* Does not violate these Terms or another person’s rights.
+You must not use another user’s account or give unauthorised persons access to your account. Keep your password and login credentials secure and remain responsible for activity conducted through your account. If you suspect that someone else knows your credentials, contact [Insert official Fempreneur support email] promptly. We may temporarily suspend an account where necessary to protect the account or Website. To the extent permitted by law, Fempreneur is not liable for losses resulting from unauthorised access caused by compromised credentials.
+4. Restrictions on Use of Website
+* Do not distribute Website content without prior written consent from the relevant rights holder.
+* Do not use Website content for commercial purposes without prior written approval.
+* Do not use robots, spiders, offline readers or other automated systems to access the Website in a manner that imposes unreasonable requests or load on our servers.
+* Comply with all applicable laws and regulations when using the Website.
+5. Payment Terms
+Accepted payment methods will be displayed during the purchasing process. Subject to applicable law and the Privacy Policy, we may use third-party vendors and payment gateways to process payments and manage payment-card information.
+To purchase a service, you must provide valid payment details and represent that you are authorised to use those details and that the payment does not violate applicable terms or law.
+Except where required by applicable law, Fempreneur is not liable for payments that fail because of insufficient funds, incorrect details, expired cards, provider issues or circumstances beyond our reasonable control.
+6. Subscription Fees
+Applicable fees for services will be displayed on the Website. The price shown when you subscribe or purchase will apply to that transaction. Prices may be displayed in Indian Rupees unless stated otherwise. Fees may change from time to time, and any additional charges, taxes or costs will be disclosed during checkout where applicable.
+7. Refunds and Cancellations
+Refunds: The refund policy applicable to a subscription, event, sponsorship, award nomination, exhibition, membership or renewal will be displayed or communicated through the relevant terms or transaction flow. Do not publish a blanket no-refund statement unless it accurately reflects Fempreneur’s actual policy and complies with applicable law.
+Cancellations: Any cancellation rights, deadlines, charges and consequences will be stated in the applicable service or transaction terms. Cancellation of an accepted subscription or booking may not entitle the user to a refund except where the applicable policy or law provides otherwise.
+8. Intellectual Property
+Unless otherwise stated, content displayed on or used in connection with the Website-including text, photographs, images, illustrations, audio, video, source code, trademarks, logos, directories and other materials (“IP Content”)-is owned by or licensed to Fempreneur or the relevant rights holder.
+You may not republish, distribute, scrape, modify, copy, frame, cache, reproduce, sell, transmit, display or otherwise use IP Content without prior permission, except where permitted by applicable law.
+9. Governing Law and Jurisdiction
+These Terms of Use shall be governed by and construed in accordance with the laws of India, subject to applicable mandatory law. Disputes shall be subject to the jurisdiction of the competent courts at [Insert city/state, India], unless applicable law requires otherwise.
+For questions or formal complaints, contact: [Insert official Fempreneur contact email].
+Fempreneur | Adapted draft - verify legal and operational details before publication

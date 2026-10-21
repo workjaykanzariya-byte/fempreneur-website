@@ -7,15 +7,17 @@ console.log('  Frontend: http://localhost:5173');
 console.log('  Backend:  http://localhost:5000');
 console.log('====================================================');
 
+const npmCmd = process.platform === 'win32' ? 'npm.cmd' : 'npm';
+
 // Start Express Backend
-const backend = spawn('npm', ['run', 'dev'], {
+const backend = spawn(npmCmd, ['run', 'dev'], {
   cwd: path.join(__dirname, 'backend'),
   stdio: 'inherit',
   shell: true,
 });
 
 // Start Vite Frontend
-const frontend = spawn('npm', ['run', 'dev'], {
+const frontend = spawn(npmCmd, ['run', 'dev'], {
   cwd: path.join(__dirname, 'frontend'),
   stdio: 'inherit',
   shell: true,
