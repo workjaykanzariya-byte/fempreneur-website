@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   CalendarClock,
@@ -9,27 +9,52 @@ import {
 import { WinnerCard, CTAButton } from '../components';
 import { getWinnerPhoto } from '../data/winnerPhotos';
 import { allWinners } from '../data/winnersData';
+import { fetchPublicWinners, mergeWinnersWithStatic } from '../services/api';
 
 export default function WinnersPage() {
   const [selectedYear, setSelectedYear] = useState('2023');
+  const [dbWinners, setDbWinners] = useState([]);
 
-  const pastEditions = [
-    { year: '2026', label: 'Awards Winners 2026' },
-    { year: '2025', label: 'Awards Winners 2025' },
-    { year: '2024', label: 'Awards Winners 2024' },
-    { year: '2023', label: 'Awards Winners 2023' },
-    { year: '2022', label: 'Awards Winners 2022' },
-  ];
+  useEffect(() => {
+    let mounted = true;
+    fetchPublicWinners().then((rows) => {
+      if (mounted && Array.isArray(rows)) {
+        setDbWinners(rows);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const combinedWinners = useMemo(
+    () => mergeWinnersWithStatic(dbWinners, allWinners),
+    [dbWinners]
+  );
+
+  const pastEditions = useMemo(() => {
+    const base = [
+      { year: '2026', label: 'Awards Winners 2026' },
+      { year: '2025', label: 'Awards Winners 2025' },
+      { year: '2024', label: 'Awards Winners 2024' },
+      { year: '2023', label: 'Awards Winners 2023' },
+      { year: '2022', label: 'Awards Winners 2022' },
+    ];
+    const has2027 = combinedWinners.some((w) => w.year === '2027');
+    return has2027
+      ? [{ year: '2027', label: 'Awards Winners 2027' }, ...base]
+      : base;
+  }, [combinedWinners]);
 
   const yearWinners = useMemo(() => {
-    return allWinners
+    return combinedWinners
       .filter((winner) => winner.year === selectedYear)
       .map((winner) => ({
         ...winner,
         image: winner.image || getWinnerPhoto(winner.name),
       }))
-      .filter((winner) => Boolean(winner.image));
-  }, [selectedYear]);
+      .filter((winner) => winner.isDynamic || Boolean(winner.image));
+  }, [combinedWinners, selectedYear]);
 
 
   return (
@@ -155,7 +180,7 @@ export default function WinnersPage() {
           </div>
 
           {/* 3. AWARDS CARD LAYOUT (Only Card Layout Displayed) */}
-          {selectedYear === '2026' ? (
+          {selectedYear === '2026' && yearWinners.length === 0 ? (
             /* 2026 Empty State (Archive In Progress - Requirement 5) */
             <div
               style={{

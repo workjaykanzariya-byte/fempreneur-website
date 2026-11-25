@@ -1,21 +1,23 @@
 import React, { useState } from 'react';
-import { Users, CheckCircle2, Sparkles, Smartphone, TrendingUp, ArrowRight, ShieldCheck, X, Heart } from 'lucide-react';
-import { PageHeader, SectionTitle, MembershipCard, CTAButton } from '../components';
+import { Users, CheckCircle2, Sparkles, ArrowRight, ShieldCheck, X, Heart, Star, Check } from 'lucide-react';
+import { PageHeader, SectionTitle, CTAButton } from '../components';
 import { enrollMembership } from '../services/api';
 import { initiateRazorpayPayment } from '../services/razorpay';
 
 // =========================================================================
-// PRICING CONFIGURATION (Set TEST_PRICE_MODE to false to restore original rates)
+// PRICING CONFIGURATION
 // =========================================================================
-export const TEST_PRICE_MODE = true;
+export const TEST_PRICE_MODE = false;
 
 export const MEMBERSHIP_PRICES = {
-  pro: TEST_PRICE_MODE ? 1 : 5000,
-  elite: TEST_PRICE_MODE ? 1 : 25000,
+  starter: 5000,
+  growth: 7500,
+  legacy: 10000,
 };
 
 export default function MembershipPage() {
   const [selectedTierModal, setSelectedTierModal] = useState(null);
+  const [activeCardIdx, setActiveCardIdx] = useState(0);
   const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', company: '', city: '' });
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -23,46 +25,81 @@ export default function MembershipPage() {
 
   const tiers = [
     {
-      tierName: 'Community Member',
-      price: 'Free',
-      description: 'Access the national network of women founders, receive ecosystem newsletters, and join open virtual sessions.',
-      benefits: [
-        'Searchable directory profile access',
-        'Monthly newsletter & award updates',
+      tierName: 'Starter Plan',
+      subtitle: 'For solo women founders',
+      badgeLabel: 'POPULAR',
+      badgeBg: 'linear-gradient(135deg, #C026D3 0%, #9333EA 100%)',
+      borderColor: '#C026D3',
+      softBg: '#FDF4FF',
+      numericPrice: MEMBERSHIP_PRICES.starter,
+      price: `₹${MEMBERSHIP_PRICES.starter}`,
+      monthlyPrice: `₹${Math.round(MEMBERSHIP_PRICES.starter / 12)}/mo`,
+      periodPill: 'ANNUAL',
+      validity: '1 Year',
+      billingPeriod: '/ 1 Year',
+      ctaText: 'Subscribe',
+      features: [
+        'Verified directory profile with member badge',
+        'Monthly newsletter & Fempreneur award updates',
         'Access to open virtual knowledge webinars',
         'Invitations to local city chapter meetups',
+        'Standard delegate pass discount (10% off)',
       ],
-      ctaText: 'Join for Free',
-      isPopular: false,
     },
     {
-      tierName: 'Pro Member',
-      price: `₹${MEMBERSHIP_PRICES.pro.toLocaleString('en-IN')}`,
-      billingPeriod: '/year',
-      description: 'Accelerate business visibility with priority directory listing, event discounts, and mastermind groups.',
-      benefits: [
-        'Priority verified directory profile with badge',
-        'Exclusive masterclass recordings & toolkits',
-        'Discounted delegate pass for 2027 events',
-        'Access to peer networking & mastermind circles',
+      tierName: 'Growth Plan',
+      subtitle: 'For growing MSME leaders',
+      badgeLabel: 'BEST VALUE',
+      badgeBg: 'linear-gradient(135deg, #F97316 0%, #EA580C 100%)',
+      borderColor: '#F97316',
+      softBg: '#FFF7ED',
+      numericPrice: MEMBERSHIP_PRICES.growth,
+      price: `₹${MEMBERSHIP_PRICES.growth}`,
+      monthlyPrice: `₹${Math.round(MEMBERSHIP_PRICES.growth / 24)}/mo`,
+      periodPill: '2 YEARS',
+      validity: '2 Years',
+      billingPeriod: '/ 2 Years',
+      ctaText: 'Subscribe',
+      features: [
+        'Everything in Starter Plan for 2 full years',
+        'Priority directory listing & featured spotlight',
+        'Exclusive masterclass recordings & growth toolkits',
+        'Peer networking & founder mastermind circles',
+        'Discounted delegate pass (25% off) for 2027 events',
       ],
-      ctaText: 'Become a Pro Member',
-      isPopular: false,
     },
     {
-      tierName: 'Elite Founder',
-      price: `₹${MEMBERSHIP_PRICES.elite.toLocaleString('en-IN')}`,
-      billingPeriod: '/year',
-      description: 'For established founders seeking national recognition, VIP event access, and Coffee Table Book evaluation.',
-      benefits: [
+      tierName: 'Legacy Plan',
+      subtitle: 'For established scale-up founders',
+      badgeLabel: 'BEST VALUE',
+      badgeBg: 'linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%)',
+      borderColor: '#7C3AED',
+      softBg: '#F5F3FF',
+      numericPrice: MEMBERSHIP_PRICES.legacy,
+      price: `₹${MEMBERSHIP_PRICES.legacy}`,
+      monthlyPrice: `₹${Math.round(MEMBERSHIP_PRICES.legacy / 60)}/mo`,
+      periodPill: '5 YEARS',
+      validity: '5 Years',
+      billingPeriod: '/ 5 Years',
+      ctaText: 'Subscribe',
+      features: [
+        'Everything in Growth Plan for 5 full years',
         'Evaluation for Coffee Table Book feature',
         '1 VIP Delegate Pass (Ahmedabad or Delhi NCR)',
         'Speaking & panel discussion consideration',
         'Direct investor & corporate connect sessions',
       ],
-      ctaText: 'Apply for Elite Access',
-      isPopular: false,
     },
+  ];
+
+  const comparisonRows = [
+    { feature: 'Verified Directory Profile & Badge', starter: true, growth: true, legacy: true },
+    { feature: 'City Chapter Meetups & Webinars', starter: true, growth: true, legacy: true },
+    { feature: 'Masterclass Recordings & Toolkits', starter: false, growth: true, legacy: true },
+    { feature: 'Founder Mastermind Circles', starter: false, growth: true, legacy: true },
+    { feature: '2027 Event Delegate Discount', starter: '10% Off', growth: '25% Off', legacy: '1 VIP Pass Included' },
+    { feature: 'Coffee Table Book Evaluation', starter: false, growth: false, legacy: true },
+    { feature: 'Speaking & Investor Connect Access', starter: false, growth: false, legacy: true },
   ];
 
   const handleOpenEnrollment = (tier) => {
@@ -80,23 +117,23 @@ export default function MembershipPage() {
         fullName: formData.fullName.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
-        tier: selectedTierModal?.tierName || 'Community Member',
+        tier: selectedTierModal?.tierName || 'Starter Plan',
         businessName: formData.company ? formData.company.trim() : null,
         city: formData.city || 'Ahmedabad',
       });
 
       const recordId = res?.data?.id || null;
-      const tierName = selectedTierModal?.tierName || '';
-      const isPaid = tierName.toLowerCase().includes('pro') || tierName.toLowerCase().includes('elite');
-      const amount = tierName.toLowerCase().includes('elite') ? MEMBERSHIP_PRICES.elite : MEMBERSHIP_PRICES.pro;
+      const tierName = selectedTierModal?.tierName || 'Starter Plan';
+      const amount = Number(selectedTierModal?.numericPrice || MEMBERSHIP_PRICES.starter);
+      const validityLabel = selectedTierModal?.validity || '1 Year';
 
-      if (isPaid) {
+      if (amount > 0) {
         await initiateRazorpayPayment({
           amount,
           module: 'community',
           recordId,
           title: 'Fempreneur Membership',
-          description: `${tierName} Annual Membership`,
+          description: `${tierName} (${validityLabel}) Membership`,
           prefill: {
             name: formData.fullName,
             email: formData.email,
@@ -152,47 +189,167 @@ export default function MembershipPage() {
             subtitle="Tailored tiers supporting aspiring entrepreneurs, rising MSME leaders, and scale-up founders across India."
           />
 
-          <div className="grid grid-cols-3 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', marginBottom: '4rem' }}>
-            {tiers.map((tier, idx) => (
-              <MembershipCard
-                key={idx}
-                {...tier}
-                onClick={() => handleOpenEnrollment(tier)}
-              />
-            ))}
-          </div>
+          <div className="grid grid-cols-3 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', alignItems: 'stretch' }}>
+            {tiers.map((tier, idx) => {
+              const isActive = activeCardIdx === idx;
+              return (
+                <div
+                  key={idx}
+                  onMouseEnter={() => setActiveCardIdx(idx)}
+                  onClick={() => setActiveCardIdx(idx)}
+                  style={{
+                    position: 'relative',
+                    background: '#FFFFFF',
+                    border: `${isActive ? '2px' : '1.5px'} solid ${isActive ? tier.borderColor : '#E9D5FF'}`,
+                    borderRadius: '18px',
+                    boxShadow: isActive
+                      ? '0 22px 44px rgba(106, 27, 154, 0.16), 0 0 0 4px rgba(162, 28, 175, 0.08)'
+                      : '0 6px 20px rgba(106, 27, 154, 0.06)',
+                    overflow: 'hidden',
+                    display: 'flex',
+                    flexDirection: 'column',
+                    transform: isActive ? 'translateY(-8px) scale(1.015)' : 'translateY(0) scale(1)',
+                    transition: 'transform 0.35s cubic-bezier(0.22, 1, 0.36, 1), box-shadow 0.35s cubic-bezier(0.22, 1, 0.36, 1), border-color 0.25s ease',
+                    cursor: 'pointer',
+                  }}
+                >
+                  {/* Top-Left Ribbon Badge */}
+                  <div
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      gap: '6px',
+                      alignSelf: 'flex-start',
+                      background: tier.badgeBg,
+                      color: '#FFFFFF',
+                      fontSize: '0.72rem',
+                      fontWeight: 800,
+                      letterSpacing: '0.06em',
+                      padding: '6px 14px',
+                      borderBottomRightRadius: '14px',
+                      textTransform: 'uppercase',
+                    }}
+                  >
+                    <Star size={12} fill="#FFFFFF" color="#FFFFFF" />
+                    <span>{tier.badgeLabel}</span>
+                  </div>
 
-          {/* Planned Features: Investor Connect & Mobile App */}
-          <div className="grid grid-cols-2 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
-            <div className="fem-card" style={{ padding: '2rem', border: '1.5px dashed var(--border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                  <TrendingUp size={22} color="var(--color-burgundy)" />
-                  <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-plum-deep)' }}>
-                    Investor Connect Platform
-                  </h4>
-                </div>
-                <span className="badge badge-planned">Planned Feature</span>
-              </div>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                A structured platform matching member startups with impact funds, angel syndicates, and venture debt providers specializing in gender-lens investing.
-              </p>
-            </div>
+                  {/* Plan Title + Subtitle + Price */}
+                  <div style={{ padding: '1.1rem 1.4rem 0.9rem' }}>
+                    <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: '0.75rem', flexWrap: 'wrap' }}>
+                      <div>
+                        <h3 style={{ margin: 0, fontSize: '1.35rem', fontWeight: 800, color: '#1C1224' }}>
+                          {tier.tierName}
+                        </h3>
+                        <p style={{ margin: '2px 0 0', fontSize: '0.84rem', fontWeight: 600, color: '#7E22CE' }}>
+                          {tier.subtitle}
+                        </p>
+                      </div>
 
-            <div className="fem-card" style={{ padding: '2rem', border: '1.5px dashed var(--border-light)' }}>
-              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1rem' }}>
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
-                  <Smartphone size={22} color="var(--color-burgundy)" />
-                  <h4 style={{ fontSize: '1.2rem', fontWeight: 800, color: 'var(--color-plum-deep)' }}>
-                    Fempreneur Mobile App
-                  </h4>
+                      <div style={{ textAlign: 'right' }}>
+                        <div style={{ fontSize: '1.85rem', fontWeight: 900, color: '#1C1224', letterSpacing: '-0.02em', lineHeight: 1 }}>
+                          {tier.price}
+                        </div>
+                        <span
+                          style={{
+                            display: 'inline-block',
+                            marginTop: '4px',
+                            background: '#F3F4F6',
+                            color: '#6B7280',
+                            fontSize: '0.66rem',
+                            fontWeight: 700,
+                            letterSpacing: '0.05em',
+                            padding: '3px 8px',
+                            borderRadius: '6px',
+                            textTransform: 'uppercase',
+                          }}
+                        >
+                          {tier.periodPill}
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Full-width Pill Subscribe CTA */}
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleOpenEnrollment(tier);
+                      }}
+                      style={{
+                        width: '100%',
+                        marginTop: '1.1rem',
+                        background: isActive
+                          ? 'linear-gradient(135deg, #A21CAF 0%, #6A1B9A 100%)'
+                          : 'linear-gradient(135deg, #9333EA 0%, #7E22CE 100%)',
+                        color: '#FFFFFF',
+                        border: 'none',
+                        borderRadius: '999px',
+                        padding: '0.72rem 1.35rem',
+                        fontSize: '0.92rem',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        boxShadow: '0 6px 18px rgba(162, 28, 175, 0.25)',
+                        transition: 'transform 0.22s ease, box-shadow 0.22s ease',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.transform = 'scale(1.02)';
+                        e.currentTarget.style.boxShadow = '0 10px 22px rgba(162, 28, 175, 0.34)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.transform = 'scale(1)';
+                        e.currentTarget.style.boxShadow = '0 6px 18px rgba(162, 28, 175, 0.25)';
+                      }}
+                    >
+                      {tier.ctaText}
+                    </button>
+                  </div>
+
+                  {/* Divider */}
+                  <div style={{ height: '1px', background: '#F3E8FF', margin: '0 1.4rem' }} />
+
+                  {/* Validity & Subscription Type Footer */}
+                  <div style={{ padding: '0.85rem 1.4rem', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1rem', alignItems: 'center', background: '#FAF5FF' }}>
+                    <div>
+                      <div style={{ fontSize: '0.66rem', fontWeight: 700, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '2px' }}>
+                        VALIDITY
+                      </div>
+                      <div style={{ fontSize: '0.94rem', fontWeight: 800, color: '#1C1224' }}>
+                        {tier.validity}
+                      </div>
+                    </div>
+                    <div style={{ borderLeft: '1px solid #E9D5FF', paddingLeft: '1rem' }}>
+                      <div style={{ fontSize: '0.66rem', fontWeight: 700, color: '#9CA3AF', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '2px' }}>
+                        SUBSCRIPTION TYPE
+                      </div>
+                      <div style={{ fontSize: '0.94rem', fontWeight: 800, color: '#1C1224' }}>
+                        {tier.tierName}
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Feature List (Shopify-style itemized perks) */}
+                  <div style={{ padding: '1rem 1.4rem 1.35rem', display: 'flex', flexDirection: 'column', gap: '0.65rem', flex: 1 }}>
+                    {tier.features.map((feat, fIdx) => (
+                      <div
+                        key={fIdx}
+                        style={{
+                          display: 'flex',
+                          alignItems: 'flex-start',
+                          gap: '0.55rem',
+                          fontSize: '0.86rem',
+                          color: '#374151',
+                          lineHeight: 1.45,
+                        }}
+                      >
+                        <Check size={16} color="#7E22CE" style={{ flexShrink: 0, marginTop: '2px' }} />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
                 </div>
-                <span className="badge badge-gold">Coming Soon</span>
-              </div>
-              <p style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                Member login, instant chapter notifications, directory search, and voting access from iOS and Android devices.
-              </p>
-            </div>
+              );
+            })}
           </div>
         </div>
       </section>

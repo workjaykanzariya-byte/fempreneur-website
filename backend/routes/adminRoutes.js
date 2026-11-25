@@ -342,16 +342,54 @@ router.delete('/nominations/:id', verifyAdmin, async (req, res) => {
 // 3. WINNERS MANAGEMENT
 // =============================================================================
 
+// GET /api/web/winners/public (Public endpoint for main website & Hall of Fame)
+router.get('/winners/public', async (req, res) => {
+  try {
+    let rows = [];
+    try {
+      const q = `
+        SELECT id, name, company, category_name, city, award_year, track, impact_text, quote, photo_url, website_url as website_link, 'legacy' AS source
+        FROM web_winners
+        WHERE COALESCE(is_published, 1) = 1
+        UNION ALL
+        SELECT id, nominee_name AS name, business_name AS company, category_name, city, award_year, track,
+               description AS impact_text, '' AS quote, profile_picture AS photo_url, website_link, 'nomination' AS source
+        FROM web_nominations
+        WHERE status = 'winner'
+        ORDER BY award_year DESC, id DESC, name ASC
+      `;
+      const result = await query(q);
+      rows = result.rows;
+    } catch (e) {
+      try {
+        const result = await query(`
+          SELECT id, founder_name AS name, venture_name AS company, category_id AS category_name, city, '2027' AS award_year, 'honorary' AS track,
+                 pitch AS impact_text, '' AS quote, '' AS photo_url, website_url as website_link, 'nomination' AS source
+          FROM nominations
+          WHERE status = 'winner'
+        `);
+        rows = result.rows;
+      } catch (err2) {
+        rows = [];
+      }
+    }
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Error fetching public winners:', error);
+    res.status(500).json({ success: false, message: 'Error fetching public winners' });
+  }
+});
+
 // GET /api/admin/winners
 router.get('/winners', verifyAdmin, async (req, res) => {
   try {
     let rows = [];
     try {
       const q = `
-        SELECT id, name, company, city, award_year, track, impact_text, quote, photo_url, website_url as website_link, 'legacy' AS source
+        SELECT id, name, company, category_name, city, award_year, track, impact_text, quote, photo_url, website_url as website_link, 'legacy' AS source
         FROM web_winners
         UNION ALL
-        SELECT id, nominee_name AS name, business_name AS company, city, award_year, track,
+        SELECT id, nominee_name AS name, business_name AS company, category_name, city, award_year, track,
                description AS impact_text, '' AS quote, profile_picture AS photo_url, website_link, 'nomination' AS source
         FROM web_nominations
         WHERE status = 'winner'
@@ -363,7 +401,7 @@ router.get('/winners', verifyAdmin, async (req, res) => {
       // Fallback
       try {
         const result = await query(`
-          SELECT id, founder_name AS name, venture_name AS company, city, '2027' AS award_year, 'honorary' AS track,
+          SELECT id, founder_name AS name, venture_name AS company, '' AS category_name, city, '2027' AS award_year, 'honorary' AS track,
                  pitch AS impact_text, '' AS quote, '' AS photo_url, website_url as website_link, 'nomination' AS source
           FROM nominations
           WHERE status = 'winner'
@@ -383,41 +421,46 @@ router.get('/winners', verifyAdmin, async (req, res) => {
 // POST /api/admin/winners
 router.post('/winners', verifyAdmin, upload.single('profilePicture'), async (req, res) => {
   try {
-    const { nominee_name, business_name, category, website_link, city, description } = req.body;
+    const { nominee_name, business_name, category, website_link, city, description, award_year } = req.body;
 
     if (!nominee_name) {
       return res.status(400).json({ success: false, message: 'Nominee Name is required' });
     }
 
     const photoUrl = req.file ? `/uploads/nominations/${req.file.filename}` : null;
+    const winnerYear = (award_year && String(award_year).trim()) ? String(award_year).trim() : '2026';
 
     if (req.file) {
       // Automatically remove background & composite onto exact reference template
-      processWinnerImageAsync(req.file.path).catch(err => {
-        console.error('Auto winner background processing error:', err);
-      });
+      // Wait for processing so the cutout/templated image is ready when the website fetches it;
+      // fall back cleanly to the original uploaded photo if processing fails.
+      try {
+        await processWinnerImageAsync(req.file.path);
+      } catch (err) {
+        console.error('Auto winner background processing error (falling back to original photo):', err);
+      }
     }
 
     try {
       await query(
         `INSERT INTO web_winners (name, company, category_name, city, award_year, track, impact_text, photo_url, website_url, is_published)
-         VALUES ($1, $2, $3, $4, '2027', 'honorary', $5, $6, $7, 1)`,
-        [nominee_name.trim(), business_name?.trim() || '', category?.trim() || 'General', city?.trim() || '', description?.trim() || '', photoUrl, website_link?.trim() || null]
+         VALUES ($1, $2, $3, $4, $5, 'honorary', $6, $7, $8, 1)`,
+        [nominee_name.trim(), business_name?.trim() || '', category?.trim() || 'General', city?.trim() || '', winnerYear, description?.trim() || '', photoUrl, website_link?.trim() || null]
       );
     } catch (e) {
       // Fallback insert to web_nominations with status='winner'
       try {
         await query(
           `INSERT INTO web_nominations (nominee_name, business_name, category_name, city, description, profile_picture, website_link, status, award_year, phone, email)
-           VALUES ($1, $2, $3, $4, $5, $6, $7, 'winner', '2027', '', '')`,
-          [nominee_name.trim(), business_name?.trim() || '', category?.trim() || 'General', city?.trim() || '', description?.trim() || '', photoUrl, website_link?.trim() || null]
+           VALUES ($1, $2, $3, $4, $5, $6, $7, 'winner', $8, '', '')`,
+          [nominee_name.trim(), business_name?.trim() || '', category?.trim() || 'General', city?.trim() || '', description?.trim() || '', photoUrl, website_link?.trim() || null, winnerYear]
         );
       } catch (err2) {
         console.error('DB Winner insert error:', err2);
       }
     }
 
-    res.json({ success: true, message: 'Winner added successfully!' });
+    res.json({ success: true, message: 'Winner added successfully!', photo_url: photoUrl });
   } catch (error) {
     console.error('Error adding winner:', error);
     res.status(500).json({ success: false, message: 'Error adding winner' });

@@ -1185,24 +1185,24 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SECTION 7: BOTTOM CTA BANNER (Matching Greenpreneur Celebration Event CTA) */}
+      {/* SECTION 7: BOTTOM CTA BANNER */}
       <section
         style={{
-          background: 'linear-gradient(135deg, #1C0626 0%, #2A0938 100%)',
-          color: '#FFFFFF',
+          background: 'linear-gradient(180deg, #FDFBFE 0%, #F4EAF8 50%, #FAF5FC 100%)',
+          color: 'var(--color-plum-deep)',
           padding: '4.5rem 1.5rem',
           textAlign: 'center',
           position: 'relative',
           overflow: 'hidden',
-          borderTop: '1px solid rgba(212, 175, 55, 0.2)',
+          borderTop: '1px solid rgba(106, 27, 154, 0.12)',
         }}
       >
         <div style={{ maxWidth: '800px', margin: '0 auto', position: 'relative', zIndex: 2 }}>
-          <h2 style={{ fontFamily: 'serif, Georgia', fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', color: '#FFFFFF' }}>
+          <h2 style={{ fontFamily: 'serif, Georgia', fontSize: 'clamp(1.9rem, 3.5vw, 2.5rem)', fontWeight: 800, marginBottom: '1rem', color: 'var(--color-plum-deep)' }}>
             Be part of the Fempreneur 2027 National Showcase.
           </h2>
 
-          <p style={{ color: 'rgba(255, 255, 255, 0.78)', fontSize: '0.98rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '560px', margin: '0 auto 2rem' }}>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.98rem', lineHeight: 1.6, marginBottom: '2rem', maxWidth: '560px', margin: '0 auto 2rem' }}>
             Nominate your business for free or secure a delegate pass to network with 500+ women leaders, mentors, and ecosystem partners.
           </p>
 
@@ -1210,14 +1210,14 @@ export default function AboutPage() {
             <Link
               to="/nominate"
               style={{
-                background: 'linear-gradient(135deg, #E91E63 0%, #C2185B 100%)',
+                background: 'linear-gradient(135deg, #6A1B9A 0%, #9C27B0 45%, #E91E63 100%)',
                 color: '#FFFFFF',
                 padding: '0.85rem 2rem',
                 borderRadius: '999px',
                 fontWeight: 800,
                 fontSize: '0.88rem',
                 textDecoration: 'none',
-                boxShadow: '0 8px 24px rgba(233, 30, 99, 0.35)',
+                boxShadow: '0 8px 24px rgba(106, 27, 154, 0.28)',
                 transition: 'transform 0.2s ease',
               }}
             >
@@ -1227,14 +1227,15 @@ export default function AboutPage() {
             <Link
               to="/membership"
               style={{
-                background: 'transparent',
-                color: '#FFFFFF',
-                border: '1.5px solid rgba(255, 255, 255, 0.6)',
+                background: '#FFFFFF',
+                color: 'var(--color-burgundy)',
+                border: '1.5px solid rgba(106, 27, 154, 0.32)',
                 padding: '0.85rem 2rem',
                 borderRadius: '999px',
                 fontWeight: 800,
                 fontSize: '0.88rem',
                 textDecoration: 'none',
+                boxShadow: '0 4px 12px rgba(106, 27, 154, 0.08)',
                 transition: 'background 0.2s ease',
               }}
             >

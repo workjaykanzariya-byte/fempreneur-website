@@ -1175,33 +1175,38 @@ h6 { font-size: 1rem; }
   box-shadow: 0 20px 42px rgba(106, 27, 154, 0.3);
 }
 
-/* 4. Large Portrait Top Image Area (matching reference screenshot: full width, aspect-ratio calibrated to 800:950 canvas, rounded top corners) */
+/* 4. Large Portrait Top Image Area (full photo always visible with zero cropping) */
 .fem-ref-winner-photo-wrapper {
   position: relative;
   width: 100%;
   aspect-ratio: 800 / 950;
   height: auto;
-  max-height: 340px;
+  padding: 12px 12px 0;
   background: #FFFFFF;
   border-top-left-radius: 20px;
   border-top-right-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   overflow: hidden;
   flex-shrink: 0;
+  box-sizing: border-box;
 }
 
 .fem-ref-winner-photo {
-  width: 100%;
-  height: 100%;
+  max-width: 100%;
+  max-height: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
-  object-position: center bottom;
+  object-position: center center;
   display: block;
-  border-top-left-radius: 20px;
-  border-top-right-radius: 20px;
-  transition: transform 0.45s cubic-bezier(0.25, 0.8, 0.25, 1);
+  border-radius: 14px;
+  transition: transform 0.35s cubic-bezier(0.25, 0.8, 0.25, 1);
 }
 
 .fem-ref-winner-card:hover .fem-ref-winner-photo {
-  transform: translateY(-4px) scale(1.02);
+  transform: none;
 }
 
 /* Blank photo area when no photo exists (clean placeholder matching House of kotawala in reference screenshot) */
@@ -1329,7 +1334,8 @@ h6 { font-size: 1rem; }
 
 @media (max-width: 580px) {
   .fem-ref-winner-photo-wrapper {
-    height: 280px;
+    aspect-ratio: 800 / 950;
+    height: auto;
   }
 }
 

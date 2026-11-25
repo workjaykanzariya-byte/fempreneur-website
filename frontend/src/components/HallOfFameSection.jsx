@@ -4,29 +4,45 @@ import WinnerCard from './WinnerCard';
 import CTAButton from './CTAButton';
 import { allWinners } from '../data/winnersData';
 import { getWinnerPhoto } from '../data/winnerPhotos';
+import { fetchPublicWinners, mergeWinnersWithStatic } from '../services/api';
 
 const ALLOWED_YEARS = ['2022'];
 
 /**
  * HallOfFameSection Component
  * Continuous auto-scrolling center-focus 3D depth carousel displaying all 2022 winners
+ * and dynamically added/synced winners from the Admin Panel
  * with touch/mouse swipe, wheel scroll, arrow navigation, and clickable pagination dots.
  */
 export default function HallOfFameSection() {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isDragging, setIsDragging] = useState(false);
+  const [dbWinners, setDbWinners] = useState([]);
   const dragStartX = useRef(null);
   const wheelLock = useRef(false);
 
+  useEffect(() => {
+    let mounted = true;
+    fetchPublicWinners().then((rows) => {
+      if (mounted && Array.isArray(rows)) {
+        setDbWinners(rows);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
   const allAllowedWinners = useMemo(() => {
-    return allWinners
-      .filter((winner) => ALLOWED_YEARS.includes(winner.year))
+    const merged = mergeWinnersWithStatic(dbWinners, allWinners);
+    return merged
+      .filter((winner) => winner.isDynamic || ALLOWED_YEARS.includes(winner.year))
       .map((winner) => ({
         ...winner,
         image: winner.image || getWinnerPhoto(winner.name),
       }))
-      .filter((winner) => Boolean(winner.image));
-  }, []);
+      .filter((winner) => winner.isDynamic || Boolean(winner.image));
+  }, [dbWinners]);
 
   const total = allAllowedWinners.length;
 

@@ -35,8 +35,10 @@ export default function AdminDashboard() {
 
   // Form States for other tabs
   const [newWinnerForm, setNewWinnerForm] = useState({
-    nominee_name: '', business_name: '', category: 'Tech Innovator of the Year', website_link: '', city: 'Ahmedabad', description: ''
+    nominee_name: '', business_name: '', category: 'Woman Entrepreneur of the Year', award_year: '2026', website_link: '', city: 'Ahmedabad', description: '', profilePicture: null
   });
+  const [winnerSubmitting, setWinnerSubmitting] = useState(false);
+  const [winnerPreview, setWinnerPreview] = useState(null);
   const [newEntityForm, setNewEntityForm] = useState({
     name: '', role: '', org: '', tags: '', bio: ''
   });
@@ -270,6 +272,71 @@ export default function AdminDashboard() {
       }
     } catch (err) {
       alert('Delete operation failed.');
+    }
+  };
+
+  const handleDeleteWinner = async (id, source = 'legacy') => {
+    if (!window.confirm('Are you sure you want to remove this winner?')) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${API_PREFIX}/api/admin/winners/${id}?source=${encodeURIComponent(source)}`, {
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Winner removed successfully.');
+        fetchData('winners');
+      } else {
+        alert('Notice: ' + (result.message || 'Unable to remove winner.'));
+      }
+    } catch (err) {
+      alert('Delete winner operation failed.');
+    }
+  };
+
+  const handleAddWinner = async (e) => {
+    e.preventDefault();
+    if (!newWinnerForm.nominee_name.trim()) {
+      alert('Winner Name is required.');
+      return;
+    }
+    setWinnerSubmitting(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('nominee_name', newWinnerForm.nominee_name.trim());
+      formData.append('business_name', newWinnerForm.business_name.trim());
+      formData.append('category', newWinnerForm.category.trim());
+      formData.append('award_year', newWinnerForm.award_year || '2026');
+      formData.append('city', newWinnerForm.city.trim());
+      formData.append('website_link', newWinnerForm.website_link.trim());
+      formData.append('description', newWinnerForm.description.trim());
+      if (newWinnerForm.profilePicture) {
+        formData.append('profilePicture', newWinnerForm.profilePicture);
+      }
+
+      const res = await fetch(`${API_PREFIX}/api/admin/winners`, {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Winner added and synced to the website!');
+        setNewWinnerForm({
+          nominee_name: '', business_name: '', category: 'Woman Entrepreneur of the Year', award_year: '2026', website_link: '', city: 'Ahmedabad', description: '', profilePicture: null
+        });
+        setWinnerPreview(null);
+        setActiveTab('winners');
+      } else {
+        alert(result.message || 'Failed to add winner.');
+      }
+    } catch (err) {
+      console.error('Add winner error:', err);
+      alert('Error adding winner. Please verify backend connection.');
+    } finally {
+      setWinnerSubmitting(false);
     }
   };
 
@@ -641,8 +708,226 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* Winners List Tab */}
+          {activeTab === 'winners' && (
+            <div className="fem-table-container">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '16px 20px', borderBottom: '1px solid #E5E7EB' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#111827' }}>
+                    Published Winners ({data.length})
+                  </h3>
+                  <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#6B7280' }}>
+                    Automatically synced with Winners Page &amp; Homepage Hall of Fame
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => setActiveTab('add-winner')}
+                  className="fem-btn fem-btn-gold"
+                >
+                  + Add New Winner
+                </button>
+              </div>
+              {isLoading ? (
+                <div style={{ padding: '60px 0', textAlign: 'center', color: '#6B7280' }}>
+                  <Loader2 className="animate-spin" size={32} style={{ margin: '0 auto 12px', color: '#9C27B0' }} />
+                  <p style={{ fontWeight: 600 }}>Loading Winners...</p>
+                </div>
+              ) : data.length === 0 ? (
+                <div style={{ padding: '60px 0', textAlign: 'center', color: '#6B7280' }}>
+                  <Award size={36} style={{ margin: '0 auto 12px', color: '#9C27B0' }} />
+                  <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', margin: 0 }}>No Dynamic Winners Yet</h3>
+                  <p style={{ fontSize: '0.85rem', marginTop: '4px' }}>Add a winner or mark a nomination as winner to publish it automatically.</p>
+                </div>
+              ) : (
+                <table className="fem-clean-table">
+                  <thead>
+                    <tr>
+                      <th>PHOTO</th>
+                      <th>WINNER NAME</th>
+                      <th>COMPANY &amp; CITY</th>
+                      <th>CATEGORY</th>
+                      <th>YEAR</th>
+                      <th style={{ textAlign: 'right' }}>ACTIONS</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((row) => (
+                      <tr key={`${row.source || 'legacy'}-${row.id}`}>
+                        <td>
+                          {row.photo_url ? (
+                            <img
+                              src={row.photo_url.startsWith('http') ? row.photo_url : `${API_PREFIX}${row.photo_url}`}
+                              alt={row.name}
+                              style={{ width: '48px', height: '56px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #E5E7EB' }}
+                            />
+                          ) : (
+                            <div style={{ width: '48px', height: '56px', borderRadius: '8px', background: '#F3E8FF', color: '#6A1B9A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+                              {(row.name || 'W').charAt(0).toUpperCase()}
+                            </div>
+                          )}
+                        </td>
+                        <td>
+                          <div className="nominee-title">{row.name}</div>
+                          <div className="nominee-email">{row.source === 'nomination' ? 'Promoted Nomination' : 'Direct Winner'}</div>
+                        </td>
+                        <td>
+                          <div className="company-title">{row.company || '—'}</div>
+                          <div className="company-city">{row.city || 'India'}</div>
+                        </td>
+                        <td>
+                          <div className="category-text">{row.category_name || row.track || 'Fempreneur Award'}</div>
+                        </td>
+                        <td>
+                          <span className="badge-track-honorary">{row.award_year || '2026'}</span>
+                        </td>
+                        <td style={{ textAlign: 'right' }}>
+                          <button
+                            type="button"
+                            onClick={() => handleDeleteWinner(row.id, row.source || 'legacy')}
+                            className="fem-btn fem-btn-danger"
+                            style={{ padding: '6px 10px', background: '#EF4444' }}
+                            title="Delete Winner"
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              )}
+            </div>
+          )}
+
+          {/* Add New Winner Form */}
+          {activeTab === 'add-winner' && (
+            <div style={{ background: '#FFFFFF', padding: '28px 32px', borderRadius: '12px', border: '1px solid #E5E7EB', maxWidth: '760px' }}>
+              <h3 style={{ margin: '0 0 6px', color: '#111827', fontWeight: 700 }}>Add New Award Winner</h3>
+              <p style={{ margin: '0 0 22px', color: '#6B7280', fontSize: '0.88rem' }}>
+                Uploaded photos automatically have their background removed and styled into the Fempreneur template, then appear on the Winners Page and Hall of Fame.
+              </p>
+              <form onSubmit={handleAddWinner} style={{ display: 'grid', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Winner Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newWinnerForm.nominee_name}
+                      onChange={(e) => setNewWinnerForm({ ...newWinnerForm, nominee_name: e.target.value })}
+                      placeholder="e.g. Priya Sharma"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Company / Venture Name</label>
+                    <input
+                      type="text"
+                      value={newWinnerForm.business_name}
+                      onChange={(e) => setNewWinnerForm({ ...newWinnerForm, business_name: e.target.value })}
+                      placeholder="e.g. Aarya Innovations"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Award Category / Title</label>
+                    <input
+                      type="text"
+                      value={newWinnerForm.category}
+                      onChange={(e) => setNewWinnerForm({ ...newWinnerForm, category: e.target.value })}
+                      placeholder="e.g. Woman Entrepreneur of the Year"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Award Year</label>
+                    <select
+                      value={newWinnerForm.award_year}
+                      onChange={(e) => setNewWinnerForm({ ...newWinnerForm, award_year: e.target.value })}
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', background: '#FFFFFF' }}
+                    >
+                      <option value="2027">2027</option>
+                      <option value="2026">2026</option>
+                      <option value="2025">2025</option>
+                      <option value="2024">2024</option>
+                      <option value="2023">2023</option>
+                      <option value="2022">2022</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>City</label>
+                    <input
+                      type="text"
+                      value={newWinnerForm.city}
+                      onChange={(e) => setNewWinnerForm({ ...newWinnerForm, city: e.target.value })}
+                      placeholder="e.g. Ahmedabad"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Website / Story URL</label>
+                  <input
+                    type="url"
+                    value={newWinnerForm.website_link}
+                    onChange={(e) => setNewWinnerForm({ ...newWinnerForm, website_link: e.target.value })}
+                    placeholder="https://vyapaarjagat.com"
+                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Impact / Award Highlight</label>
+                  <textarea
+                    rows={3}
+                    value={newWinnerForm.description}
+                    onChange={(e) => setNewWinnerForm({ ...newWinnerForm, description: e.target.value })}
+                    placeholder="Brief achievement or impact summary..."
+                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Winner Photo (Auto Background Removal)</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setNewWinnerForm({ ...newWinnerForm, profilePicture: file });
+                      setWinnerPreview(file ? URL.createObjectURL(file) : null);
+                    }}
+                  />
+                  {winnerPreview && (
+                    <div style={{ marginTop: '10px' }}>
+                      <img src={winnerPreview} alt="Winner preview" style={{ width: '96px', height: '112px', objectFit: 'cover', borderRadius: '10px', border: '1px solid #D1D5DB' }} />
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '12px', marginTop: '6px' }}>
+                  <button
+                    type="submit"
+                    disabled={winnerSubmitting}
+                    className="fem-btn fem-btn-gold"
+                    style={{ minWidth: '160px' }}
+                  >
+                    {winnerSubmitting ? 'Processing & Saving...' : 'Publish Winner'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('winners')}
+                    className="fem-btn fem-btn-outline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* Simple Tab Switcher notification if other tabs clicked */}
-          {activeTab !== 'nominations' && (
+          {!['nominations', 'winners', 'add-winner'].includes(activeTab) && (
             <div style={{ background: '#FFFFFF', padding: '40px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
               <h3 style={{ margin: 0, color: '#111827', fontWeight: 700 }}>
                 {mainNavItems.find(i => i.id === activeTab)?.label || 'Module Active'}

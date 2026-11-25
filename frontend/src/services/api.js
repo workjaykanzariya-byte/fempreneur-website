@@ -157,3 +157,64 @@ export const getMeApi = async () => {
 export const fetchPlatformStats = async () => {
   return safeFetch(`${API_BASE_URL}/stats`);
 };
+
+// 11. Public Winners (Synced with Admin Panel & Backend DB)
+export const fetchPublicWinners = async () => {
+  try {
+    const res = await safeFetch(`${API_BASE_URL}/web/winners/public`);
+    return Array.isArray(res?.data) ? res.data : [];
+  } catch (err) {
+    console.warn('Public winners fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+/**
+ * Normalizes backend winner records and merges them with static winnersData
+ * without duplicates. Backend records take priority for matching (name, year).
+ */
+export const mergeWinnersWithStatic = (dbRows = [], staticWinners = []) => {
+  const normalizedDb = (Array.isArray(dbRows) ? dbRows : [])
+    .filter((row) => row && row.name)
+    .map((row) => {
+      const year = String(row.award_year || '2026').trim();
+      const category = row.category_name || row.category || row.track || 'Fempreneur Award';
+      return {
+        id: row.id,
+        source: row.source || 'legacy',
+        isDynamic: true,
+        awardTitle: category,
+        name: String(row.name).trim(),
+        company: row.company ? String(row.company).trim() : '',
+        category,
+        year,
+        city: row.city ? String(row.city).trim() : '',
+        highlight: row.impact_text || row.description || '',
+        storyUrl: row.website_link || 'https://vyapaarjagat.com',
+        image: row.photo_url || '',
+      };
+    });
+
+  const seen = new Set();
+  const merged = [];
+
+  for (const w of normalizedDb) {
+    const key = `${w.name.toLowerCase()}::${w.year}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(w);
+    }
+  }
+
+  for (const w of staticWinners) {
+    const name = String(w.name || '').trim();
+    const year = String(w.year || '').trim();
+    const key = `${name.toLowerCase()}::${year}`;
+    if (!seen.has(key)) {
+      seen.add(key);
+      merged.push(w);
+    }
+  }
+
+  return merged;
+};

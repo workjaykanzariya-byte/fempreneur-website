@@ -23,7 +23,7 @@ export default function WinnerCard({
   const displayCategory = category || awardTitle;
   const photoConfig = getWinnerPhotoConfig(name);
   const resolvedImage = image || photoConfig.src;
-  const resolvedPosition = objectPosition || photoConfig.objectPosition || 'center top';
+  const resolvedPosition = objectPosition || photoConfig.objectPosition || 'center center';
 
   // Check if business name exists and is distinct from the winner's own name
   const hasBusinessName =

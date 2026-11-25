@@ -333,7 +333,7 @@ export default function EventsPage() {
             </h2>
             <p
               style={{
-                color: 'var(--color-gold-rich)',
+                color: '#F48FB1',
                 fontWeight: 800,
                 textTransform: 'uppercase',
                 letterSpacing: '0.2em',
@@ -343,7 +343,7 @@ export default function EventsPage() {
             >
               Building a national women-led economy across 150+ sectors
             </p>
-            <p style={{ color: 'rgba(255, 255, 255, 0.65)', fontSize: '0.88rem', maxWidth: '600px', margin: '0 auto', fontWeight: 300, lineHeight: 1.6 }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.85)', fontSize: '0.92rem', maxWidth: '600px', margin: '0 auto', fontWeight: 400, lineHeight: 1.6 }}>
               Uniting key ecosystem stakeholders to forge partnerships, access funding, and drive enterprise growth.
             </p>
           </div>
@@ -379,10 +379,10 @@ export default function EventsPage() {
                 >
                   <IconComp
                     size={30}
-                    color="var(--color-gold-rich)"
+                    color="#FF80AB"
                     style={{ margin: '0 auto 1rem', display: 'block' }}
                   />
-                  <h4 style={{ fontWeight: 800, fontSize: '0.82rem', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
+                  <h4 style={{ fontWeight: 800, fontSize: '0.84rem', color: '#FFFFFF', textTransform: 'uppercase', letterSpacing: '0.08em', margin: 0 }}>
                     {segment.title}
                   </h4>
                 </div>

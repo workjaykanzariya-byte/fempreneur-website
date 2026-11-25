@@ -26,7 +26,7 @@ export default function PageHeader({
   secondaryCtaText,
   secondaryCtaTo,
   onSecondaryCtaClick,
-  showTrustBadges = true,
+  showTrustBadges = false,
   image,
   imageAlt = 'Fempreneur Visual Feature',
   imageBadge,

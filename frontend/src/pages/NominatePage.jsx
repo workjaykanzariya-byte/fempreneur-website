@@ -514,16 +514,24 @@ export default function NominatePage() {
       </section>
 
       {/* SECTION 4: 5-STEP AWARD ROADMAP */}
-      <section id="process" style={{ background: '#FFFFFF', borderTop: '1px solid #EFE4F4', borderBottom: '1px solid #EFE4F4', padding: '5rem 1.5rem' }}>
+      <section
+        id="process"
+        style={{
+          background: 'radial-gradient(ellipse 90% 80% at 75% 45%, #3B0447 0%, #20022B 45%, #100118 100%)',
+          borderTop: '1px solid rgba(233, 30, 99, 0.25)',
+          borderBottom: '1px solid rgba(233, 30, 99, 0.25)',
+          padding: '5rem 1.5rem',
+        }}
+      >
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '3.5rem' }}>
-            <span style={{ color: '#6A1B9A', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem' }}>
+            <span style={{ color: '#F48FB1', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '0.75rem', display: 'block', marginBottom: '0.5rem' }}>
               Nomination Journey
             </span>
-            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.35rem', fontWeight: 700, color: '#1C1224' }}>
+            <h2 style={{ fontFamily: "'Playfair Display', Georgia, serif", fontSize: '2.35rem', fontWeight: 700, color: '#FFFFFF' }}>
               5-Step Award &amp; Selection Process
             </h2>
-            <p style={{ color: '#5C4E65', maxWidth: '640px', margin: '0.75rem auto 0', fontSize: '0.96rem', lineHeight: 1.6 }}>
+            <p style={{ color: 'rgba(255, 255, 255, 0.85)', maxWidth: '640px', margin: '0.75rem auto 0', fontSize: '0.96rem', lineHeight: 1.6 }}>
               From initial free submission to national recognition on stage in Ahmedabad and Delhi NCR.
             </p>
           </div>
@@ -533,23 +541,42 @@ export default function NominatePage() {
               <div
                 key={idx}
                 style={{
-                  background: '#FAF6FC',
-                  padding: '2rem 1.5rem',
-                  borderRadius: '16px',
-                  border: '1px solid #EFE4F4',
+                  padding: '2px',
+                  borderRadius: '20px',
+                  background: 'linear-gradient(135deg, #BA68C8 0%, #8E24AA 50%, #F06292 100%)',
+                  boxShadow: '0 12px 32px rgba(0, 0, 0, 0.35), 0 0 22px rgba(233, 30, 99, 0.22)',
+                  transition: 'transform 0.25s ease, box-shadow 0.25s ease',
                   display: 'flex',
-                  flexDirection: 'column',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-4px)';
+                  e.currentTarget.style.boxShadow = '0 18px 42px rgba(0, 0, 0, 0.45), 0 0 32px rgba(233, 30, 99, 0.38)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = '0 12px 32px rgba(0, 0, 0, 0.35), 0 0 22px rgba(233, 30, 99, 0.22)';
                 }}
               >
-                <span style={{ fontFamily: 'serif, Georgia', fontSize: '2rem', fontWeight: 800, color: '#6A1B9A', display: 'block', marginBottom: '0.75rem' }}>
-                  {s.num}
-                </span>
-                <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1C1224', marginBottom: '0.5rem' }}>
-                  {s.title}
-                </h4>
-                <p style={{ fontSize: '0.86rem', color: '#5C4E65', lineHeight: 1.55, margin: 0, flexGrow: 1 }}>
-                  {s.desc}
-                </p>
+                <div
+                  style={{
+                    background: 'linear-gradient(160deg, #FFFFFF 0%, #FAF5FC 100%)',
+                    padding: '2rem 1.5rem',
+                    borderRadius: '18px',
+                    width: '100%',
+                    display: 'flex',
+                    flexDirection: 'column',
+                  }}
+                >
+                  <span style={{ fontFamily: 'serif, Georgia', fontSize: '2rem', fontWeight: 800, color: '#6A1B9A', display: 'block', marginBottom: '0.75rem' }}>
+                    {s.num}
+                  </span>
+                  <h4 style={{ fontSize: '1.15rem', fontWeight: 800, color: '#1C1224', marginBottom: '0.5rem' }}>
+                    {s.title}
+                  </h4>
+                  <p style={{ fontSize: '0.86rem', color: '#5C4E65', lineHeight: 1.55, margin: 0, flexGrow: 1 }}>
+                    {s.desc}
+                  </p>
+                </div>
               </div>
             ))}
           </div>
