@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 import { Sparkles, Users, Heart, Trophy, ArrowRight } from 'lucide-react';
+import CTAButton from './CTAButton';
 import RecognitionHubModal from './RecognitionHubModal';
 
 /**
@@ -128,10 +129,10 @@ export default function FempreneurMovementStage() {
       <style>{`
         .fem-stage-grid {
           display: grid;
-          grid-template-columns: 1.15fr 0.85fr;
-          gap: 2.5rem;
+          grid-template-columns: 1.05fr 0.95fr;
+          gap: 2rem;
           align-items: center;
-          max-width: 1380px;
+          max-width: 1440px;
           margin: 0 auto;
           padding: 0 2.5rem;
           position: relative;
@@ -140,9 +141,9 @@ export default function FempreneurMovementStage() {
 
         @media (min-width: 1440px) {
           .fem-stage-grid {
-            grid-template-columns: 1.2fr 0.8fr;
+            grid-template-columns: 1.08fr 0.92fr;
             padding: 0 3.5rem;
-            gap: 3.5rem;
+            gap: 2.5rem;
           }
         }
 
@@ -351,25 +352,27 @@ export default function FempreneurMovementStage() {
         .fem-stage-right {
           position: relative;
           display: flex;
-          align-items: center;
+          align-items: flex-end;
           justify-content: center;
           z-index: 2;
+          align-self: flex-end;
         }
 
         .fem-stage-trophy-wrapper {
           position: relative;
           width: 100%;
-          max-width: 520px;
+          max-width: 680px;
           display: flex;
-          align-items: center;
+          align-items: flex-end;
           justify-content: center;
+          margin-bottom: -4.5rem;
         }
 
         .fem-stage-trophy-glow {
           position: absolute;
-          inset: 10% 5% 5% 5%;
-          background: radial-gradient(circle, rgba(255, 64, 129, 0.35) 0%, rgba(142, 36, 170, 0.25) 45%, transparent 70%);
-          filter: blur(40px);
+          inset: -5% -5% 0% -5%;
+          background: radial-gradient(circle, rgba(255, 64, 129, 0.45) 0%, rgba(142, 36, 170, 0.3) 50%, transparent 72%);
+          filter: blur(55px);
           pointer-events: none;
           z-index: 0;
         }
@@ -379,15 +382,16 @@ export default function FempreneurMovementStage() {
           z-index: 2;
           width: 100%;
           height: auto;
-          max-height: 580px;
+          max-height: 740px;
           object-fit: contain;
-          filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 35px rgba(233, 30, 99, 0.4));
+          display: block;
+          filter: drop-shadow(0 28px 45px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 45px rgba(233, 30, 99, 0.45));
           transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
         }
 
         .fem-stage-trophy-img:hover {
           transform: translateY(-8px) scale(1.02);
-          filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 50px rgba(255, 64, 129, 0.6));
+          filter: drop-shadow(0 34px 55px rgba(0, 0, 0, 0.95)) drop-shadow(0 0 60px rgba(255, 64, 129, 0.65));
         }
 
         .fem-stage-bottom-swoop {
@@ -398,7 +402,7 @@ export default function FempreneurMovementStage() {
           width: 100%;
           height: 65px;
           pointer-events: none;
-          z-index: 2;
+          z-index: 3;
         }
 
         /* Responsive Breakpoints */
@@ -421,8 +425,9 @@ export default function FempreneurMovementStage() {
             justify-content: center;
           }
           .fem-stage-trophy-wrapper {
-            max-width: 420px;
+            max-width: 540px;
             margin: 0 auto;
+            margin-bottom: -4.5rem;
           }
         }
 
@@ -461,10 +466,9 @@ export default function FempreneurMovementStage() {
             <span>FEMPRENEUR 2027</span>
           </div>
 
-          {/* Editorial Title with Gradient Cities */}
+          {/* Editorial Title */}
           <h2 className="fem-stage-title">
-            35+ Award Categories |<br />
-            <span className="fem-stage-highlight">2 Cities</span> | One Nationwide<br />
+            35+ Award Categories | One Nationwide<br />
             Women Entrepreneurship<br />
             Movement
           </h2>
@@ -473,6 +477,55 @@ export default function FempreneurMovementStage() {
           <p className="fem-stage-desc">
             Celebrating 500+ inspiring women founders, MSME innovators, and changemakers across India. Evaluated 50% by an esteemed jury and 50% by public community votes.
           </p>
+
+          {/* Action CTAs Row: NOMINATE YOURSELF & GET DELEGATE PASS (Above 50% statistics) */}
+          <div
+            className="fem-stage-hero-ctas"
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '1.1rem',
+              flexWrap: 'wrap',
+              marginBottom: '2rem',
+            }}
+          >
+            <CTAButton
+              to="/nominate"
+              variant="primary"
+              size="lg"
+              style={{
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                padding: '0.88rem 2.2rem',
+                borderRadius: '9999px',
+                background: 'linear-gradient(135deg, #6A1B9A 0%, #9C27B0 45%, #E91E63 100%)',
+                boxShadow: '0 8px 24px rgba(106, 27, 154, 0.4), 0 4px 12px rgba(233, 30, 99, 0.35)',
+              }}
+            >
+              NOMINATE YOURSELF
+            </CTAButton>
+            <CTAButton
+              to="/events"
+              variant="secondary"
+              size="lg"
+              style={{
+                textTransform: 'uppercase',
+                letterSpacing: '0.04em',
+                fontWeight: 800,
+                fontSize: '0.92rem',
+                padding: '0.88rem 2.2rem',
+                borderRadius: '9999px',
+                background: '#FFFFFF',
+                color: 'var(--color-burgundy)',
+                borderColor: 'rgba(106, 27, 154, 0.28)',
+                boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
+              }}
+            >
+              GET DELEGATE PASS
+            </CTAButton>
+          </div>
 
           {/* Three Circular Stats Highlights */}
           <div className="fem-stage-stats-bar">
@@ -512,30 +565,6 @@ export default function FempreneurMovementStage() {
                 <div className="fem-stage-stat-name">Curated Categories</div>
               </div>
             </div>
-          </div>
-
-          {/* Buttons: View Winners & See Categories */}
-          <div className="fem-stage-actions">
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-btn-gradient"
-              style={{ cursor: 'pointer', border: 'none' }}
-              title="Explore all Honoree Winners on this page"
-            >
-              <span>View Winners</span>
-              <ArrowRight size={17} />
-            </button>
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('categories')}
-              className="fem-stage-btn-outline"
-              style={{ cursor: 'pointer', background: 'transparent' }}
-              title="Explore 35+ Award Categories on this page"
-            >
-              <span>See Categories</span>
-            </button>
-
           </div>
 
           {/* Social Proof Avatars & Tagline */}

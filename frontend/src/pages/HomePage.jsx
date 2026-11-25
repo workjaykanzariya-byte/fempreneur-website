@@ -116,18 +116,15 @@ export default function HomePage() {
 
   return (
     <div>
-      {/* 1. HERO SECTION */}
+      {/* 1. HERO SECTION (Section One) */}
       <Hero
-        title="India’s Women Entrepreneurs"
-        highlight="Redefining Success"
-        featuredQuestion="Will YOU Be Featured in Fempreneur 2027?"
-        subtitle="India's most comprehensive women-entrepreneurship platform. Dual-city edition in Ahmedabad & Delhi NCR. Built to recognise, connect, and amplify women leaders shaping the future of business, communities, and India."
-        primaryCtaText="NOMINATE YOURSELF"
-        primaryCtaTo="/nominate"
-        secondaryCtaText="GET DELEGATE PASS"
-        secondaryCtaTo="/events"
-        tertiaryCtaText="JOIN OUR COMMUNITY"
-        tertiaryCtaTo="/community-hub"
+        badge="Connect, Collaborate, Grow"
+        title="Build Your Business Journey with Fempreneur"
+        highlight=""
+        featuredQuestion=""
+        subtitle="Fempreneur is a global platform where women entrepreneurs meet, work together and grow. Find new partners, learn from other founders and get seen by the right people."
+        primaryCtaText="Join Fempreneur"
+        primaryCtaTo="/community-hub"
       />
 
       {/* 2. FEMPRENEUR 2027 NATIONWIDE MOVEMENT HERO STAGE (IMAGE 1 TARGET DESIGN) */}

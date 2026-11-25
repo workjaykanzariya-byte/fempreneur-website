@@ -17,27 +17,18 @@ import CTAButton from './CTAButton';
 import VideoPlayerModal from './VideoPlayerModal';
 
 export default function Hero({
-  badge = "6TH EDITION • 2027",
-  title = "India’s Women Entrepreneurs",
-  highlight = "Redefining Success",
-  featuredQuestion = "Will YOU Be Featured in Fempreneur 2027?",
-  subtitle = "India's most comprehensive women-entrepreneurship platform. Dual-city edition in Ahmedabad & Delhi NCR. Built to recognise, connect, and amplify women leaders shaping the future of business, communities, and India.",
+  badge = "Connect, Collaborate, Grow",
+  title = "Build Your Business Journey with Fempreneur",
+  highlight = "",
+  featuredQuestion = "",
+  subtitle = "Fempreneur is a global platform where women entrepreneurs meet, work together and grow. Find new partners, learn from other founders and get seen by the right people.",
   cities = "Ahmedabad & Delhi NCR Hubs",
-  primaryCtaText = "NOMINATE YOURSELF",
-  primaryCtaTo = "/nominate",
+  primaryCtaText = "Join Fempreneur",
+  primaryCtaTo = "/community-hub",
   primaryIcon = null,
-  secondaryCtaText = "GET DELEGATE PASS",
-  secondaryCtaTo = "/events",
-  secondaryIcon = null,
-  tertiaryCtaText = "JOIN OUR COMMUNITY",
-  tertiaryCtaTo = "/community-hub",
-  tertiaryIcon = null,
   showTrustBadges = true,
 }) {
   const [videoModalOpen, setVideoModalOpen] = useState(false);
-  const PrimaryIcon = primaryIcon;
-  const SecondaryIcon = secondaryIcon;
-  const TertiaryIcon = tertiaryIcon;
 
   return (
     <section
@@ -150,30 +141,59 @@ export default function Hero({
         <div className="hero-main-grid">
           {/* LEFT COLUMN: Headings, Callout, Paragraph, CTAs */}
           <div className="hero-left-content" style={{ textAlign: 'left' }}>
+            {/* Eyebrow badge / Tagline */}
+            {badge && (
+              <div
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  color: 'var(--color-burgundy)',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '0.85rem',
+                  padding: '4px 14px',
+                  borderRadius: '999px',
+                  background: 'rgba(106, 27, 154, 0.08)',
+                  border: '1px solid rgba(106, 27, 154, 0.16)',
+                }}
+              >
+                <Sparkles size={14} color="var(--color-burgundy)" />
+                <span>{badge}</span>
+              </div>
+            )}
+
             {/* Main Headline */}
             <h1
               style={{
-                fontSize: 'clamp(2.5rem, 4.4vw, 3.9rem)',
+                fontSize: 'clamp(2.3rem, 4vw, 3.5rem)',
                 fontWeight: 800,
-                lineHeight: 1.12,
+                lineHeight: 1.15,
                 color: 'var(--color-plum-deep)',
                 marginBottom: '1.25rem',
-                letterSpacing: '-0.03em',
+                letterSpacing: '-0.025em',
               }}
             >
-              {title} <br />
-              <span
-                className="font-serif"
-                style={{
-                  fontStyle: 'italic',
-                  fontWeight: 700,
-                  background: 'linear-gradient(135deg, #7B1FA2 0%, #A21CAF 50%, #C2185B 100%)',
-                  WebkitBackgroundClip: 'text',
-                  WebkitTextFillColor: 'transparent',
-                }}
-              >
-                {highlight}
-              </span>
+              {title}
+              {highlight && (
+                <>
+                  <br />
+                  <span
+                    className="font-serif"
+                    style={{
+                      fontStyle: 'italic',
+                      fontWeight: 700,
+                      background: 'linear-gradient(135deg, #7B1FA2 0%, #A21CAF 50%, #C2185B 100%)',
+                      WebkitBackgroundClip: 'text',
+                      WebkitTextFillColor: 'transparent',
+                    }}
+                  >
+                    {highlight}
+                  </span>
+                </>
+              )}
             </h1>
 
             {/* Featured Sub-headline Callout */}
@@ -197,55 +217,32 @@ export default function Hero({
                 fontSize: 'clamp(0.98rem, 1.4vw, 1.12rem)',
                 color: 'var(--text-secondary)',
                 lineHeight: 1.68,
-                marginBottom: '2.5rem',
+                marginBottom: '1.75rem',
                 maxWidth: '560px',
               }}
             >
               {subtitle}
             </p>
 
-            {/* Action CTAs Row */}
-            <div
-              className="hero-ctas-row"
-              style={{
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.9rem',
-                flexWrap: 'wrap',
-                marginBottom: '1rem',
-              }}
-            >
-              <CTAButton to={primaryCtaTo} variant="primary" size="lg">
-                {primaryCtaText}
-              </CTAButton>
-              <CTAButton
-                to={secondaryCtaTo}
-                variant="secondary"
-                size="lg"
-                style={{
-                  display: 'inline-flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  borderColor: 'rgba(106, 27, 154, 0.28)',
-                  color: 'var(--color-burgundy)',
-                  fontWeight: 700,
-                }}
-              >
-                {secondaryCtaText}
-              </CTAButton>
-              <CTAButton
-                to={tertiaryCtaTo}
-                variant="outline"
-                size="lg"
-                style={{
-                  borderColor: 'rgba(106, 27, 154, 0.35)',
-                  color: 'var(--color-burgundy)',
-                  fontWeight: 700,
-                }}
-              >
-                {tertiaryCtaText}
-              </CTAButton>
-            </div>
+            {/* Button: Join Fempreneur */}
+            {primaryCtaText && (
+              <div style={{ marginBottom: '1.5rem' }}>
+                <CTAButton
+                  to={primaryCtaTo}
+                  variant="primary"
+                  size="lg"
+                  style={{
+                    fontWeight: 700,
+                    fontSize: '1rem',
+                    padding: '0.85rem 2.2rem',
+                    borderRadius: '999px',
+                    boxShadow: '0 8px 24px rgba(106, 27, 154, 0.28)',
+                  }}
+                >
+                  {primaryCtaText}
+                </CTAButton>
+              </div>
+            )}
           </div>
 
           {/* RIGHT COLUMN: Visual Collage with Women Entrepreneurs, Hubs, Floating Pills */}
@@ -596,9 +593,6 @@ export default function Hero({
                   <div style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--color-plum-deep)' }}>
                     50% Jury Evaluation
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    (7 Weighted Factors)
-                  </div>
                 </div>
               </div>
 
@@ -622,9 +616,6 @@ export default function Hero({
                   <div style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--color-plum-deep)' }}>
                     50% Public Voting
                   </div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    with Verified Shareable Links
-                  </div>
                 </div>
               </div>
 
@@ -647,9 +638,6 @@ export default function Hero({
                 <div>
                   <div style={{ fontWeight: 800, fontSize: '0.92rem', color: 'var(--color-plum-deep)' }}>
                     Organized by 1MEIF (NGO)
-                  </div>
-                  <div style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-                    &amp; VyapaarJagat.com
                   </div>
                 </div>
               </div>
