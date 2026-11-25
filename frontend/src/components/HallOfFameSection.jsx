@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from 'react';
+import React, { useState, useMemo, useEffect, useRef } from 'react';
 import { ChevronLeft, ChevronRight, ArrowRight, Trophy } from 'lucide-react';
 import WinnerCard from './WinnerCard';
 import CTAButton from './CTAButton';
@@ -9,12 +9,14 @@ const ALLOWED_YEARS = ['2022'];
 
 /**
  * HallOfFameSection Component
- * Fast auto-scrolling center-focus 3D depth carousel displaying all 2022 winners
- * dynamically from winnersData.
+ * Continuous auto-scrolling center-focus 3D depth carousel displaying all 2022 winners
+ * with touch/mouse swipe, wheel scroll, arrow navigation, and clickable pagination dots.
  */
 export default function HallOfFameSection() {
   const [activeIndex, setActiveIndex] = useState(0);
-  const [isPaused, setIsPaused] = useState(false);
+  const [isDragging, setIsDragging] = useState(false);
+  const dragStartX = useRef(null);
+  const wheelLock = useRef(false);
 
   const allAllowedWinners = useMemo(() => {
     return allWinners
@@ -28,54 +30,84 @@ export default function HallOfFameSection() {
 
   const total = allAllowedWinners.length;
 
-  // Fast automatic carousel advance across all 2022–2024 winners (pauses on hover)
+  // Reliable automatic carousel advance across all 2022 winners
   useEffect(() => {
-    if (isPaused || total <= 1) return undefined;
+    if (isDragging || total <= 1) return undefined;
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % total);
-    }, 1500);
-    return () => clearInterval(timer);
-  }, [isPaused, total]);
+  }, 1800);
+  return () => clearInterval(timer);
+  }, [isDragging, total]);
 
-  const goPrev = () => {
-    if (total === 0) return;
-    setActiveIndex((prev) => (prev - 1 + total) % total);
-  };
+const goPrev = () => {
+  if (total === 0) return;
+  setActiveIndex((prev) => (prev - 1 + total) % total);
+};
 
-  const goNext = () => {
-    if (total === 0) return;
-    setActiveIndex((prev) => (prev + 1) % total);
-  };
+const goNext = () => {
+  if (total === 0) return;
+  setActiveIndex((prev) => (prev + 1) % total);
+};
 
-  const visibleSlots = useMemo(() => {
-    if (total === 0) return [];
-    const offsets = total >= 5 ? [-2, -1, 0, 1, 2] : total >= 3 ? [-1, 0, 1] : [0];
-    return offsets.map((offset) => {
-      const idx = (activeIndex + offset + total) % total;
-      return {
-        offset,
-        idx,
-        winner: allAllowedWinners[idx],
-      };
-    });
-  }, [activeIndex, total, allAllowedWinners]);
+const handlePointerDown = (e) => {
+  dragStartX.current = e.clientX;
+  setIsDragging(true);
+};
 
-  const dotCount = Math.min(total, 9);
-  const activeDot = total <= 1 ? 0 : Math.round((activeIndex / (total - 1)) * (dotCount - 1));
+const handlePointerUp = (e) => {
+  if (dragStartX.current !== null) {
+    const diff = e.clientX - dragStartX.current;
+    if (Math.abs(diff) > 35) {
+      if (diff < 0) goNext();
+      else goPrev();
+    }
+  }
+  dragStartX.current = null;
+  setIsDragging(false);
+};
 
-  return (
-    <section
-      className="section-spacing"
-      style={{
-        position: 'relative',
-        background: 'radial-gradient(ellipse 90% 80% at 75% 45%, #3B0447 0%, #20022B 45%, #100118 100%)',
-        borderTop: '1px solid rgba(233, 30, 99, 0.25)',
-        borderBottom: '1px solid rgba(233, 30, 99, 0.25)',
-        color: '#FFFFFF',
-        overflow: 'hidden',
-      }}
-    >
-      <style>{`
+const handleWheel = (e) => {
+  if (Math.abs(e.deltaX) > Math.abs(e.deltaY) && Math.abs(e.deltaX) > 15) {
+    e.preventDefault();
+    if (wheelLock.current) return;
+    wheelLock.current = true;
+    if (e.deltaX > 0) goNext();
+    else goPrev();
+    setTimeout(() => {
+      wheelLock.current = false;
+    }, 320);
+  }
+};
+
+const visibleSlots = useMemo(() => {
+  if (total === 0) return [];
+  const offsets = total >= 5 ? [-2, -1, 0, 1, 2] : total >= 3 ? [-1, 0, 1] : [0];
+  return offsets.map((offset) => {
+    const idx = (activeIndex + offset + total) % total;
+    return {
+      offset,
+      idx,
+      winner: allAllowedWinners[idx],
+    };
+  });
+}, [activeIndex, total, allAllowedWinners]);
+
+const dotCount = Math.min(total, 9);
+const activeDot = total <= 1 ? 0 : Math.round((activeIndex / (total - 1)) * (dotCount - 1));
+
+return (
+  <section
+    className="section-spacing"
+    style={{
+      position: 'relative',
+      background: 'radial-gradient(ellipse 90% 80% at 75% 45%, #3B0447 0%, #20022B 45%, #100118 100%)',
+      borderTop: '1px solid rgba(233, 30, 99, 0.25)',
+      borderBottom: '1px solid rgba(233, 30, 99, 0.25)',
+      color: '#FFFFFF',
+      overflow: 'hidden',
+    }}
+  >
+    <style>{`
         .fem-hof-header-row {
           display: flex;
           align-items: flex-end;
@@ -126,6 +158,7 @@ export default function HallOfFameSection() {
           display: flex;
           align-items: center;
           justify-content: center;
+          touch-action: pan-y;
         }
         .fem-hof-track-3d {
           position: relative;
@@ -138,9 +171,12 @@ export default function HallOfFameSection() {
         .fem-hof-card-slot {
           position: absolute;
           width: 310px;
-          transition: transform 0.38s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.38s ease, filter 0.38s ease;
-          cursor: pointer;
+          transition: transform 0.42s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.42s ease, filter 0.42s ease;
+          cursor: grab;
           user-select: none;
+        }
+        .fem-hof-card-slot:active {
+          cursor: grabbing;
         }
         .fem-hof-card-slot.slot-0 {
           z-index: 5;
@@ -242,95 +278,100 @@ export default function HallOfFameSection() {
         }
       `}</style>
 
-      <div className="container">
-        {/* Header Row with View All Winners Button Near Heading */}
-        <div className="fem-hof-header-row">
-          <div>
-            <div className="fem-hof-pill">
-              <Trophy size={13} color="#FF80AB" />
-              <span>Hall of Fame</span>
-            </div>
-            <h2 className="fem-hof-heading">
-              Celebrating Previous <span className="fem-hof-heading-accent">Honorees</span>
-            </h2>
-            <p className="fem-hof-subtitle">
-              Spotlighting women founders recognized in our 2022 edition.
-            </p>
+    <div className="container">
+      {/* Header Row with View All Winners Button Near Heading */}
+      <div className="fem-hof-header-row">
+        <div>
+          <div className="fem-hof-pill">
+            <Trophy size={13} color="#FF80AB" />
+            <span>Hall of Fame</span>
           </div>
-
-          <CTAButton to="/winners" variant="primary" size="lg" icon={ArrowRight}>
-            View All Winners
-          </CTAButton>
+          <h2 className="fem-hof-heading">
+            Celebrating Previous <span className="fem-hof-heading-accent">Honorees</span>
+          </h2>
+          <p className="fem-hof-subtitle">
+            Spotlighting women founders recognized in our 2022 edition.
+          </p>
         </div>
 
-        {/* Center-Focus Fast Auto-Scrolling 3D Carousel */}
-        <div
-          className="fem-hof-stage"
-          onMouseEnter={() => setIsPaused(true)}
-          onMouseLeave={() => setIsPaused(false)}
-        >
-          <button
-            type="button"
-            className="fem-hof-arrow-btn fem-hof-arrow-prev"
-            onClick={goPrev}
-            aria-label="Previous winner"
-          >
-            <ChevronLeft size={22} />
-          </button>
-
-          <div className="fem-hof-track-3d">
-            {visibleSlots.map(({ offset, idx, winner }) => (
-              <div
-                key={`winner-${idx}`}
-                className={`fem-hof-card-slot slot-${offset}`}
-                onClick={() => setActiveIndex(idx)}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') setActiveIndex(idx);
-                }}
-              >
-                <WinnerCard
-                  name={winner.name}
-                  company={winner.company}
-                  category={winner.category}
-                  awardTitle={winner.awardTitle}
-                  awardPosition={winner.awardPosition}
-                  image={winner.image}
-                />
-              </div>
-            ))}
-          </div>
-
-          <button
-            type="button"
-            className="fem-hof-arrow-btn fem-hof-arrow-next"
-            onClick={goNext}
-            aria-label="Next winner"
-          >
-            <ChevronRight size={22} />
-          </button>
-        </div>
-
-        {/* Carousel Pagination Dots */}
-        {dotCount > 1 && (
-          <div className="fem-hof-dots" aria-label="Carousel pagination">
-            {Array.from({ length: dotCount }).map((_, idx) => (
-              <button
-                key={idx}
-                type="button"
-                className={`fem-hof-dot ${activeDot === idx ? 'active' : ''}`}
-                onClick={() => {
-                  if (total > 1) {
-                    setActiveIndex(Math.round((idx / (dotCount - 1)) * (total - 1)));
-                  }
-                }}
-                aria-label={`Go to winner slide ${idx + 1}`}
-              />
-            ))}
-          </div>
-        )}
+        <CTAButton to="/winners" variant="primary" size="lg" icon={ArrowRight}>
+          View All Winners
+        </CTAButton>
       </div>
-    </section>
-  );
+
+      {/* Center-Focus Continuous Auto-Scrolling & Swipeable 3D Carousel */}
+      <div
+        className="fem-hof-stage"
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={() => {
+          dragStartX.current = null;
+          setIsDragging(false);
+        }}
+        onWheel={handleWheel}
+      >
+        <button
+          type="button"
+          className="fem-hof-arrow-btn fem-hof-arrow-prev"
+          onClick={goPrev}
+          aria-label="Previous winner"
+        >
+          <ChevronLeft size={22} />
+        </button>
+
+        <div className="fem-hof-track-3d">
+          {visibleSlots.map(({ offset, idx, winner }) => (
+            <div
+              key={`winner-${idx}`}
+              className={`fem-hof-card-slot slot-${offset}`}
+              onClick={() => setActiveIndex(idx)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter' || e.key === ' ') setActiveIndex(idx);
+              }}
+            >
+              <WinnerCard
+                name={winner.name}
+                company={winner.company}
+                category={winner.category}
+                awardTitle={winner.awardTitle}
+                awardPosition={winner.awardPosition}
+                image={winner.image}
+              />
+            </div>
+          ))}
+        </div>
+
+        <button
+          type="button"
+          className="fem-hof-arrow-btn fem-hof-arrow-next"
+          onClick={goNext}
+          aria-label="Next winner"
+        >
+          <ChevronRight size={22} />
+        </button>
+      </div>
+
+      {/* Carousel Pagination Dots */}
+      {dotCount > 1 && (
+        <div className="fem-hof-dots" aria-label="Carousel pagination">
+          {Array.from({ length: dotCount }).map((_, idx) => (
+            <button
+              key={idx}
+              type="button"
+              className={`fem-hof-dot ${activeDot === idx ? 'active' : ''}`}
+              onClick={() => {
+                if (total > 1) {
+                  setActiveIndex(Math.round((idx / (dotCount - 1)) * (total - 1)));
+                }
+              }}
+              aria-label={`Go to winner slide ${idx + 1}`}
+            />
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+);
 }
