@@ -504,7 +504,7 @@ export default function FempreneurMovementStage() {
                 boxShadow: '0 8px 24px rgba(106, 27, 154, 0.4), 0 4px 12px rgba(233, 30, 99, 0.35)',
               }}
             >
-              NOMINATE YOURSELF
+              Nominate Yourself for Award
             </CTAButton>
             <CTAButton
               to="/events"
@@ -523,7 +523,7 @@ export default function FempreneurMovementStage() {
                 boxShadow: '0 6px 20px rgba(0, 0, 0, 0.15)',
               }}
             >
-              GET DELEGATE PASS
+              Get Delegate Pass
             </CTAButton>
           </div>
 

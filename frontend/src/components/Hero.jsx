@@ -34,8 +34,12 @@ export default function Hero({
     <section
       style={{
         position: 'relative',
-        paddingTop: '1.25rem',
-        paddingBottom: '3.25rem',
+        minHeight: 'calc(100vh - 104px)',
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        paddingTop: '1.5rem',
+        paddingBottom: '2rem',
         background: 'linear-gradient(180deg, #FDFBFE 0%, #F9F2FB 40%, #FAF5FC 100%)',
         borderBottom: '1px solid rgba(106, 27, 154, 0.1)',
         overflow: 'hidden',
@@ -46,8 +50,8 @@ export default function Hero({
         .hero-main-grid {
           display: grid;
           grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
-          gap: 3.5rem;
-          align-items: flex-start;
+          gap: 3rem;
+          align-items: center;
         }
         @media (max-width: 1080px) {
           .hero-main-grid {
@@ -148,19 +152,19 @@ export default function Hero({
                   display: 'inline-flex',
                   alignItems: 'center',
                   gap: '0.5rem',
-                  fontSize: '0.85rem',
+                  fontSize: '0.92rem',
                   fontWeight: 800,
                   color: 'var(--color-burgundy)',
                   textTransform: 'uppercase',
                   letterSpacing: '0.08em',
-                  marginBottom: '0.85rem',
-                  padding: '4px 14px',
+                  marginBottom: '0.95rem',
+                  padding: '5px 16px',
                   borderRadius: '999px',
                   background: 'rgba(106, 27, 154, 0.08)',
                   border: '1px solid rgba(106, 27, 154, 0.16)',
                 }}
               >
-                <Sparkles size={14} color="var(--color-burgundy)" />
+                <Sparkles size={15} color="var(--color-burgundy)" />
                 <span>{badge}</span>
               </div>
             )}
@@ -168,11 +172,11 @@ export default function Hero({
             {/* Main Headline */}
             <h1
               style={{
-                fontSize: 'clamp(2.3rem, 4vw, 3.5rem)',
+                fontSize: 'clamp(2.6rem, 4.4vw, 3.9rem)',
                 fontWeight: 800,
-                lineHeight: 1.15,
+                lineHeight: 1.14,
                 color: 'var(--color-plum-deep)',
-                marginBottom: '1.25rem',
+                marginBottom: '1.35rem',
                 letterSpacing: '-0.025em',
               }}
             >
@@ -214,11 +218,11 @@ export default function Hero({
             {/* Subtitle Description */}
             <p
               style={{
-                fontSize: 'clamp(0.98rem, 1.4vw, 1.12rem)',
+                fontSize: 'clamp(1.06rem, 1.5vw, 1.22rem)',
                 color: 'var(--text-secondary)',
-                lineHeight: 1.68,
-                marginBottom: '1.75rem',
-                maxWidth: '560px',
+                lineHeight: 1.65,
+                marginBottom: '1.85rem',
+                maxWidth: '580px',
               }}
             >
               {subtitle}
@@ -226,15 +230,15 @@ export default function Hero({
 
             {/* Button: Join Fempreneur */}
             {primaryCtaText && (
-              <div style={{ marginBottom: '1.5rem' }}>
+              <div style={{ marginBottom: 0 }}>
                 <CTAButton
                   to={primaryCtaTo}
                   variant="primary"
                   size="lg"
                   style={{
                     fontWeight: 700,
-                    fontSize: '1rem',
-                    padding: '0.85rem 2.2rem',
+                    fontSize: '1.08rem',
+                    padding: '0.92rem 2.4rem',
                     borderRadius: '999px',
                     boxShadow: '0 8px 24px rgba(106, 27, 154, 0.28)',
                   }}
@@ -262,7 +266,7 @@ export default function Hero({
                 position: 'relative',
                 width: '100%',
                 maxWidth: '560px',
-                height: '510px',
+                height: '470px',
               }}
             >
               {/* Soft Purple Glow Aura */}
@@ -566,9 +570,9 @@ export default function Hero({
                 alignItems: 'center',
                 justifyContent: 'space-between',
                 flexWrap: 'wrap',
-                gap: '1.75rem',
-                marginTop: '2.5rem',
-                paddingTop: '2rem',
+                gap: '1.5rem',
+                marginTop: '1.25rem',
+                paddingTop: '1.25rem',
                 borderTop: '1px solid rgba(106, 27, 154, 0.12)',
               }}
             >
