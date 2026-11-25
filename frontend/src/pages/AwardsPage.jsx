@@ -38,7 +38,7 @@ export default function AwardsPage() {
         badgeIcon={Trophy}
         title="Fempreneur Awards 2027 —"
         highlight="Fair, Transparent & Prestigious"
-        description="The 6th edition honors women founders across 35–40+ categories through our dual evaluation engine: 50% Independent Jury Review + 50% Verified Public Voting."
+        description="The 6th edition honors women founders across 35+ categories through our dual evaluation engine: 50% Independent Jury Review + 50% Verified Public Voting."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'Awards Overview' }]}
         ctaText="Start Free Nomination"
         ctaTo="/awards/apply"
@@ -160,7 +160,7 @@ export default function AwardsPage() {
 
           <div className="grid grid-cols-4 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
             {[
-              { num: '01', title: 'Nominate', desc: 'Submit your venture across 35–40+ categories for 50% jury and 50% public voting recognition.', link: '/nominate', cta: 'Nominate Now' },
+              { num: '01', title: 'Nominate', desc: 'Submit your venture across 35+ categories for 50% jury and 50% public voting recognition.', link: '/nominate', cta: 'Nominate Now' },
               { num: '02', title: 'Attend', desc: 'Secure delegate passes for keynote sessions, fireside chats, and masterclasses in Ahmedabad & Delhi NCR.', link: '/events', cta: 'Get Pass' },
               { num: '03', title: 'Sponsor', desc: 'Partner across six structured tiers (Title to Category) to align your brand with India’s female innovators.', link: '/partners', cta: 'View Tiers' },
               { num: '04', title: 'Feature in the Book', desc: 'Apply for editorial evaluation to be profiled in the Top 50 Women Entrepreneurs hardbound collector’s volume.', link: '/coffee-table-book', cta: 'Book Showcase' },

@@ -6,7 +6,7 @@ export default function ImpactPage() {
   const stats = [
     { value: '6+', label: 'Editions Delivered', description: 'Continuous annual recognition since 2022.', icon: Award },
     { value: '500+', label: 'Women Entrepreneurs', description: 'Directly celebrated across national editions.', icon: Users },
-    { value: '35–40+', label: 'Award Categories', description: 'Encompassing small, medium, and tech ventures.', icon: Sparkles },
+    { value: '35+', label: 'Award Categories', description: 'Encompassing small, medium, and tech ventures.', icon: Sparkles },
     { value: '10,000+', label: 'Stories Published', description: 'Archived permanently on VyapaarJagat.com.', icon: BookOpen },
     { value: '60+', label: 'Expert Speakers', description: 'Conducted masterclasses and panel forums.', icon: Award },
     { value: '5L+', label: 'Digital Reach', description: 'Per edition across print & online networks.', icon: Globe },

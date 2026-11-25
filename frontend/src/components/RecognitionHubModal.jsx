@@ -18,7 +18,7 @@ import { getWinnerPhoto } from '../data/winnerPhotos';
  * RecognitionHubModal Component
  * Ultra-professional on-page modal that displays both:
  * 1. Honoree Winners (2022–2026) with uniform portrait cards
- * 2. 35–40+ Award Categories with domain filters and instant search
+ * 2. 35+ Award Categories with domain filters and instant search
  * 
  * Allows users to browse without redirecting to a second page.
  */

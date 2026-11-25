@@ -139,9 +139,11 @@ export default function SpeakersPage() {
         imageBadge="Distinguished Evaluation Board"
         imageMaxWidth="560px"
         imageMaxHeight="440px"
+        showTrustBadges={false}
       />
 
       {/* SECTION 1: PROCESS WORKFLOW — "Your Road to the Stage" */}
+      {false && (
       <section id="process-workflow" style={{ background: '#FFFFFF', borderTop: '1px solid #EFE4F4', borderBottom: '1px solid #EFE4F4', padding: '5.5rem 1.5rem' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
@@ -355,8 +357,10 @@ export default function SpeakersPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* SECTION 2: TRACK COMPARISON (Honorary Track vs Rated Challenge — Matching Greenpreneur Exact Layout) */}
+      {false && (
       <section style={{ padding: '5.5rem 1.5rem', maxWidth: '1140px', margin: '0 auto' }}>
         <div
           style={{
@@ -605,8 +609,10 @@ export default function SpeakersPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* SECTION 3: THE VALUE OF VICTORY (Deep Royal Plum Section) */}
+      {false && (
       <section style={{ background: '#1E0630', color: '#FFFFFF', padding: '5.5rem 1.5rem' }}>
         <div style={{ maxWidth: '1240px', margin: '0 auto' }}>
           <div style={{ textAlign: 'center', marginBottom: '4rem' }}>
@@ -732,6 +738,7 @@ export default function SpeakersPage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* SECTION 4: EVALUATION BOARD / Speakers & Jury Panel 2027 */}
       <section id="jury-panel" style={{ padding: '5.5rem 1.5rem', maxWidth: '1280px', margin: '0 auto' }}>
@@ -886,6 +893,8 @@ export default function SpeakersPage() {
         </div>
 
         {/* SECTION 5: "Will You Be Our Next Fempreneur?" CTA Card */}
+        {false && (
+          <>
         <div
           style={{
             background: '#FFFFFF',
@@ -1194,6 +1203,8 @@ export default function SpeakersPage() {
             )}
           </div>
         </div>
+          </>
+        )}
       </section>
     </div>
   );

@@ -34,6 +34,8 @@ import {
   EmptyState,
   NewsletterForm,
   FempreneurMovementStage,
+  SponsorShowcase,
+  HallOfFameSection,
 } from '../components';
 
 import { fetchPlatformStats } from '../services/api';
@@ -53,8 +55,8 @@ export default function HomePage() {
   const stats = [
     { value: liveStats?.editions || '6+', label: 'Editions Delivered', description: 'Celebrating women entrepreneurs since 2022.', icon: Award },
     { value: liveStats ? `${liveStats.womenEntrepreneurs}+` : '500+', label: 'Women Entrepreneurs', description: 'Honored and connected across India.', icon: Users },
-    { value: '35–40+', label: 'Award Categories', description: 'Recognizing diverse business sectors.', icon: Sparkles },
-    { value: liveStats ? `${Number(liveStats.totalStoriesDocumented).toLocaleString()}+` : '10,000+', label: 'Stories Published', description: 'Amplified across digital channels.', icon: BookOpen },
+    { value: '35+', label: 'Award Categories', description: 'Recognizing diverse business sectors.', icon: Sparkles },
+    { value: '1,000+', label: 'Stories Published', description: 'Amplified across digital channels.', icon: BookOpen },
     { value: '60+', label: 'Expert Speakers', description: 'Guiding masterclasses and panel forums.', icon: TrendingUp },
     { value: '5L+', label: 'Digital Reach', description: 'Per edition across print & online networks.', icon: Globe },
   ];
@@ -63,17 +65,6 @@ export default function HomePage() {
   const pillars = [
     {
       pillarNumber: '01',
-      title: 'AWARD',
-      subtitle: 'Recognise Excellence',
-      description: 'Honoring women founders across 35–40+ categories through our transparent 50% Jury Evaluation + 50% Public Voting system.',
-      bullets: ['50% Independent Jury Review (7 Weighted Factors)', '50% Verified Public Voting via personal shareable link', '100% Free nomination with zero hidden entry fees'],
-      linkText: 'Explore Award Categories',
-      linkTo: '/categories',
-      badge: 'Flagship Program',
-      badgeVariant: 'plum',
-    },
-    {
-      pillarNumber: '02',
       title: 'CONNECT',
       subtitle: 'Structured National Community',
       description: 'Uniting women founders across 150+ business sectors with city chapter hubs in Ahmedabad, Delhi NCR, and expanding nationwide.',
@@ -84,7 +75,7 @@ export default function HomePage() {
       badgeVariant: 'gold',
     },
     {
-      pillarNumber: '03',
+      pillarNumber: '02',
       title: 'AMPLIFY',
       subtitle: 'National Media & Storytelling',
       description: 'Broadcasting women entrepreneurship stories across India through digital publishing and our flagship annual hardbound publication.',
@@ -92,6 +83,17 @@ export default function HomePage() {
       linkText: 'Explore Coffee Table Book',
       linkTo: '/coffee-table-book',
       badge: 'Top 50 Showcase',
+      badgeVariant: 'plum',
+    },
+    {
+      pillarNumber: '03',
+      title: 'AWARD',
+      subtitle: 'Recognise Excellence',
+      description: 'Honoring women founders across 35+ categories through our transparent 50% Jury Evaluation + 50% Public Voting system.',
+      bullets: ['50% Independent Jury Review (7 Weighted Factors)', '50% Verified Public Voting via personal shareable link', '100% Free nomination with zero hidden entry fees'],
+      linkText: 'Explore Award Categories',
+      linkTo: '/categories',
+      badge: 'Flagship Program',
       badgeVariant: 'plum',
     },
   ];
@@ -125,6 +127,7 @@ export default function HomePage() {
         subtitle="Fempreneur is a global platform where women entrepreneurs meet, work together and grow. Find new partners, learn from other founders and get seen by the right people."
         primaryCtaText="Join Fempreneur"
         primaryCtaTo="/community-hub"
+        showTrustBadges={false}
       />
 
       {/* 2. FEMPRENEUR 2027 NATIONWIDE MOVEMENT HERO STAGE (IMAGE 1 TARGET DESIGN) */}
@@ -135,20 +138,20 @@ export default function HomePage() {
         <div className="container">
           <div style={{ textAlign: 'center', marginBottom: '2.5rem' }}>
             <span className="badge badge-plum" style={{ marginBottom: '0.6rem', letterSpacing: '0.08em', textTransform: 'uppercase', fontWeight: 800 }}>
-              IMPACT &amp; COMMUNITY METRICS
+              Our Impact
             </span>
             <h3 style={{ fontSize: 'clamp(1.3rem, 2.6vw, 1.85rem)', fontWeight: 800, color: 'var(--color-plum-deep)', marginBottom: '0.5rem' }}>
-              500+ Women Entrepreneurs | 35+ Award Categories | 10,000+ Stories Published
+              500+ Women Entrepreneurs | 6+ Events | 1,000+ Stories Published
             </h3>
             <p style={{ fontSize: '0.92rem', color: 'var(--text-secondary)', marginBottom: '1.25rem', maxWidth: '640px', marginLeft: 'auto', marginRight: 'auto' }}>
-              Verified national impact across editions, connecting founders with funding, media, and peer support.
+              See what women entrepreneurs have built with Fempreneur: new connections, business support and real visibility.
             </p>
-            <CTAButton to="/impact" variant="outline" size="sm" icon={ArrowRight}>
-              View Impact Report
+            <CTAButton to="/winners" variant="primary" size="md" icon={ArrowRight}>
+              Meet Our Past Winners
             </CTAButton>
           </div>
 
-          <div className="grid grid-cols-3 gap-6" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))' }}>
+          <div className="grid grid-cols-3 gap-6">
             {stats.map((stat, idx) => (
               <StatCard key={idx} {...stat} />
             ))}
@@ -164,7 +167,7 @@ export default function HomePage() {
             badgeVariant="plum"
             title="The Framework Driving"
             highlight="Fempreneur"
-            subtitle="Organized around three integrated pillars: Award to recognise, Connect to unite 150+ sectors, and Amplify to broadcast founder journeys."
+            subtitle="Organized around three integrated pillars: Connect to unite 150+ sectors, Amplify to broadcast founder journeys, and Award to recognise excellence."
           />
 
           <div className="grid grid-cols-3 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
@@ -181,7 +184,7 @@ export default function HomePage() {
           <SectionTitle
             badge="Nominations Open"
             badgeVariant="gold"
-            title="35–40+ Verified"
+            title="35+"
             highlight="Award Categories"
             subtitle="Spanning leadership honors, technology, healthcare, manufacturing, creative arts, and social enterprise. 100% Free nomination."
           />
@@ -193,7 +196,7 @@ export default function HomePage() {
           </div>
 
           <div style={{ textAlign: 'center', marginTop: '2.5rem' }}>
-            <CTAButton to="/categories" variant="secondary" size="lg" icon={ArrowRight}>
+            <CTAButton to="/categories" variant="primary" size="lg" icon={ArrowRight}>
               View All 35+ Award Categories
             </CTAButton>
           </div>
@@ -201,6 +204,7 @@ export default function HomePage() {
       </section>
 
       {/* 5. WHY NOMINATE & 50/50 FAIR PROCESS */}
+      {false && (
       <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div className="grid grid-cols-2 gap-12 items-center" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))' }}>
@@ -287,8 +291,12 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 6. JURY PANEL PREVIEW STRIP */}
+      <SponsorShowcase />
+
+      {false && (
       <section className="section-spacing-sm" style={{ background: '#FFFFFF', borderBottom: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2rem', flexWrap: 'wrap', gap: '1rem' }}>
@@ -323,50 +331,13 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 7. WINNER SPOTLIGHT SECTION */}
-      <section className="section-spacing" style={{ background: 'var(--bg-secondary)' }}>
-        <div className="container">
-          <SectionTitle
-            badge="Hall of Fame"
-            badgeVariant="plum"
-            title="Celebrating Previous"
-            highlight="Honorees"
-            subtitle="Spotlighting women founders recognized across our 2022–2025 editions."
-          />
-
-          <div className="grid grid-cols-2 gap-8" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', marginBottom: '2.5rem' }}>
-            <WinnerCard
-              name="Priyanshi Shah"
-              company="Aarya Spatial Design Studio"
-              category="Woman Entrepreneur of the Year — Leadership"
-              year="2025"
-              city="Ahmedabad Hub"
-              highlight="Demonstrated exemplary commercial innovation, sustainable architectural design, and community employment generation recognized by VyapaarJagat."
-              storyUrl="https://vyapaarjagat.com"
-              image="/images/entrepreneurs/priyanshi-shah.jpg"
-            />
-            <WinnerCard
-              name="Dr. Sunita Rao"
-              company="Nova BioCare Diagnostics"
-              category="Innovation & Technology Leader"
-              year="2024"
-              city="BSE Mumbai Edition"
-              highlight="Built a scalable digital diagnostics solution serving enterprise healthcare clients and over 1,00,000 patients across India."
-              storyUrl="https://vyapaarjagat.com"
-              image="/images/entrepreneurs/dr-sunita-rao.jpg"
-            />
-          </div>
-
-          <div style={{ textAlign: 'center' }}>
-            <CTAButton to="/winners" variant="secondary" size="lg" icon={ArrowRight}>
-              View All Winners
-            </CTAButton>
-          </div>
-        </div>
-      </section>
+      <HallOfFameSection />
 
       {/* 8. COFFEE TABLE BOOK SHOWCASE */}
+      {false && (
       <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div className="fem-card fem-card-gold" style={{ padding: '3.5rem 2.5rem' }}>
@@ -445,8 +416,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 9. SPONSORSHIP TIERS PREVIEW */}
+      {false && (
       <section className="section-spacing" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
           <SectionTitle
@@ -491,8 +464,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 10. VYAPAARJAGAT 1,000 STORIES DRIVE */}
+      {false && (
       <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <div
@@ -543,8 +518,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 11. WHY AHMEDABAD & DELHI NCR TWO-CITY RATIONALE */}
+      {false && (
       <section className="section-spacing" style={{ background: 'var(--bg-secondary)' }}>
         <div className="container">
           <SectionTitle
@@ -600,8 +577,10 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 12. EIGHT PATHWAYS TO PARTICIPATE */}
+      {false && (
       <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)' }}>
         <div className="container">
           <SectionTitle
@@ -713,6 +692,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
 
       {/* 13. SDG 5 ALIGNMENT & VIKSIT BHARAT @2047 */}
       <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)' }}>
@@ -797,6 +777,7 @@ export default function HomePage() {
       </section>
 
       {/* 13. NEWSLETTER SIGNUP */}
+      {false && (
       <section className="section-spacing" style={{ background: 'var(--bg-secondary)', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>
         <div className="container-narrow">
           <div
@@ -824,6 +805,7 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+      )}
     </div>
   );
 }
