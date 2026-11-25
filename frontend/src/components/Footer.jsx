@@ -136,7 +136,8 @@ export default function Footer() {
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '1.25rem', flexWrap: 'wrap' }}>
             <Link to="/about">Mission</Link>
-            <Link to="/awards">50/50 Process</Link>
+            <Link to="/privacy-policy">Privacy Policy</Link>
+            <Link to="/terms">Terms of Use</Link>
             <Link to="/partners">Sponsors</Link>
             <Link to="/contact">Support</Link>
           </div>
