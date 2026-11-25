@@ -75,7 +75,8 @@ export default function RecognitionHubModal({
       .map((w) => ({
         ...w,
         image: w.image || getWinnerPhoto(w.name),
-      }));
+      }))
+      .filter((w) => Boolean(w.image));
 
     if (!winnerSearch.trim()) return yearList;
 

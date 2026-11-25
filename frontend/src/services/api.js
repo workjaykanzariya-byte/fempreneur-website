@@ -31,6 +31,11 @@ const safeFetch = async (url, options = {}) => {
 };
 
 // 1. Nominations
+export const checkDuplicateNomination = async (params) => {
+  const query = new URLSearchParams(params).toString();
+  return safeFetch(`${API_BASE_URL}/nominations/check-duplicate?${query}`);
+};
+
 export const submitNomination = async (nominationData) => {
   return safeFetch(`${API_BASE_URL}/nominations`, {
     method: 'POST',
@@ -44,6 +49,15 @@ export const fetchNominations = async () => {
     headers: getAuthHeaders(),
   });
 };
+
+export const fetchPublicNominations = async () => {
+  return safeFetch(`${API_BASE_URL}/nominations/public`);
+};
+
+export const fetchPublicNominee = async (slugOrId) => {
+  return safeFetch(`${API_BASE_URL}/nominations/public/${encodeURIComponent(slugOrId)}`);
+};
+
 
 // 2. Voting
 export const castNomineeVote = async (voteData) => {

@@ -17,8 +17,10 @@ import {
   ShieldCheck,
   AlertCircle
 } from 'lucide-react';
-import { submitNomination } from '../services/api';
+import { submitNomination, checkDuplicateNomination } from '../services/api';
 import { initiateRazorpayPayment } from '../services/razorpay';
+import { FempreneurAwardCreative } from '../components';
+
 
 export const ALL_CATEGORIES = [
   'Woman Entrepreneur of the Year',
@@ -123,6 +125,8 @@ export default function ApplyPage() {
   // Step 1 to 4 state
   const [currentStep, setCurrentStep] = useState(1);
   const [stepErrors, setStepErrors] = useState({});
+  const [duplicateError, setDuplicateError] = useState(null);
+  const [checkingDuplicate, setCheckingDuplicate] = useState(false);
 
   // Form Data State - Exactly matching Greenpreneur structure
   const [formData, setFormData] = useState({
@@ -158,6 +162,7 @@ export default function ApplyPage() {
 
   const profileInputRef = useRef(null);
   const logoInputRef = useRef(null);
+  const checkDupTimerRef = useRef(null);
 
   // Sync category param if URL changes
   useEffect(() => {
@@ -171,11 +176,67 @@ export default function ApplyPage() {
     }
   }, [searchParams]);
 
-  const handleInputChange = (field, value) => {
-    setFormData((prev) => ({ ...prev, [field]: value }));
-    if (stepErrors[field]) {
-      setStepErrors((prev) => ({ ...prev, [field]: '' }));
+  useEffect(() => {
+    return () => {
+      if (checkDupTimerRef.current) clearTimeout(checkDupTimerRef.current);
+    };
+  }, []);
+
+  const checkDuplicateDetails = async (businessVal, emailVal, phoneVal, trackVal) => {
+    const b = (businessVal !== undefined ? businessVal : formData.business).trim();
+    const e = (emailVal !== undefined ? emailVal : formData.email).trim();
+    const p = (phoneVal !== undefined ? phoneVal : formData.phone).trim();
+    const t = trackVal || formData.track;
+
+    const hasBusiness = b.length >= 2;
+    const hasEmail = /\S+@\S+\.\S+/.test(e);
+    const hasPhone = p.length >= 8;
+
+    if (!hasBusiness && !hasEmail && !hasPhone) {
+      if (duplicateError) setDuplicateError(null);
+      return false;
     }
+
+    try {
+      const res = await checkDuplicateNomination({
+        business: hasBusiness ? b : '',
+        email: hasEmail ? e : '',
+        phone: hasPhone ? p : '',
+        track: t,
+      });
+
+      if (res?.data?.isDuplicate) {
+        setDuplicateError(res.data.message);
+        return true;
+      } else {
+        if (duplicateError) setDuplicateError(null);
+        return false;
+      }
+    } catch (err) {
+      console.warn('Duplicate check warning:', err);
+      return false;
+    }
+  };
+
+  const handleInputChange = (field, value) => {
+    setFormData((prev) => {
+      const updated = { ...prev, [field]: value };
+
+      if (stepErrors[field]) {
+        setStepErrors((errs) => ({ ...errs, [field]: '' }));
+      }
+
+      // If user edits any of the 3 key fields or track, clear previous duplicate error and check immediately
+      if (field === 'business' || field === 'email' || field === 'phone' || field === 'track') {
+        if (duplicateError) setDuplicateError(null);
+        if (checkDupTimerRef.current) clearTimeout(checkDupTimerRef.current);
+        checkDupTimerRef.current = setTimeout(() => {
+          checkDuplicateDetails(updated.business, updated.email, updated.phone, updated.track);
+        }, 400);
+      }
+
+      return updated;
+    });
   };
 
   const handleFileChange = (field, file) => {
@@ -272,8 +333,20 @@ export default function ApplyPage() {
     return Object.keys(errors).length === 0;
   };
 
-  const nextStep = () => {
-    if (validateStep(currentStep) && currentStep < 4) {
+  const nextStep = async () => {
+    if (!validateStep(currentStep)) return;
+
+    // Check for duplicate nomination at Step 2 (Nominee Information) before proceeding
+    if (currentStep === 2) {
+      setCheckingDuplicate(true);
+      const isDup = await checkDuplicateDetails();
+      setCheckingDuplicate(false);
+      if (isDup) {
+        return; // Strictly PREVENT user from proceeding to Step 3!
+      }
+    }
+
+    if (currentStep < 4) {
       setCurrentStep((prev) => prev + 1);
       window.scrollTo({ top: 320, behavior: 'smooth' });
     }
@@ -289,7 +362,7 @@ export default function ApplyPage() {
   const handleSubmit = async (e) => {
     if (e) e.preventDefault();
     if (currentStep < 4) {
-      nextStep();
+      await nextStep();
       return;
     }
 
@@ -377,7 +450,10 @@ export default function ApplyPage() {
         : `FEM-2027-${Math.floor(1000 + Math.random() * 9000)}`;
 
       const cleanSlug = formData.name.toLowerCase().replace(/[^a-z0-9]/g, '-').replace(/-+/g, '-');
-      const votingUrl = res?.data?.voting_url || `${window.location.origin}/voting?nominee=${cleanSlug}-${generatedId.slice(-4)}`;
+      const rawVotingUrl = res?.data?.voting_url || `/voting?nominee=${cleanSlug}-${generatedId.slice(-4)}`;
+      const votingUrl = rawVotingUrl.startsWith('http')
+        ? rawVotingUrl
+        : `${window.location.origin}${rawVotingUrl.startsWith('/') ? '' : '/'}${rawVotingUrl}`;
 
       setSubmissionResult({
         id: generatedId,
@@ -388,6 +464,9 @@ export default function ApplyPage() {
         track: formData.track,
         packageName: selectedPkg.name,
         packageAmount,
+        profilePicture: formData.profilePicturePreview || null,
+        businessLogo: formData.businessLogoPreview || null,
+        city: formData.city,
       });
 
       setSubmitted(true);
@@ -522,81 +601,54 @@ export default function ApplyPage() {
             <h2
               style={{
                 fontFamily: "'Playfair Display', Georgia, serif",
-                fontSize: '2rem',
-                fontWeight: 700,
+                fontSize: '2.1rem',
+                fontWeight: 800,
                 color: '#1C1224',
                 margin: '0 0 0.75rem 0',
               }}
             >
-              Nomination Received!
+              Nomination Confirmed!
             </h2>
 
-            <p style={{ fontSize: '1rem', color: '#4B5563', lineHeight: 1.6, maxWidth: '580px', margin: '0 auto 2rem' }}>
+            <p style={{ fontSize: '1rem', color: '#4B5563', lineHeight: 1.6, maxWidth: '620px', margin: '0 auto 1.75rem' }}>
               Thank you, <strong style={{ color: '#1C1224' }}>{submissionResult.nomineeName}</strong>. Your nomination for{' '}
               <strong style={{ color: '#1C1224' }}>{submissionResult.businessName}</strong> under the{' '}
-              <strong style={{ color: '#6A1B9A' }}>{submissionResult.category}</strong> category has been successfully received.
+              <strong style={{ color: '#6A1B9A' }}>{submissionResult.category}</strong> category has been successfully recorded.
             </p>
 
-            {/* Voting Link Box */}
-            {submissionResult.votingUrl && (
+            {/* Automatically Generated Award Creative for Free & Paid Nominees */}
+            <div style={{ marginBottom: '2.5rem' }}>
               <div
                 style={{
-                  background: '#FAF5FC',
-                  border: '1.5px solid #E9D5FF',
-                  borderRadius: '16px',
-                  padding: '1.5rem',
-                  maxWidth: '580px',
-                  margin: '0 auto 2rem',
-                  textAlign: 'center',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.45rem',
+                  color: '#6A1B9A',
+                  fontWeight: 800,
+                  fontSize: '0.86rem',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.08em',
+                  marginBottom: '1rem',
                 }}
               >
-                <div style={{ fontSize: '0.95rem', fontWeight: 800, color: '#6A1B9A', marginBottom: '0.35rem' }}>
-                  🎉 Your Unique Voting Link is Ready!
-                </div>
-                <p style={{ fontSize: '0.82rem', color: '#6B7280', margin: '0 0 1rem 0' }}>
-                  Share this link with your network to start collecting votes:
-                </p>
-
-                <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'center' }}>
-                  <input
-                    type="text"
-                    readOnly
-                    value={submissionResult.votingUrl}
-                    style={{
-                      flex: 1,
-                      padding: '0.65rem 0.85rem',
-                      borderRadius: '8px',
-                      border: '1px solid #D8B4FE',
-                      background: '#FFFFFF',
-                      fontSize: '0.82rem',
-                      color: '#374151',
-                      outline: 'none',
-                    }}
-                  />
-                  <button
-                    type="button"
-                    onClick={copyVotingLink}
-                    style={{
-                      display: 'inline-flex',
-                      alignItems: 'center',
-                      gap: '0.35rem',
-                      padding: '0.65rem 1rem',
-                      borderRadius: '8px',
-                      background: '#6A1B9A',
-                      color: '#FFFFFF',
-                      fontSize: '0.82rem',
-                      fontWeight: 700,
-                      border: 'none',
-                      cursor: 'pointer',
-                      whiteSpace: 'nowrap',
-                    }}
-                  >
-                    {linkCopied ? <Check size={14} /> : <Copy size={14} />}
-                    <span>{linkCopied ? 'Copied!' : 'Copy'}</span>
-                  </button>
-                </div>
+                <Sparkles size={16} style={{ color: '#E91E63' }} />
+                <span>Your Official Award Creative &amp; Voting Link</span>
+                <Sparkles size={16} style={{ color: '#E91E63' }} />
               </div>
-            )}
+
+              <FempreneurAwardCreative
+                nomineeName={submissionResult.nomineeName}
+                businessName={submissionResult.businessName}
+                category={submissionResult.category}
+                track={submissionResult.track}
+                nominationId={submissionResult.id}
+                profilePicture={submissionResult.profilePicture}
+                businessLogo={submissionResult.businessLogo}
+                votingUrl={submissionResult.votingUrl}
+                city={submissionResult.city || formData.city}
+                showActions={true}
+              />
+            </div>
 
             {/* Application Summary Card */}
             <div
@@ -1043,7 +1095,10 @@ export default function ApplyPage() {
                         transition: 'border-color 0.15s ease',
                       }}
                       onFocus={(e) => (e.currentTarget.style.borderColor = '#6A1B9A')}
-                      onBlur={(e) => (e.currentTarget.style.borderColor = stepErrors.business ? '#EF4444' : '#E5E7EB')}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = stepErrors.business ? '#EF4444' : '#E5E7EB';
+                        checkDuplicateDetails();
+                      }}
                     />
                     {stepErrors.business && (
                       <span style={{ fontSize: '0.74rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '2px' }}>
@@ -1075,7 +1130,10 @@ export default function ApplyPage() {
                         transition: 'border-color 0.15s ease',
                       }}
                       onFocus={(e) => (e.currentTarget.style.borderColor = '#6A1B9A')}
-                      onBlur={(e) => (e.currentTarget.style.borderColor = stepErrors.phone ? '#EF4444' : '#E5E7EB')}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = stepErrors.phone ? '#EF4444' : '#E5E7EB';
+                        checkDuplicateDetails();
+                      }}
                     />
                     {stepErrors.phone && (
                       <span style={{ fontSize: '0.74rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '2px' }}>
@@ -1107,11 +1165,14 @@ export default function ApplyPage() {
                         transition: 'border-color 0.15s ease',
                       }}
                       onFocus={(e) => (e.currentTarget.style.borderColor = '#6A1B9A')}
-                      onBlur={(e) => (e.currentTarget.style.borderColor = stepErrors.email ? '#EF4444' : '#E5E7EB')}
+                      onBlur={(e) => {
+                        e.currentTarget.style.borderColor = stepErrors.email ? '#EF4444' : '#E5E7EB';
+                        checkDuplicateDetails();
+                      }}
                     />
                     {stepErrors.email && (
-                      <span style={{ fontSize: '0.74rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '2px' }}>
-                        <AlertCircle size={12} /> {stepErrors.email}
+                      <span style={{ fontSize: '0.74rem', color: '#EF4444', display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '2px', lineHeight: 1.4 }}>
+                        <AlertCircle size={12} style={{ flexShrink: 0 }} /> {stepErrors.email}
                       </span>
                     )}
                   </div>
@@ -1311,11 +1372,35 @@ export default function ApplyPage() {
                   </div>
                 </div>
 
+                {/* Step 2 Duplicate Registration Error Banner */}
+                {duplicateError && (
+                  <div
+                    style={{
+                      padding: '0.95rem 1.25rem',
+                      borderRadius: '10px',
+                      background: '#FEF2F2',
+                      border: '1.5px solid #FCA5A5',
+                      color: '#991B1B',
+                      fontSize: '0.86rem',
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    <AlertCircle size={18} style={{ flexShrink: 0, color: '#DC2626' }} />
+                    <span>{duplicateError}</span>
+                  </div>
+                )}
+
                 {/* Step 2 Bottom Navigation Buttons Matching Screenshot 1 */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '1.5rem', borderTop: '1px solid #F0E6F4' }}>
                   <button
                     type="button"
                     onClick={prevStep}
+                    disabled={checkingDuplicate}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1329,7 +1414,7 @@ export default function ApplyPage() {
                       fontSize: '0.82rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.06em',
-                      cursor: 'pointer',
+                      cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       transition: 'background 0.15s ease',
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = '#FAF5FC')}
@@ -1342,6 +1427,7 @@ export default function ApplyPage() {
                   <button
                     type="button"
                     onClick={nextStep}
+                    disabled={checkingDuplicate}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1355,20 +1441,25 @@ export default function ApplyPage() {
                       textTransform: 'uppercase',
                       letterSpacing: '0.08em',
                       border: 'none',
-                      cursor: 'pointer',
+                      cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
                       transition: 'all 0.15s ease',
+                      opacity: checkingDuplicate ? 0.75 : 1,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 12px 28px rgba(233, 30, 99, 0.42)';
+                      if (!checkingDuplicate) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 12px 28px rgba(233, 30, 99, 0.42)';
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.32)';
+                      if (!checkingDuplicate) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.32)';
+                      }
                     }}
                   >
-                    <span>CONTINUE TO IMPACT</span>
+                    <span>{checkingDuplicate ? 'CHECKING ELIGIBILITY...' : 'CONTINUE TO IMPACT'}</span>
                     <ArrowRight size={16} />
                   </button>
                 </div>
@@ -1483,11 +1574,35 @@ export default function ApplyPage() {
                   </div>
                 </div>
 
+                {/* Step 3 Duplicate Registration Error Banner */}
+                {duplicateError && (
+                  <div
+                    style={{
+                      padding: '0.95rem 1.25rem',
+                      borderRadius: '10px',
+                      background: '#FEF2F2',
+                      border: '1.5px solid #FCA5A5',
+                      color: '#991B1B',
+                      fontSize: '0.86rem',
+                      fontWeight: 500,
+                      lineHeight: 1.5,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.65rem',
+                      marginBottom: '1.5rem',
+                    }}
+                  >
+                    <AlertCircle size={18} style={{ flexShrink: 0, color: '#DC2626' }} />
+                    <span>{duplicateError}</span>
+                  </div>
+                )}
+
                 {/* Step 3 Bottom Navigation Buttons */}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', paddingTop: '1.5rem', borderTop: '1px solid #F0E6F4' }}>
                   <button
                     type="button"
                     onClick={prevStep}
+                    disabled={checkingDuplicate}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1501,7 +1616,7 @@ export default function ApplyPage() {
                       fontSize: '0.82rem',
                       textTransform: 'uppercase',
                       letterSpacing: '0.06em',
-                      cursor: 'pointer',
+                      cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       transition: 'background 0.15s ease',
                     }}
                     onMouseEnter={(e) => (e.currentTarget.style.background = '#FAF5FC')}
@@ -1514,6 +1629,7 @@ export default function ApplyPage() {
                   <button
                     type="button"
                     onClick={nextStep}
+                    disabled={checkingDuplicate}
                     style={{
                       display: 'inline-flex',
                       alignItems: 'center',
@@ -1527,20 +1643,25 @@ export default function ApplyPage() {
                       textTransform: 'uppercase',
                       letterSpacing: '0.08em',
                       border: 'none',
-                      cursor: 'pointer',
+                      cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
                       transition: 'all 0.15s ease',
+                      opacity: checkingDuplicate ? 0.75 : 1,
                     }}
                     onMouseEnter={(e) => {
-                      e.currentTarget.style.transform = 'translateY(-2px)';
-                      e.currentTarget.style.boxShadow = '0 12px 28px rgba(233, 30, 99, 0.42)';
+                      if (!checkingDuplicate) {
+                        e.currentTarget.style.transform = 'translateY(-2px)';
+                        e.currentTarget.style.boxShadow = '0 12px 28px rgba(233, 30, 99, 0.42)';
+                      }
                     }}
                     onMouseLeave={(e) => {
-                      e.currentTarget.style.transform = 'translateY(0)';
-                      e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.32)';
+                      if (!checkingDuplicate) {
+                        e.currentTarget.style.transform = 'translateY(0)';
+                        e.currentTarget.style.boxShadow = '0 8px 24px rgba(106, 27, 154, 0.32)';
+                      }
                     }}
                   >
-                    <span>FINAL STEP: REVIEW</span>
+                    <span>{checkingDuplicate ? 'CHECKING ELIGIBILITY...' : (formData.track === 'rated' ? 'CONTINUE TO PACKAGES' : 'FINAL STEP: REVIEW')}</span>
                     <ArrowRight size={16} />
                   </button>
                 </div>

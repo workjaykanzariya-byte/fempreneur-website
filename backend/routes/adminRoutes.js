@@ -6,6 +6,7 @@ import path from 'path';
 import fs from 'fs';
 import pool, { query } from '../config/db.js';
 import { authenticate } from '../middleware/authMiddleware.js';
+import { processWinnerImageAsync } from '../utils/imageProcessor.js';
 
 const router = express.Router();
 const JWT_SECRET = process.env.JWT_SECRET || 'fempreneur_super_secret_jwt_key_2027';
@@ -280,6 +281,12 @@ router.patch('/nominations/:id', verifyAdmin, upload.single('profilePicture'), a
   try {
     const profilePic = req.file ? `/uploads/nominations/${req.file.filename}` : undefined;
 
+    if (req.file) {
+      processWinnerImageAsync(req.file.path).catch(err => {
+        console.error('Auto winner background processing error on nomination update:', err);
+      });
+    }
+
     try {
       let queryStr = `
         UPDATE web_nominations 
@@ -384,6 +391,13 @@ router.post('/winners', verifyAdmin, upload.single('profilePicture'), async (req
 
     const photoUrl = req.file ? `/uploads/nominations/${req.file.filename}` : null;
 
+    if (req.file) {
+      // Automatically remove background & composite onto exact reference template
+      processWinnerImageAsync(req.file.path).catch(err => {
+        console.error('Auto winner background processing error:', err);
+      });
+    }
+
     try {
       await query(
         `INSERT INTO web_winners (name, company, category_name, city, award_year, track, impact_text, photo_url, website_url, is_published)
@@ -455,6 +469,13 @@ router.post('/gallery-sponsors', verifyAdmin, upload.single('profilePicture'), a
     const { name, role, org, tags } = req.body;
     if (!name || !org) return res.status(400).json({ success: false, message: 'Name and Org are required' });
     const photoUrl = req.file ? `/uploads/nominations/${req.file.filename}` : null;
+
+    if (req.file) {
+      // Automatically remove background & composite onto exact reference template
+      processWinnerImageAsync(req.file.path).catch(err => {
+        console.error('Auto winner background processing error:', err);
+      });
+    }
     await query(
       `INSERT INTO web_sponsors (name, role, org, tags, photo_url) VALUES ($1, $2, $3, $4, $5)`,
       [name.trim(), role?.trim() || 'Sponsor', org.trim(), tags || null, photoUrl]
@@ -490,6 +511,13 @@ router.post('/partners', verifyAdmin, upload.single('profilePicture'), async (re
     const { name, role, org, tags } = req.body;
     if (!name || !role || !org) return res.status(400).json({ success: false, message: 'Name, Role, and Org are required' });
     const photoUrl = req.file ? `/uploads/nominations/${req.file.filename}` : null;
+
+    if (req.file) {
+      // Automatically remove background & composite onto exact reference template
+      processWinnerImageAsync(req.file.path).catch(err => {
+        console.error('Auto winner background processing error:', err);
+      });
+    }
     await query(
       `INSERT INTO web_partners (name, role, org, tags, photo_url) VALUES ($1, $2, $3, $4, $5)`,
       [name.trim(), role.trim(), org.trim(), tags || null, photoUrl]
@@ -525,6 +553,13 @@ router.post('/jury', verifyAdmin, upload.single('profilePicture'), async (req, r
     const { name, role, org, tags } = req.body;
     if (!name || !role || !org) return res.status(400).json({ success: false, message: 'Name, Role, and Org are required' });
     const photoUrl = req.file ? `/uploads/nominations/${req.file.filename}` : null;
+
+    if (req.file) {
+      // Automatically remove background & composite onto exact reference template
+      processWinnerImageAsync(req.file.path).catch(err => {
+        console.error('Auto winner background processing error:', err);
+      });
+    }
     await query(
       `INSERT INTO web_jury (name, role, org, tags, photo_url) VALUES ($1, $2, $3, $4, $5)`,
       [name.trim(), role.trim(), org.trim(), tags || null, photoUrl]

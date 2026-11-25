@@ -22,3 +22,5 @@ export { default as ScrollToTop } from './ScrollToTop';
 export { default as VideoPlayerModal } from './VideoPlayerModal';
 export { default as FempreneurMovementStage } from './FempreneurMovementStage';
 export { default as RecognitionHubModal } from './RecognitionHubModal';
+export { default as FempreneurAwardCreative } from './FempreneurAwardCreative';
+

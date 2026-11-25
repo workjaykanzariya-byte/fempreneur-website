@@ -5,41 +5,38 @@ import RecognitionHubModal from './RecognitionHubModal';
 
 /**
  * FempreneurMovementStage Component
- * Recreated to match the exact visual style and composition of the reference design (Image 1):
- * - Deep royal purple ambient stage with glowing radial orbs and curved arcs
- * - Centered editorial headline with luminous gradient "2 Cities"
- * - 3 circular glowing stat highlights (Jury Evaluation, Public Voting, Curated Categories)
- * - Gradient & glass CTA buttons opening the on-page Recognition Hub (Winners & Categories)
- * - 500+ Social proof avatar stack
- * - Left & Right staggered floating cards featuring verified women leaders
- *   sourced strictly from the local Desktop collection (winners-2022).
+ * Exact match to the reference composition (Image 1 / Image 2 reference):
+ * - Left Side: Left-aligned editorial headline, pill badge, description, 3 stats, CTA buttons, and avatar social proof
+ * - Right Side: Large 3D Metallic Red 'Fempreneur' "F" Trophy mounted on pedestal with dramatic spotlight & glow
+ * - Preserves all on-page modal triggers (View Winners, See Categories, etc.)
  */
 export default function FempreneurMovementStage() {
   const [recognitionModalTab, setRecognitionModalTab] = useState(null);
+
   return (
     <section
       className="fem-movement-stage-section"
       style={{
         position: 'relative',
-        background: 'linear-gradient(180deg, #150221 0%, #1F0332 35%, #2B0544 70%, #160223 100%)',
-        paddingTop: '4.5rem',
-        paddingBottom: '5.25rem',
+        background: 'radial-gradient(ellipse 90% 80% at 75% 45%, #3B0447 0%, #20022B 45%, #100118 100%)',
+        paddingTop: '3.5rem',
+        paddingBottom: '4.5rem',
         color: '#FFFFFF',
         overflow: 'hidden',
         borderBottom: '1px solid rgba(233, 30, 99, 0.25)',
       }}
     >
-      {/* Background Ambient Glows */}
+      {/* Background Ambient Spotlight Glows (matching the dramatic spotlight on the right trophy) */}
       <div
         style={{
           position: 'absolute',
-          top: '12%',
-          left: '-5%',
-          width: '520px',
-          height: '520px',
+          top: '-10%',
+          right: '8%',
+          width: '680px',
+          height: '680px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(233, 30, 99, 0.24) 0%, rgba(106, 27, 154, 0.14) 50%, transparent 72%)',
-          filter: 'blur(45px)',
+          background: 'radial-gradient(circle, rgba(233, 30, 99, 0.32) 0%, rgba(142, 36, 170, 0.22) 40%, transparent 70%)',
+          filter: 'blur(60px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
@@ -47,63 +44,71 @@ export default function FempreneurMovementStage() {
       <div
         style={{
           position: 'absolute',
-          top: '18%',
-          right: '-5%',
-          width: '560px',
-          height: '560px',
+          bottom: '0%',
+          right: '5%',
+          width: '580px',
+          height: '240px',
           borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(142, 36, 170, 0.28) 0%, rgba(233, 30, 99, 0.18) 50%, transparent 72%)',
+          background: 'radial-gradient(ellipse, rgba(255, 64, 129, 0.4) 0%, rgba(233, 30, 99, 0.2) 50%, transparent 80%)',
+          filter: 'blur(40px)',
+          pointerEvents: 'none',
+          zIndex: 0,
+        }}
+      />
+      <div
+        style={{
+          position: 'absolute',
+          top: '20%',
+          left: '-5%',
+          width: '500px',
+          height: '500px',
+          borderRadius: '50%',
+          background: 'radial-gradient(circle, rgba(142, 36, 170, 0.2) 0%, transparent 65%)',
           filter: 'blur(50px)',
           pointerEvents: 'none',
           zIndex: 0,
         }}
       />
 
-      {/* Decorative Dot Matrix on Left and Right (matching Image 1) */}
-      <div className="fem-stage-dots fem-stage-dots-tl" />
-      <div className="fem-stage-dots fem-stage-dots-bl" />
-      <div className="fem-stage-dots fem-stage-dots-tr" />
+      {/* Top diagonal ray / spotlight shimmer */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-60px',
+          right: '18%',
+          width: '280px',
+          height: '480px',
+          background: 'linear-gradient(135deg, rgba(255, 182, 193, 0.18) 0%, rgba(233, 30, 99, 0.05) 50%, transparent 80%)',
+          transform: 'rotate(-25deg)',
+          filter: 'blur(20px)',
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
 
-      {/* Decorative Curved Thin Arcs (matching Image 1) */}
-      <svg
-        className="fem-stage-bg-arcs"
-        viewBox="0 0 1440 680"
-        fill="none"
-        xmlns="http://www.w3.org/2000/svg"
-      >
-        <path
-          d="M 120 40 C 230 15, 330 110, 310 280 C 290 450, 180 540, 90 590"
-          stroke="rgba(233, 30, 99, 0.32)"
-          strokeWidth="1.5"
-          strokeDasharray="4 6"
-        />
-        <path
-          d="M 50 140 C 180 120, 240 230, 220 390"
-          stroke="rgba(142, 36, 170, 0.35)"
-          strokeWidth="1.2"
-        />
-        <path
-          d="M 1320 40 C 1210 15, 1110 110, 1130 280 C 1150 450, 1260 540, 1350 590"
-          stroke="rgba(233, 30, 99, 0.32)"
-          strokeWidth="1.5"
-          strokeDasharray="4 6"
-        />
-        <path
-          d="M 1390 140 C 1260 120, 1200 230, 1220 390"
-          stroke="rgba(142, 36, 170, 0.35)"
-          strokeWidth="1.2"
-        />
-      </svg>
+      {/* Decorative Sparkles / Floating Dust Particles */}
+      <div
+        style={{
+          position: 'absolute',
+          inset: 0,
+          backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.6) 1px, transparent 1px), radial-gradient(rgba(255, 105, 180, 0.6) 1.5px, transparent 1.5px)',
+          backgroundSize: '180px 180px, 260px 260px',
+          backgroundPosition: '0 0, 90px 90px',
+          opacity: 0.35,
+          pointerEvents: 'none',
+          zIndex: 1,
+        }}
+      />
 
       {/* Bottom Luminous Wave / Swoop (matching Image 1) */}
       <div className="fem-stage-bottom-swoop">
-        <svg viewBox="0 0 1440 100" preserveAspectRatio="none">
+        <svg viewBox="0 0 1440 90" preserveAspectRatio="none">
           <path
-            d="M 0,35 Q 360,95 720,45 T 1440,55 L 1440,100 L 0,100 Z"
-            fill="rgba(16, 2, 25, 0.85)"
+            d="M 0,30 Q 360,80 720,38 T 1440,48 L 1440,90 L 0,90 Z"
+            fill="rgba(16, 1, 24, 0.9)"
           />
           <path
-            d="M 0,35 Q 360,95 720,45 T 1440,55"
+            d="M 0,30 Q 360,80 720,38 T 1440,48"
             fill="none"
             stroke="url(#fem-stage-wave-grad)"
             strokeWidth="2.5"
@@ -121,110 +126,31 @@ export default function FempreneurMovementStage() {
       </div>
 
       <style>{`
-        .fem-movement-stage-container {
+        .fem-stage-grid {
           display: grid;
-          grid-template-columns: 310px minmax(520px, 1fr) 310px;
-          gap: 2rem;
+          grid-template-columns: 1.15fr 0.85fr;
+          gap: 2.5rem;
           align-items: center;
-          max-width: 1440px;
+          max-width: 1380px;
           margin: 0 auto;
-          padding: 0 1.5rem;
+          padding: 0 2.5rem;
           position: relative;
           z-index: 2;
         }
 
         @media (min-width: 1440px) {
-          .fem-movement-stage-container {
-            grid-template-columns: 320px minmax(560px, 1fr) 320px;
-            gap: 2.75rem;
+          .fem-stage-grid {
+            grid-template-columns: 1.2fr 0.8fr;
+            padding: 0 3.5rem;
+            gap: 3.5rem;
           }
         }
 
-        /* Flank Column Canvas */
-        .fem-stage-flank {
+        /* Left Content Column (Left Aligned matching Image 1) */
+        .fem-stage-left {
+          text-align: left;
           position: relative;
-          width: 100%;
-          height: 590px;
-        }
-
-        /* Left Flank Card Positions */
-        .fem-slot-l1 { top: 12px; left: 0px; width: 148px; height: 210px; z-index: 2; }
-        .fem-slot-l2 { top: 92px; left: 126px; width: 154px; height: 220px; z-index: 3; }
-        .fem-slot-l3 { top: 238px; left: 0px; width: 150px; height: 220px; z-index: 4; }
-        .fem-slot-l4 { top: 330px; left: 110px; width: 156px; height: 225px; z-index: 5; }
-
-        /* Right Flank Card Positions */
-        .fem-slot-r1 { top: 14px; left: 12px; width: 148px; height: 210px; z-index: 2; }
-        .fem-slot-r2 { top: 26px; left: 136px; width: 148px; height: 215px; z-index: 3; }
-        .fem-slot-r3 { top: 168px; left: 0px; width: 154px; height: 225px; z-index: 4; }
-        .fem-slot-r4 { top: 262px; left: 130px; width: 152px; height: 220px; z-index: 3; }
-        .fem-slot-r5 { top: 358px; left: 20px; width: 156px; height: 225px; z-index: 5; }
-
-        .fem-stage-card-slot {
-          position: absolute;
-          transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), z-index 0.2s ease;
-        }
-
-        .fem-stage-card-slot:hover {
-          transform: translateY(-8px) scale(1.05);
-          z-index: 12 !important;
-        }
-
-        /* Backdrop glowing gradient frame */
-        .fem-stage-card-backdrop {
-          position: absolute;
-          top: -10px;
-          left: -8px;
-          width: calc(100% + 16px);
-          height: calc(100% + 18px);
-          border-radius: 22px;
-          background: linear-gradient(135deg, rgba(142, 36, 170, 0.5) 0%, rgba(233, 30, 99, 0.35) 100%);
-          border: 1.5px solid rgba(233, 30, 99, 0.45);
-          box-shadow: 0 0 25px rgba(233, 30, 99, 0.25);
-          pointer-events: none;
-          transition: all 0.35s ease;
-        }
-
-        .fem-stage-card-slot:hover .fem-stage-card-backdrop {
-          background: linear-gradient(135deg, rgba(142, 36, 170, 0.8) 0%, rgba(233, 30, 99, 0.65) 100%);
-          border-color: rgba(255, 255, 255, 0.75);
-          box-shadow: 0 0 35px rgba(233, 30, 99, 0.65);
-        }
-
-        /* Front card containing image */
-        .fem-stage-card-front {
-          position: relative;
-          display: block;
-          width: 100%;
-          height: 100%;
-          border-radius: 18px;
-          overflow: hidden;
-          background: #1C0428;
-          border: 2px solid rgba(255, 255, 255, 0.16);
-          box-shadow: 0 16px 36px rgba(0, 0, 0, 0.65);
-          transition: all 0.35s ease;
-        }
-
-        .fem-stage-card-slot:hover .fem-stage-card-front {
-          border-color: #FFFFFF;
-          box-shadow: 0 24px 50px rgba(0, 0, 0, 0.85), 0 0 32px rgba(233, 30, 99, 0.55);
-        }
-
-        .fem-stage-img {
-          width: 100%;
-          height: 100%;
-          object-fit: cover;
-          object-position: center top;
-          display: block;
-        }
-
-        /* Center Column Typography & Layout */
-        .fem-stage-center {
-          text-align: center;
-          max-width: 680px;
-          margin: 0 auto;
-          position: relative;
-          z-index: 4;
+          z-index: 3;
         }
 
         .fem-stage-pill {
@@ -233,47 +159,48 @@ export default function FempreneurMovementStage() {
           gap: 8px;
           padding: 6px 18px;
           border-radius: 9999px;
-          background: rgba(40, 8, 60, 0.75);
-          border: 1.5px solid rgba(233, 30, 99, 0.45);
+          background: rgba(35, 5, 50, 0.85);
+          border: 1.5px solid rgba(233, 30, 99, 0.5);
           color: #F8BBD0;
           font-size: 0.78rem;
           font-weight: 800;
           letter-spacing: 0.14em;
           text-transform: uppercase;
-          margin-bottom: 1.35rem;
-          box-shadow: 0 0 24px rgba(233, 30, 99, 0.3);
+          margin-bottom: 1.4rem;
+          box-shadow: 0 0 20px rgba(233, 30, 99, 0.3);
           backdrop-filter: blur(10px);
         }
 
         .fem-stage-title {
           font-family: var(--font-serif, 'Playfair Display', Georgia, serif);
-          font-size: clamp(2rem, 3.2vw, 3.2rem);
+          font-size: clamp(2.1rem, 3.4vw, 3.4rem);
           font-weight: 800;
           color: #FFFFFF;
-          line-height: 1.18;
+          line-height: 1.16;
           letter-spacing: -0.015em;
           margin-bottom: 1.25rem;
         }
 
         .fem-stage-highlight {
-          background: linear-gradient(135deg, #FF66A1 0%, #E91E63 50%, #D843B8 100%);
+          background: linear-gradient(135deg, #FF4081 0%, #E91E63 50%, #C2185B 100%);
           -webkit-background-clip: text;
           -webkit-text-fill-color: transparent;
           display: inline-block;
+          font-weight: 800;
         }
 
         .fem-stage-desc {
-          font-size: clamp(0.95rem, 1.15vw, 1.06rem);
-          color: rgba(255, 255, 255, 0.86);
-          line-height: 1.68;
-          max-width: 620px;
-          margin: 0 auto 2.25rem;
+          font-size: clamp(0.95rem, 1.1vw, 1.05rem);
+          color: rgba(255, 255, 255, 0.85);
+          line-height: 1.65;
+          max-width: 580px;
+          margin: 0 0 2.2rem 0;
         }
 
         .fem-stage-stats-bar {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 1.75rem;
           margin-bottom: 2.25rem;
           flex-wrap: wrap;
@@ -290,7 +217,7 @@ export default function FempreneurMovementStage() {
           width: 44px;
           height: 44px;
           border-radius: 50%;
-          background: rgba(46, 8, 70, 0.85);
+          background: rgba(45, 6, 68, 0.85);
           border: 1.5px solid rgba(171, 71, 188, 0.55);
           display: flex;
           align-items: center;
@@ -299,7 +226,7 @@ export default function FempreneurMovementStage() {
         }
 
         .fem-stage-stat-val {
-          font-size: 1.25rem;
+          font-size: 1.22rem;
           font-weight: 800;
           color: #FFFFFF;
           line-height: 1.1;
@@ -322,7 +249,7 @@ export default function FempreneurMovementStage() {
         .fem-stage-actions {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 1.15rem;
           margin-bottom: 2.25rem;
           flex-wrap: wrap;
@@ -373,7 +300,7 @@ export default function FempreneurMovementStage() {
         .fem-stage-proof {
           display: flex;
           align-items: center;
-          justify-content: center;
+          justify-content: flex-start;
           gap: 1rem;
           flex-wrap: wrap;
         }
@@ -420,28 +347,47 @@ export default function FempreneurMovementStage() {
           color: rgba(255, 255, 255, 0.72);
         }
 
-        /* Matrix Dots */
-        .fem-stage-dots {
-          position: absolute;
-          width: 72px;
-          height: 72px;
-          background-image: radial-gradient(rgba(233, 30, 99, 0.4) 1.5px, transparent 1.5px);
-          background-size: 14px 14px;
-          pointer-events: none;
-          z-index: 1;
+        /* Right Column: Trophy Display */
+        .fem-stage-right {
+          position: relative;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          z-index: 2;
         }
 
-        .fem-stage-dots-tl { top: 35px; left: 20px; }
-        .fem-stage-dots-bl { bottom: 55px; left: 25px; }
-        .fem-stage-dots-tr { top: 75px; right: 25px; }
-
-        .fem-stage-bg-arcs {
-          position: absolute;
-          inset: 0;
+        .fem-stage-trophy-wrapper {
+          position: relative;
           width: 100%;
-          height: 100%;
+          max-width: 520px;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+        }
+
+        .fem-stage-trophy-glow {
+          position: absolute;
+          inset: 10% 5% 5% 5%;
+          background: radial-gradient(circle, rgba(255, 64, 129, 0.35) 0%, rgba(142, 36, 170, 0.25) 45%, transparent 70%);
+          filter: blur(40px);
           pointer-events: none;
-          z-index: 1;
+          z-index: 0;
+        }
+
+        .fem-stage-trophy-img {
+          position: relative;
+          z-index: 2;
+          width: 100%;
+          height: auto;
+          max-height: 580px;
+          object-fit: contain;
+          filter: drop-shadow(0 25px 40px rgba(0, 0, 0, 0.85)) drop-shadow(0 0 35px rgba(233, 30, 99, 0.4));
+          transition: transform 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+        }
+
+        .fem-stage-trophy-img:hover {
+          transform: translateY(-8px) scale(1.02);
+          filter: drop-shadow(0 30px 50px rgba(0, 0, 0, 0.9)) drop-shadow(0 0 50px rgba(255, 64, 129, 0.6));
         }
 
         .fem-stage-bottom-swoop {
@@ -456,31 +402,31 @@ export default function FempreneurMovementStage() {
         }
 
         /* Responsive Breakpoints */
-        @media (max-width: 1140px) {
-          .fem-movement-stage-container {
+        @media (max-width: 1040px) {
+          .fem-stage-grid {
             grid-template-columns: 1fr;
+            text-align: center;
             gap: 3rem;
+            padding: 0 1.5rem;
           }
-          .fem-stage-flank {
-            display: none;
+          .fem-stage-left {
+            text-align: center;
           }
-          .fem-stage-mobile-gallery {
-            display: grid !important;
+          .fem-stage-desc {
+            margin: 0 auto 2.2rem auto;
           }
-        }
-
-        .fem-stage-mobile-gallery {
-          display: none;
-          grid-template-columns: repeat(4, 1fr);
-          gap: 1rem;
-          margin-top: 2.5rem;
+          .fem-stage-stats-bar,
+          .fem-stage-actions,
+          .fem-stage-proof {
+            justify-content: center;
+          }
+          .fem-stage-trophy-wrapper {
+            max-width: 420px;
+            margin: 0 auto;
+          }
         }
 
         @media (max-width: 680px) {
-          .fem-stage-mobile-gallery {
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.85rem;
-          }
           .fem-stage-stat-sep {
             display: none;
           }
@@ -490,7 +436,9 @@ export default function FempreneurMovementStage() {
           .fem-stage-title br {
             display: none;
           }
+        
         }
+
         @media (max-width: 480px) {
           .fem-stage-actions {
             flex-direction: column;
@@ -504,80 +452,9 @@ export default function FempreneurMovementStage() {
         }
       `}</style>
 
-      <div className="fem-movement-stage-container">
-        {/* 1. LEFT FLANK: 4 STAGGERED PORTRAIT CARDS (EXACT MATCH TO IMAGE 1) */}
-        <div className="fem-stage-flank">
-          {/* Card 1: Top Outer (Naisargi Shah) */}
-          <div className="fem-stage-card-slot fem-slot-l1" title="Naisargi Shah • Founder of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/naisargi-shah.png"
-                alt="Naisargi Shah"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 2: Top Inner (Shweta Raval) */}
-          <div className="fem-stage-card-slot fem-slot-l2" title="Shweta Raval • Business Leader of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/shweta-raval.png"
-                alt="Shweta Raval"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 3: Bottom Outer (Dr. Seema Yadav - yellow saree, exact match to Image 1) */}
-          <div className="fem-stage-card-slot fem-slot-l3" title="Dr. Seema Yadav • Community Service Leader">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/dr-seema-yadav.png"
-                alt="Dr. Seema Yadav"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 4: Bottom Inner (Adv Ashwini C - striped shirt, exact match to Image 1) */}
-          <div className="fem-stage-card-slot fem-slot-l4" title="Adv Ashwini C • Trend Setter of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/adv-ashwini-c.png"
-                alt="Adv Ashwini C"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-        </div>
-
-        {/* 2. CENTER COLUMN: EDITORIAL HEADLINE, STATS, CTAS & SOCIAL PROOF */}
-        <div className="fem-stage-center">
+      <div className="fem-stage-grid">
+        {/* LEFT COLUMN: Editorial Text, Stats, Actions, Proof (Exact Match to Image 1) */}
+        <div className="fem-stage-left">
           {/* Pill Capsule Badge */}
           <div className="fem-stage-pill">
             <Sparkles size={14} color="#FF66A1" />
@@ -601,8 +478,8 @@ export default function FempreneurMovementStage() {
           <div className="fem-stage-stats-bar">
             {/* Stat 1 */}
             <div className="fem-stage-stat-item">
-              <div className="fem-stage-stat-ico" style={{ borderColor: 'rgba(171, 71, 188, 0.65)' }}>
-                <Users size={18} color="#FFFFFF" />
+              <div className="fem-stage-stat-ico">
+                <Users size={18} color="#F48FB1" />
               </div>
               <div>
                 <div className="fem-stage-stat-val">50%</div>
@@ -614,8 +491,8 @@ export default function FempreneurMovementStage() {
 
             {/* Stat 2 */}
             <div className="fem-stage-stat-item">
-              <div className="fem-stage-stat-ico" style={{ borderColor: 'rgba(233, 30, 99, 0.75)' }}>
-                <Heart size={18} color="#FF66A1" />
+              <div className="fem-stage-stat-ico" style={{ borderColor: 'rgba(233, 30, 99, 0.7)' }}>
+                <Heart size={18} color="#FF4081" />
               </div>
               <div>
                 <div className="fem-stage-stat-val">50%</div>
@@ -637,7 +514,7 @@ export default function FempreneurMovementStage() {
             </div>
           </div>
 
-          {/* Buttons: Open on the SAME PAGE without redirecting */}
+          {/* Buttons: View Winners & See Categories */}
           <div className="fem-stage-actions">
             <button
               type="button"
@@ -658,6 +535,7 @@ export default function FempreneurMovementStage() {
             >
               <span>See Categories</span>
             </button>
+
           </div>
 
           {/* Social Proof Avatars & Tagline */}
@@ -681,134 +559,20 @@ export default function FempreneurMovementStage() {
             </div>
             <div className="fem-stage-proof-meta">
               <div className="fem-stage-proof-heading">500+ Women Leaders Celebrated</div>
-              <div className="fem-stage-proof-sub">Ahmedabad &amp; Delhi NCR Dual Hubs</div>
+              <div className="fem-stage-proof-sub">Ahmedabad &amp; Delhi-NCR Dual Hubs</div>
             </div>
-          </div>
-
-          {/* Tablet & Mobile Fallback Showcase Gallery */}
-          <div className="fem-stage-mobile-gallery">
-            {[
-              { name: 'Dr. Seema Yadav', img: '/images/winners-2022/dr-seema-yadav.png' },
-              { name: 'Adv Ashwini C', img: '/images/winners-2022/adv-ashwini-c.png' },
-              { name: 'Pallavi Walia Raj', img: '/images/winners-2022/pallavi-walia-raj.png' },
-              { name: 'Meghana Mojjada', img: '/images/winners-2022/meghana-mojjada.png' },
-              { name: 'Ami Shah', img: '/images/winners-2022/ami-shah.png' },
-              { name: 'Naisargi Shah', img: '/images/winners-2022/naisargi-shah.png' },
-              { name: 'Shweta Raval', img: '/images/winners-2022/shweta-raval.png' },
-              { name: 'Belaa Mitthani', img: '/images/winners-2022/belaa-mitthani.png' },
-            ].map((w, idx) => (
-              <button
-                key={idx}
-                type="button"
-                onClick={() => setRecognitionModalTab('winners')}
-                style={{
-                  display: 'block',
-                  borderRadius: '16px',
-                  overflow: 'hidden',
-                  border: '1.5px solid rgba(233, 30, 99, 0.4)',
-                  boxShadow: '0 8px 24px rgba(0,0,0,0.5)',
-                  height: '175px',
-                  padding: 0,
-                  background: 'none',
-                  cursor: 'pointer',
-                  width: '100%',
-                }}
-              >
-                <img
-                  src={w.img}
-                  alt={w.name}
-                  style={{ width: '100%', height: '100%', objectFit: 'cover', objectPosition: 'center top' }}
-                />
-              </button>
-            ))}
           </div>
         </div>
 
-        {/* 3. RIGHT FLANK: 5 STAGGERED PORTRAIT CARDS (EXACT MATCH TO IMAGE 1) */}
-        <div className="fem-stage-flank">
-          {/* Card 5: Top Inner (Nancy Jain) */}
-          <div className="fem-stage-card-slot fem-slot-r1" title="Nancy Jain • Social Entrepreneur">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/nancy-jain.png"
-                alt="Nancy Jain"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 6: Top Outer (Belaa Mitthani) */}
-          <div className="fem-stage-card-slot fem-slot-r2" title="Belaa Mitthani • CEO of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/belaa-mitthani.png"
-                alt="Belaa Mitthani"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 7: Middle (Pallavi Walia Raj - black dress, exact match to Image 1) */}
-          <div className="fem-stage-card-slot fem-slot-r3" title="Pallavi Walia Raj • Trend Setter Woman of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/pallavi-walia-raj.png"
-                alt="Pallavi Walia Raj"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 8: Lower Outer (Ami Shah - saree, exact match to Image 1) */}
-          <div className="fem-stage-card-slot fem-slot-r4" title="Ami Shah • Rising Entrepreneur">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/ami-shah.png"
-                alt="Ami Shah"
-                className="fem-stage-img"
-              />
-            </button>
-          </div>
-
-          {/* Card 9: Bottom Inner (Meghana Mojjada - blue blazer, exact match to Image 1) */}
-          <div className="fem-stage-card-slot fem-slot-r5" title="Meghana Mojjada • Young Business Woman of the Year">
-            <div className="fem-stage-card-backdrop" />
-            <button
-              type="button"
-              onClick={() => setRecognitionModalTab('winners')}
-              className="fem-stage-card-front"
-              style={{ border: 'none', padding: 0, cursor: 'pointer', textAlign: 'left' }}
-            >
-              <img
-                src="/images/winners-2022/meghana-mojjada.png"
-                alt="Meghana Mojjada"
-                className="fem-stage-img"
-              />
-            </button>
+        {/* RIGHT COLUMN: 3D "Fempreneur" F Trophy Logo (Using uploaded 3rd file) */}
+        <div className="fem-stage-right">
+          <div className="fem-stage-trophy-wrapper">
+            <div className="fem-stage-trophy-glow" />
+            <img
+              src="/images/fempreneur-f-trophy-nobg.png"
+              alt="Fempreneur 2027 Award Trophy"
+              className="fem-stage-trophy-img"
+            />
           </div>
         </div>
       </div>
@@ -822,4 +586,3 @@ export default function FempreneurMovementStage() {
     </section>
   );
 }
-

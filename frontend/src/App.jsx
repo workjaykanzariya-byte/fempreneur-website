@@ -124,6 +124,8 @@ function AppContent() {
           <Route path="/nominate" element={<NominatePage />} />
           <Route path="/nominate/apply" element={<Navigate to="/awards/apply" replace />} />
           <Route path="/voting" element={<VotingPage />} />
+          <Route path="/voting/:slug" element={<VotingPage />} />
+          <Route path="/vote/:slug" element={<VotingPage />} />
           <Route path="/winners" element={<WinnersPage />} />
 
           {/* Events & Dual-City Hubs */}
