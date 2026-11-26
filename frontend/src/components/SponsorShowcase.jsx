@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Mic } from 'lucide-react';
 import CTAButton from './CTAButton';
-import { fetchPublicSpeakers } from '../services/api';
+import { fetchPublicSpeakers, resolveAdminAssetUrl } from '../services/api';
 
 const PAST_SPEAKERS = [
   {
@@ -92,7 +92,7 @@ export default function SponsorShowcase() {
           name: row.name,
           designation: row.designation ? `${row.designation}${row.company ? ` • ${row.company}` : ''}` : row.company || '',
           bg: bgs[idx % bgs.length],
-          src: row.photo_url || '/images/speakers/speakers-keynote-real.png',
+          src: resolveAdminAssetUrl(row.photo_url) || '/images/speakers/speakers-keynote-real.png',
         }))
       );
     });

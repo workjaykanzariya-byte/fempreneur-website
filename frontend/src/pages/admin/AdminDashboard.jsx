@@ -550,12 +550,15 @@ export default function AdminDashboard() {
       });
       const result = await res.json();
       if (result.success) {
-        alert('Speaker added and synced to the public website!');
         setNewSpeakerForm({
           name: '', designation: '', company: '', category: 'Keynote & Jury', description: '', event_edition: 'Fempreneur 2027', display_order: 0, is_active: 1, profilePicture: null
         });
         setSpeakerPreview(null);
         setActiveTab('speakers');
+        fetchData('speakers');
+        if (window.confirm('Speaker added and synced to the public website! Open the Speakers page on the website now?')) {
+          window.open('/speakers', '_blank', 'noopener,noreferrer');
+        }
       } else {
         alert(result.message || 'Failed to add speaker.');
       }
@@ -1392,6 +1395,16 @@ export default function AdminDashboard() {
                   >
                     + Add New Speaker
                   </button>
+                  <a
+                    href="/speakers"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="fem-btn fem-btn-outline"
+                    style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '6px' }}
+                  >
+                    <span>View on Website</span>
+                    <ExternalLink size={14} />
+                  </a>
                 </div>
               </div>
 
