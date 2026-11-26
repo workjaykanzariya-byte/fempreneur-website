@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { ShieldCheck, User, Lock, Mail, ArrowRight, Award, CheckCircle2, Sparkles, Building2, AlertCircle, LogOut } from 'lucide-react';
 import { PageHeader, CTAButton } from '../components';
 import { loginApi, registerApi } from '../services/api';
 
 export default function LoginPage() {
+  const navigate = useNavigate();
+  const location = useLocation();
+  const redirectPath = location.state?.from || '';
   const [activeTab, setActiveTab] = useState('member'); // 'member' | 'nominee' | 'jury'
   const [authMode, setAuthMode] = useState('login'); // 'login' | 'register'
   const [formData, setFormData] = useState({ name: '', email: '', password: '', rememberMe: false });
@@ -59,6 +62,9 @@ export default function LoginPage() {
           setCurrentUser(res.data.user);
           setIsError(false);
           setMessage(`Welcome back, ${res.data.user.name} (${res.data.user.role.toUpperCase()})! Authentication verified.`);
+          if (redirectPath && redirectPath.startsWith('/admin')) {
+            navigate(redirectPath, { replace: true });
+          }
         }
       }
       setLoading(false);
