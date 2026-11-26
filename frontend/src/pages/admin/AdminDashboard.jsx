@@ -121,6 +121,7 @@ export default function AdminDashboard() {
       return [];
     }
   });
+  const [appIframeKey, setAppIframeKey] = useState(0);
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -863,7 +864,7 @@ export default function AdminDashboard() {
             )}
             <button
               type="button"
-              onClick={() => adminModule === 'web' ? fetchData(activeTab) : navigate(findAppItemById(activeAppTab)?.route || '/admin/app/dashboard')}
+              onClick={() => adminModule === 'web' ? fetchData(activeTab) : setAppIframeKey((k) => k + 1)}
               className="fem-btn fem-btn-outline"
               style={{ padding: '6px 12px', fontSize: '0.82rem' }}
               title="Refresh Data"
@@ -875,90 +876,57 @@ export default function AdminDashboard() {
         </header>
 
         {adminModule === 'app' ? (
-          <div className="fem-admin-content" style={{ padding: '24px 32px' }}>
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', minHeight: 'calc(100vh - 70px)', background: '#F8F9FA' }}>
             {(() => {
               const currentAppItem = findAppItemById(activeAppTab);
               const externalUrl = `${APP_ADMIN_ORIGIN}${currentAppItem.extPath || '/admin/dashboard'}`;
               return (
-                <div style={{ display: 'grid', gap: '20px' }}>
+                <>
                   <div style={{
-                    background: 'linear-gradient(135deg, #24073B 0%, #5E178C 100%)',
-                    color: '#FFFFFF',
-                    borderRadius: '14px',
-                    padding: '24px 28px',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'space-between',
-                    flexWrap: 'wrap',
-                    gap: '16px',
-                    boxShadow: '0 8px 24px rgba(36, 7, 59, 0.14)'
+                    padding: '8px 20px',
+                    background: '#FFFFFF',
+                    borderBottom: '1px solid #E5E7EB',
+                    fontSize: '0.82rem',
+                    color: '#4B5563',
+                    gap: '12px',
+                    flexWrap: 'wrap'
                   }}>
-                    <div>
-                      <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#D4AF37', fontWeight: 700, marginBottom: '4px' }}>
-                        {currentAppItem.parentLabel ? `App Admin › ${currentAppItem.parentLabel}` : 'App Admin Module'}
-                      </div>
-                      <h2 style={{ margin: 0, fontSize: '1.45rem', fontWeight: 700, color: '#FFFFFF' }}>
-                        {currentAppItem.label}
-                      </h2>
-                      <p style={{ margin: '6px 0 0', fontSize: '0.88rem', color: 'rgba(255,255,255,0.82)' }}>
-                        Route: <code style={{ background: 'rgba(255,255,255,0.12)', padding: '2px 7px', borderRadius: '5px' }}>{currentAppItem.route}</code>
-                      </p>
-                    </div>
+                    <span>
+                      Live App Admin: <strong style={{ color: '#24073B' }}>{currentAppItem.label}</strong>
+                    </span>
                     <a
                       href={externalUrl}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="fem-btn fem-btn-gold"
-                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                      style={{
+                        color: '#5E178C',
+                        fontWeight: 600,
+                        textDecoration: 'none',
+                        display: 'inline-flex',
+                        alignItems: 'center',
+                        gap: '5px'
+                      }}
                     >
-                      <span>Open in App Admin Portal</span>
-                      <ExternalLink size={15} />
+                      <span>Open in New Tab</span>
+                      <ExternalLink size={13} />
                     </a>
                   </div>
-
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px' }}>
-                    {APP_NAV_ITEMS.filter((i) => !i.children && i.id !== 'app-dashboard').map((card) => (
-                      <button
-                        key={card.id}
-                        type="button"
-                        onClick={() => {
-                          setActiveAppTab(card.id);
-                          navigate(card.route);
-                        }}
-                        style={{
-                          textAlign: 'left',
-                          background: activeAppTab === card.id ? '#FDF8EC' : '#FFFFFF',
-                          border: activeAppTab === card.id ? '1.5px solid #C99738' : '1px solid #E5E7EB',
-                          borderRadius: '12px',
-                          padding: '16px 18px',
-                          cursor: 'pointer',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '12px',
-                          transition: 'all 0.15s ease'
-                        }}
-                      >
-                        <div style={{
-                          width: '38px',
-                          height: '38px',
-                          borderRadius: '10px',
-                          background: 'rgba(94, 23, 140, 0.08)',
-                          color: '#5E178C',
-                          display: 'flex',
-                          alignItems: 'center',
-                          justifyContent: 'center',
-                          flexShrink: 0
-                        }}>
-                          {card.icon}
-                        </div>
-                        <div>
-                          <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#111827' }}>{card.label}</div>
-                          <div style={{ fontSize: '0.76rem', color: '#6B7280' }}>{card.route}</div>
-                        </div>
-                      </button>
-                    ))}
-                  </div>
-                </div>
+                  <iframe
+                    key={`${currentAppItem.id}-${appIframeKey}`}
+                    src={externalUrl}
+                    title={`Fempreneur App Admin - ${currentAppItem.label}`}
+                    style={{
+                      width: '100%',
+                      flex: 1,
+                      minHeight: 'calc(100vh - 108px)',
+                      border: 'none',
+                      background: '#FFFFFF'
+                    }}
+                  />
+                </>
               );
             })()}
           </div>
