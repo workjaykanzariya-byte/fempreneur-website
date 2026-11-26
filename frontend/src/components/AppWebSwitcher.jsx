@@ -2,6 +2,8 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Smartphone, Globe } from 'lucide-react';
 
+const APP_ADMIN_URL = import.meta.env.VITE_APP_ADMIN_URL || '/admin/dashboard';
+
 export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' }) {
   const navigate = useNavigate();
   const location = useLocation();
@@ -46,7 +48,9 @@ export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' 
 
       <button
         type="button"
-        onClick={() => alert('Mobile App admin module is hosted at unity.fempreneur.club')}
+        onClick={() => {
+          window.location.href = APP_ADMIN_URL;
+        }}
         style={{
           flex: 1,
           display: 'flex',

@@ -1,4 +1,18 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || '/api';
+const ADMIN_API_ORIGIN = (import.meta.env.VITE_ADMIN_API_URL || 'https://fempreneur.club').replace(/\/$/, '');
+
+export const resolveAdminAssetUrl = (url) => {
+  if (!url || typeof url !== 'string') return '';
+  const trimmed = url.trim();
+  if (!trimmed) return '';
+  if (trimmed.startsWith('http://') || trimmed.startsWith('https://') || trimmed.startsWith('data:')) {
+    return trimmed;
+  }
+  if (trimmed.startsWith('/uploads/')) {
+    return `${ADMIN_API_ORIGIN}${trimmed}`;
+  }
+  return trimmed;
+};
 
 const getAuthHeaders = () => {
   const token = localStorage.getItem('fem_token');
@@ -161,10 +175,85 @@ export const fetchPlatformStats = async () => {
 // 11. Public Winners (Synced with Admin Panel & Backend DB)
 export const fetchPublicWinners = async () => {
   try {
-    const res = await safeFetch(`${API_BASE_URL}/web/winners/public`);
-    return Array.isArray(res?.data) ? res.data : [];
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/winners/public`);
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    return rows.map((row) => ({
+      ...row,
+      photo_url: resolveAdminAssetUrl(row.photo_url),
+    }));
   } catch (err) {
     console.warn('Public winners fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+// 12. Public Speakers & Jury (Synced with Admin Panel)
+export const fetchPublicJury = async () => {
+  try {
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/jury/public`);
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    return rows.map((row) => ({
+      ...row,
+      photo_url: resolveAdminAssetUrl(row.photo_url),
+    }));
+  } catch (err) {
+    console.warn('Public jury fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+// 13. Public Sponsors (Synced with Admin Panel)
+export const fetchPublicSponsors = async () => {
+  try {
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/sponsors/public`);
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    return rows.map((row) => ({
+      ...row,
+      photo_url: resolveAdminAssetUrl(row.photo_url),
+    }));
+  } catch (err) {
+    console.warn('Public sponsors fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+// 14. Public Partners (Synced with Admin Panel)
+export const fetchPublicPartners = async () => {
+  try {
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/partners/public`);
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    return rows.map((row) => ({
+      ...row,
+      photo_url: resolveAdminAssetUrl(row.photo_url),
+    }));
+  } catch (err) {
+    console.warn('Public partners fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+// 15. Public Blogs (Synced with Admin Panel)
+export const fetchPublicBlogs = async () => {
+  try {
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/blogs/public`);
+    const rows = Array.isArray(res?.data) ? res.data : [];
+    return rows.map((row) => ({
+      ...row,
+      featured_image: resolveAdminAssetUrl(row.featured_image),
+    }));
+  } catch (err) {
+    console.warn('Public blogs fetch fallback to static data:', err?.message || err);
+    return [];
+  }
+};
+
+// 16. Public Voice of Fempreneur Videos (Synced with Admin Panel)
+export const fetchPublicVoiceVideos = async () => {
+  try {
+    const res = await safeFetch(`${ADMIN_API_ORIGIN}/api/web/voice-videos/public`);
+    return Array.isArray(res?.data) ? res.data : [];
+  } catch (err) {
+    console.warn('Public voice videos fetch fallback:', err?.message || err);
     return [];
   }
 };
