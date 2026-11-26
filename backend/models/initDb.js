@@ -57,6 +57,9 @@ export const initializeDatabase = async () => {
         tier VARCHAR(50) DEFAULT 'free',
         annual_fee NUMERIC(10, 2) DEFAULT 0,
         company VARCHAR(255),
+        designation VARCHAR(255),
+        user_photo_url TEXT,
+        business_logo_url TEXT,
         city VARCHAR(100),
         sector VARCHAR(100) DEFAULT 'General',
         interest VARCHAR(255) DEFAULT 'Community Membership',
@@ -66,6 +69,9 @@ export const initializeDatabase = async () => {
         status VARCHAR(50) DEFAULT 'applied',
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE web_community_applications ADD COLUMN IF NOT EXISTS designation VARCHAR(255);
+      ALTER TABLE web_community_applications ADD COLUMN IF NOT EXISTS user_photo_url TEXT;
+      ALTER TABLE web_community_applications ADD COLUMN IF NOT EXISTS business_logo_url TEXT;
 
       -- 3. Nominations
       CREATE TABLE IF NOT EXISTS web_nominations (
@@ -250,29 +256,35 @@ export const initializeDatabase = async () => {
       );
     `);
 
-    // Seed existing website speakers into web_speakers only if table is empty (prevents duplicates)
+    // Seed the 15 official speakers into web_speakers (and clean up legacy placeholder speakers if present)
+    const officialSpeakers = [
+      ['Pabiben Rabari', 'Founder & Entrepreneur – Pabiben.com', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/pabiben-rabari.png', 1],
+      ['Beena Handa', 'Founder & Director, Poiesis Achievement Foundation', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/beena-handa.png', 2],
+      ['Kalpana Rao', 'Actress, Motivational Speaker & TEDx Speaker', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/kalpana-rao.png', 3],
+      ['Dr. Manisha Gaur', 'Speaker | Life Coach | NLP Master Trainer | Content Creator | Peace Activist', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/dr-manisha-gaur.png', 4],
+      ['Shraddha Musale', 'Founder - FutureTayari | Actress, Model & Entrepreneur', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/shraddha-musale.png', 5],
+      ['Suhani Shah', 'Mentalist, Magician & YouTuber', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/suhani-shah.png', 6],
+      ['Sapna Vyas Patel', 'Health & Life Coach, Fitness Influencer, Actress & Motivational Speaker', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/sapna-vyas-patel.png', 7],
+      ['Aarya Chavda', 'Author, Illustrator, Speaker & Heritage and Environment Crusader', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/aarya-chavda.png', 8],
+      ['Ananya Maloo', 'Co-Founder, Nuutjob', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/ananya-maloo.png', 9],
+      ['Dr. Hina Shah', 'Founder-Director, ICECD – International Centre for Entrepreneurship and Career Development', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/dr-hina-shah.png', 10],
+      ['Tanvvi Rathod', 'Image Consultant | Personal Branding Expert', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/tanvvi-rathod.png', 11],
+      ['Dr. Ruby Bakshi Khurdi', 'Founder & Educator, RBK Academy Swiss', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/dr-ruby-bakshi-khurdi.png', 12],
+      ['Namrata Thakker', 'Founder & Business Coach, Entrepreneur Excel', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/namrata-thakker.png', 13],
+      ['Neha Lal', 'Associate Vice President, Adani Group', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/neha-lal.png', 14],
+      ['Tanya Singh', 'Founder/Partner @30minuteUniversity', '', 'Keynote Speaker', '', 'Fempreneur 2027', '/images/speakers/tanya-singh.png', 15],
+    ];
+
     const speakerCountRes = await query(`SELECT COUNT(*)::int AS cnt FROM web_speakers`);
     if ((speakerCountRes.rows[0]?.cnt || 0) === 0) {
-      const initialSpeakers = [
-        ['Samir Sinha', 'Founder & MD', 'Savvy Group', 'Real Estate & Infrastructure', 'Distinguished keynote speaker and real estate industry leader.', 'Fempreneur 2027', '/images/speakers/speakers-hero-showcase.jpg', 1],
-        ['Dr. Meera Nambiar', 'Venture Partner & Director', 'Ankur Capital', 'Venture Capital & Growth', 'Early-stage venture investor supporting women-led startups.', 'Fempreneur 2027', '/images/speakers/speakers-keynote-real.png', 2],
-        ['Pravin Parmar', 'Founder & CEO', 'VyapaarJagat.com | 1MEIF', 'MSME Ecosystem & Media', 'Founder of VyapaarJagat.com & 1MEIF driving MSME visibility across India.', 'Fempreneur 2027', '/images/about/pravin-parmar-founder.jpg', 3],
-        ['Dr. Sunita Sharma', 'Senior Advisor & Dean', 'AMA Ahmedabad', 'Governance & Education', 'Academic leader and governance advisor for emerging entrepreneurs.', 'Fempreneur 2027', '/images/nominate/nominate-awards-application.jpg', 4],
-        ['Nilesh Priyadarshi', 'Founder & CEO', 'Kaarigar Clinic', 'Rural Enterprise & Crafts', 'Championing artisan-led rural enterprises and sustainable crafts.', 'Fempreneur 2027', '/images/partners/corporate-partner-signing.jpg', 5],
-        ['Radhika Merchant', 'Managing Director', 'Encore Healthcare & Bio', 'Healthcare & Biotech', 'Healthcare and biotechnology executive driving clinical innovation.', 'Fempreneur 2027', '/images/categories/award-categories-real.png', 6],
-        ['Ananya Birla', 'Founder & Chairperson', 'Svatantra Microfin', 'Financial Inclusion', 'Pioneering financial inclusion for women micro-entrepreneurs.', 'Fempreneur 2027', '/images/speakers/speakers-hero-showcase.png', 7],
-        ['Dr. Sachin Shigwan', 'The Solar Man of India', 'Green Innovation Labs', 'CleanTech & ESG', 'Clean energy innovator and ESG mentor.', 'Fempreneur 2027', '/images/events/awards-stage-ceremony.jpg', 8],
-        ['Vinod Malviya', 'Co-Founder & Director', 'Shubham Aquavitro Pvt Ltd', 'Manufacturing & Exports', 'Manufacturing and export scale-up leader.', 'Fempreneur 2027', '/images/about/who-we-are-real-event.jpg', 9],
-        ['Dr. Akshay Kumar', 'Founder & Director', 'BroGhar Realty Pvt. Ltd.', 'Commercial Scaling', 'Commercial real estate and venture scaling mentor.', 'Fempreneur 2027', '/images/awards/awards-stage-winners-clean.png', 10],
-      ];
-      for (const sp of initialSpeakers) {
+      for (const sp of officialSpeakers) {
         await query(
           `INSERT INTO web_speakers (name, designation, company, category, description, event_edition, photo_url, display_order, is_active)
            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)`,
           sp
         );
       }
-      console.log('✓ Seeded 10 initial website speakers into web_speakers');
+      console.log('✓ Seeded 15 official speakers into web_speakers');
     }
     console.log('✓ Verified and initialized all web_* tables in PostgreSQL');
   } catch (err) {

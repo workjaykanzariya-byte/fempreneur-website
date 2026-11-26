@@ -18,7 +18,18 @@ export const MEMBERSHIP_PRICES = {
 export default function MembershipPage() {
   const [selectedTierModal, setSelectedTierModal] = useState(null);
   const [activeCardIdx, setActiveCardIdx] = useState(0);
-  const [formData, setFormData] = useState({ fullName: '', email: '', phone: '', company: '', city: '' });
+  const [formData, setFormData] = useState({
+    fullName: '',
+    email: '',
+    phone: '',
+    company: '',
+    designation: '',
+    city: '',
+    userPhoto: null,
+    businessLogo: null,
+  });
+  const [userPhotoPreview, setUserPhotoPreview] = useState(null);
+  const [businessLogoPreview, setBusinessLogoPreview] = useState(null);
   const [submitted, setSubmitted] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [enrollError, setEnrollError] = useState(null);
@@ -113,14 +124,23 @@ export default function MembershipPage() {
     setSubmitting(true);
     setEnrollError(null);
     try {
-      const res = await enrollMembership({
-        fullName: formData.fullName.trim(),
-        email: formData.email.trim(),
-        phone: formData.phone.trim(),
-        tier: selectedTierModal?.tierName || 'Starter Plan',
-        businessName: formData.company ? formData.company.trim() : null,
-        city: formData.city || 'Ahmedabad',
-      });
+      const payload = new FormData();
+      payload.append('fullName', formData.fullName.trim());
+      payload.append('email', formData.email.trim());
+      payload.append('phone', formData.phone.trim());
+      payload.append('tier', selectedTierModal?.tierName || 'Starter Plan');
+      payload.append('businessName', formData.company ? formData.company.trim() : '');
+      payload.append('companyName', formData.company ? formData.company.trim() : '');
+      payload.append('designation', formData.designation ? formData.designation.trim() : '');
+      payload.append('city', formData.city || 'Ahmedabad');
+      if (formData.userPhoto) {
+        payload.append('userPhoto', formData.userPhoto);
+      }
+      if (formData.businessLogo) {
+        payload.append('businessLogo', formData.businessLogo);
+      }
+
+      const res = await enrollMembership(payload);
 
       const recordId = res?.data?.id || null;
       const tierName = selectedTierModal?.tierName || 'Starter Plan';
@@ -374,8 +394,10 @@ export default function MembershipPage() {
             style={{
               background: 'linear-gradient(145deg, #FFFFFF 0%, #FAF5FF 45%, #FDF2F8 100%)',
               borderRadius: '24px',
-              maxWidth: '520px',
+              maxWidth: '540px',
               width: '100%',
+              maxHeight: '90vh',
+              overflowY: 'auto',
               padding: '2.25rem',
               boxShadow: '0 25px 50px -12px rgba(88, 28, 135, 0.25), 0 0 0 1px rgba(168, 85, 247, 0.15)',
               position: 'relative',
@@ -447,29 +469,103 @@ export default function MembershipPage() {
                   </div>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '1.5rem' }}>
+                <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '1rem' }}>
                   <div className="form-group">
-                    <label className="form-label">Enterprise Name</label>
+                    <label className="form-label">Company Name</label>
                     <input
                       type="text"
-                      placeholder="Your venture name"
+                      required
+                      placeholder="Your company / venture name"
                       className="form-input"
                       value={formData.company}
                       onChange={(e) => setFormData({ ...formData, company: e.target.value })}
                     />
                   </div>
                   <div className="form-group">
-                    <label className="form-label">City Hub</label>
-                    <select
-                      className="form-select"
-                      value={formData.city}
-                      onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                    >
-                      <option value="">Select City Hub</option>
-                      <option value="Ahmedabad">Ahmedabad Hub</option>
-                      <option value="Delhi NCR">Delhi NCR Hub</option>
-                      <option value="Other">Other City / Pan-India</option>
-                    </select>
+                    <label className="form-label">Designation</label>
+                    <input
+                      type="text"
+                      required
+                      placeholder="e.g. Founder & CEO"
+                      className="form-input"
+                      value={formData.designation}
+                      onChange={(e) => setFormData({ ...formData, designation: e.target.value })}
+                    />
+                  </div>
+                </div>
+
+                <div className="form-group" style={{ marginBottom: '1rem' }}>
+                  <label className="form-label">City Hub</label>
+                  <select
+                    className="form-select"
+                    value={formData.city}
+                    onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  >
+                    <option value="">Select City Hub</option>
+                    <option value="Ahmedabad">Ahmedabad Hub</option>
+                    <option value="Delhi NCR">Delhi NCR Hub</option>
+                    <option value="Other">Other City / Pan-India</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4" style={{ marginBottom: '1.5rem' }}>
+                  <div className="form-group">
+                    <label className="form-label">Upload Photo</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-input"
+                      style={{ padding: '0.45rem 0.65rem', fontSize: '0.8rem' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setFormData({ ...formData, userPhoto: file });
+                        setUserPhotoPreview(file ? URL.createObjectURL(file) : null);
+                      }}
+                    />
+                    {userPhotoPreview && (
+                      <img
+                        src={userPhotoPreview}
+                        alt="User preview"
+                        style={{
+                          marginTop: '0.5rem',
+                          width: '54px',
+                          height: '54px',
+                          borderRadius: '50%',
+                          objectFit: 'cover',
+                          border: '2px solid #C026D3',
+                        }}
+                      />
+                    )}
+                  </div>
+                  <div className="form-group">
+                    <label className="form-label">Business Logo</label>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className="form-input"
+                      style={{ padding: '0.45rem 0.65rem', fontSize: '0.8rem' }}
+                      onChange={(e) => {
+                        const file = e.target.files?.[0] || null;
+                        setFormData({ ...formData, businessLogo: file });
+                        setBusinessLogoPreview(file ? URL.createObjectURL(file) : null);
+                      }}
+                    />
+                    {businessLogoPreview && (
+                      <img
+                        src={businessLogoPreview}
+                        alt="Business logo preview"
+                        style={{
+                          marginTop: '0.5rem',
+                          width: '54px',
+                          height: '54px',
+                          borderRadius: '10px',
+                          objectFit: 'contain',
+                          background: '#FFFFFF',
+                          border: '1px solid #E9D5FF',
+                          padding: '3px',
+                        }}
+                      />
+                    )}
                   </div>
                 </div>
 

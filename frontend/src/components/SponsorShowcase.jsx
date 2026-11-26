@@ -4,95 +4,44 @@ import { ArrowRight, Mic } from 'lucide-react';
 import CTAButton from './CTAButton';
 import { fetchPublicSpeakers, resolveAdminAssetUrl } from '../services/api';
 
-const PAST_SPEAKERS = [
-  {
-    name: 'Dr. Kavita Mehta',
-    designation: 'Keynote Speaker • AI & EdTech',
-    bg: 'linear-gradient(155deg, #4A126D 0%, #6A1B9A 100%)',
-    src: '/images/entrepreneurs/ananya-sharma.png',
-  },
-  {
-    name: 'Ritu Deshmukh',
-    designation: 'Industry Advisor • Design',
-    bg: 'linear-gradient(155deg, #7B1FA2 0%, #9C27B0 100%)',
-    src: '/images/entrepreneurs/priyanshi-shah.png',
-  },
-  {
-    name: 'Dr. Nidhi Verma',
-    designation: 'Jury Panelist • Biotech',
-    bg: 'linear-gradient(155deg, #AD1457 0%, #D81B60 100%)',
-    src: '/images/entrepreneurs/dr-ananya-sen.png',
-  },
-  {
-    name: 'Meera Nair',
-    designation: 'Tech Mentor • Digital Scale',
-    bg: 'linear-gradient(155deg, #3B0447 0%, #5E1B7A 100%)',
-    src: '/images/entrepreneurs/meera-sen.jpg',
-  },
-  {
-    name: 'Pooja Malhotra',
-    designation: 'Growth Strategist • Brand',
-    bg: 'linear-gradient(155deg, #5E35B1 0%, #7E57C2 100%)',
-    src: '/images/entrepreneurs/pooja-mehta.png',
-  },
-  {
-    name: 'Radhika Iyer',
-    designation: 'Policy & MSME Lead',
-    bg: 'linear-gradient(155deg, #880E4F 0%, #C2185B 100%)',
-    src: '/images/entrepreneurs/radhika-menon.png',
-  },
-  {
-    name: 'Sneha Kulkarni',
-    designation: 'Manufacturing Expert',
-    bg: 'linear-gradient(155deg, #4A148C 0%, #6A1B9A 100%)',
-    src: '/images/entrepreneurs/sneha-patel.png',
-  },
-  {
-    name: 'Adv. Ashwini Rao',
-    designation: 'Legal & Governance Advisor',
-    bg: 'linear-gradient(155deg, #6A1B9A 0%, #B8257F 100%)',
-    src: '/images/winners-2022/adv-ashwini-c.png',
-  },
-  {
-    name: 'Dr. Seema Yadav',
-    designation: 'Community Impact Leader',
-    bg: 'linear-gradient(155deg, #311B92 0%, #512DA8 100%)',
-    src: '/images/winners-2022/dr-seema-yadav.png',
-  },
-  {
-    name: 'Pallavi Walia Raj',
-    designation: 'Founder & Keynote Mentor',
-    bg: 'linear-gradient(155deg, #5C287A 0%, #8E24AA 100%)',
-    src: '/images/winners-2022/pallavi-walia-raj.png',
-  },
+const SPEAKER_CARD_BG = 'linear-gradient(135deg, #4A126D 0%, #6A1B9A 100%)';
+
+const OFFICIAL_SPEAKERS = [
+  { name: 'Pabiben Rabari', designation: 'Founder & Entrepreneur – Pabiben.com', bg: SPEAKER_CARD_BG, src: '/images/speakers/pabiben-rabari.png' },
+  { name: 'Beena Handa', designation: 'Founder & Director, Poiesis Achievement Foundation', bg: SPEAKER_CARD_BG, src: '/images/speakers/beena-handa.png' },
+  { name: 'Kalpana Rao', designation: 'Actress, Motivational Speaker & TEDx Speaker', bg: SPEAKER_CARD_BG, src: '/images/speakers/kalpana-rao.png' },
+  { name: 'Dr. Manisha Gaur', designation: 'Speaker | Life Coach | NLP Master Trainer | Content Creator | Peace Activist', bg: SPEAKER_CARD_BG, src: '/images/speakers/dr-manisha-gaur.png' },
+  { name: 'Shraddha Musale', designation: 'Founder - FutureTayari | Actress, Model & Entrepreneur', bg: SPEAKER_CARD_BG, src: '/images/speakers/shraddha-musale.png' },
+  { name: 'Suhani Shah', designation: 'Mentalist, Magician & YouTuber', bg: SPEAKER_CARD_BG, src: '/images/speakers/suhani-shah.png' },
+  { name: 'Sapna Vyas Patel', designation: 'Health & Life Coach, Fitness Influencer, Actress & Motivational Speaker', bg: SPEAKER_CARD_BG, src: '/images/speakers/sapna-vyas-patel.png' },
+  { name: 'Aarya Chavda', designation: 'Author, Illustrator, Speaker & Heritage and Environment Crusader', bg: SPEAKER_CARD_BG, src: '/images/speakers/aarya-chavda.png' },
+  { name: 'Ananya Maloo', designation: 'Co-Founder, Nuutjob', bg: SPEAKER_CARD_BG, src: '/images/speakers/ananya-maloo.png' },
+  { name: 'Dr. Hina Shah', designation: 'Founder-Director, ICECD – International Centre for Entrepreneurship and Career Development', bg: SPEAKER_CARD_BG, src: '/images/speakers/dr-hina-shah.png' },
+  { name: 'Tanvvi Rathod', designation: 'Image Consultant | Personal Branding Expert', bg: SPEAKER_CARD_BG, src: '/images/speakers/tanvvi-rathod.png' },
+  { name: 'Dr. Ruby Bakshi Khurdi', designation: 'Founder & Educator, RBK Academy Swiss', bg: SPEAKER_CARD_BG, src: '/images/speakers/dr-ruby-bakshi-khurdi.png' },
+  { name: 'Namrata Thakker', designation: 'Founder & Business Coach, Entrepreneur Excel', bg: SPEAKER_CARD_BG, src: '/images/speakers/namrata-thakker.png' },
+  { name: 'Neha Lal', designation: 'Associate Vice President, Adani Group', bg: SPEAKER_CARD_BG, src: '/images/speakers/neha-lal.png' },
+  { name: 'Tanya Singh', designation: 'Founder/Partner @30minuteUniversity', bg: SPEAKER_CARD_BG, src: '/images/speakers/tanya-singh.png' },
 ];
 
 /**
  * Peers Global-style continuous auto-scrolling marquee slider
- * featuring large human portraits, speaker names, and designations.
+ * featuring speaker portraits, names, and designations.
  */
 export default function SponsorShowcase() {
   const navigate = useNavigate();
-  const [speakers, setSpeakers] = useState(PAST_SPEAKERS);
+  const [speakers, setSpeakers] = useState(OFFICIAL_SPEAKERS);
 
   useEffect(() => {
     let mounted = true;
     fetchPublicSpeakers().then((rows) => {
       if (!mounted || !Array.isArray(rows) || rows.length === 0) return;
-      const bgs = [
-        'linear-gradient(155deg, #4A126D 0%, #6A1B9A 100%)',
-        'linear-gradient(155deg, #7B1FA2 0%, #9C27B0 100%)',
-        'linear-gradient(155deg, #AD1457 0%, #D81B60 100%)',
-        'linear-gradient(155deg, #3B0447 0%, #5E1B7A 100%)',
-        'linear-gradient(155deg, #5E35B1 0%, #7E57C2 100%)',
-        'linear-gradient(155deg, #880E4F 0%, #C2185B 100%)',
-      ];
       setSpeakers(
-        rows.map((row, idx) => ({
+        rows.map((row) => ({
           name: row.name,
           designation: row.designation ? `${row.designation}${row.company ? ` • ${row.company}` : ''}` : row.company || '',
-          bg: bgs[idx % bgs.length],
-          src: resolveAdminAssetUrl(row.photo_url) || '/images/speakers/speakers-keynote-real.png',
+          bg: SPEAKER_CARD_BG,
+          src: row.photo_url ? resolveAdminAssetUrl(row.photo_url) : '',
         }))
       );
     });
@@ -251,12 +200,22 @@ export default function SponsorShowcase() {
               }}
             >
               <div className="fem-speaker-large-photo-box">
-                <img
-                  src={speaker.src}
-                  alt={speaker.name}
-                  className="fem-speaker-large-photo"
-                  loading="lazy"
-                />
+                {speaker.src ? (
+                  <img
+                    src={speaker.src}
+                    alt={speaker.name}
+                    className="fem-speaker-large-photo"
+                    loading="lazy"
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(180deg, #F3E8FA 0%, #E7D4F5 100%)',
+                    }}
+                  />
+                )}
               </div>
               <div className="fem-speaker-large-footer" style={{ background: speaker.bg }}>
                 <div className="fem-speaker-large-name">{speaker.name}</div>

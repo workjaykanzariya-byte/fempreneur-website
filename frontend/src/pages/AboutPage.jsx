@@ -261,14 +261,12 @@ export default function AboutPage() {
       {/* Standardized Hero Header matching all other website pages */}
       <PageHeader
         badge="About Fempreneur"
-        title="India's Comprehensive"
-        highlight="Women-Entrepreneurship Platform"
-        description="Built on the conviction that empowered women entrepreneurs shape the future of business, local communities, and the economic destiny of India."
+        title="About Fempreneur"
+        highlight="A community where women entrepreneurs grow together"
+        description="Fempreneur brings women entrepreneurs together in city groups, where they meet, help each other and grow their businesses. We also celebrate their success through awards and share their stories with the world."
         breadcrumbs={[{ label: 'Home', path: '/' }, { label: 'About Us' }]}
-        ctaText="Explore Awards 2027"
-        ctaTo="/awards"
-        secondaryCtaText="Contact Team"
-        secondaryCtaTo="/contact"
+        ctaText="Join Fempreneur"
+        ctaTo="/membership"
         customVisual={aboutHeroCollage}
       />
 
@@ -319,96 +317,112 @@ export default function AboutPage() {
         </div>
       </section>
 
-      {/* SECTION 3: WHO WE ARE & DUAL ORGANIZER PARTNER CARDS (Matching Greenpreneur 7-col + 5-col sticky layout) */}
+      {/* SECTION 3: WHO WE ARE & BACKED BY CARDS */}
       <section style={{ padding: '5.5rem 1.5rem', maxWidth: '1240px', margin: '0 auto' }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '3.5rem', alignItems: 'flex-start' }}>
-          {/* Left Column: Mission Narrative & Objectives (7 cols) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.4rem' }}>
-            <span style={{ color: 'var(--color-gold-rich)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.25em', fontSize: '0.75rem', display: 'block' }}>
-              Who We Are
+          {/* Left Column: Mission Narrative & Join CTA */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+            <span style={{ color: '#7B1FA2', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.2em', fontSize: '0.75rem', display: 'block' }}>
+              WHO WE ARE
             </span>
 
-            <h2 style={{ fontSize: 'clamp(1.9rem, 3.5vw, 2.6rem)', fontFamily: 'serif, Georgia', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1.25 }}>
-              A Noble Movement Driven by Passion &amp; Women Empowerment
+            <h2 style={{ fontSize: 'clamp(2rem, 3.6vw, 2.75rem)', fontWeight: 800, color: 'var(--color-plum-deep)', lineHeight: 1.18, margin: 0 }}>
+              Built on Passion,
+              <br />
+              <span
+                style={{
+                  fontFamily: 'serif, Georgia',
+                  fontStyle: 'italic',
+                  fontWeight: 700,
+                  background: 'linear-gradient(90deg, #6A1B9A 0%, #C2185B 100%)',
+                  WebkitBackgroundClip: 'text',
+                  WebkitTextFillColor: 'transparent',
+                }}
+              >
+                Powered by Community
+              </span>
             </h2>
 
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
-              Fempreneur is not just an award program; it is India’s premier network of women-led business architects. In 2027, we celebrate our national dual-city showcase spanning <strong style={{ color: 'var(--color-plum-deep)' }}>Ahmedabad &amp; Delhi NCR</strong>.
+            <p style={{ color: 'var(--color-plum-deep)', lineHeight: 1.7, fontSize: '1.02rem', fontWeight: 600, margin: '0.25rem 0 0' }}>
+              Fempreneur is a community of women entrepreneurs. We bring women together in city groups, where they meet, share ideas, support each other and grow their businesses.
             </p>
 
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
-              The platform was born from a simple realization: while traditional business awards focus purely on financial top-lines, our economy requires a system that honors women founders, MSME drivers, and innovators through a structured, multi-tier evaluation featuring <strong>50% expert jury audit and 50% verified public voting</strong>.
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+              Fempreneur began with a simple idea: women entrepreneurs grow faster when they are not alone. Too many talented women build their businesses without the right network, guidance or visibility. We are here to change that.
             </p>
 
-            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.96rem' }}>
-              Over the years, we have brought together women innovators in Tech &amp; AI, MSMEs, manufacturing, sustainable fashion, healthcare, organic consumer goods, and education, creating opportunities for them to meet investors, corporate buyers, and institutional mentors.
+            <p style={{ color: 'var(--text-secondary)', lineHeight: 1.7, fontSize: '0.95rem', margin: 0 }}>
+              Our members come from many fields, including technology, manufacturing, healthcare, education and fashion. Through meetups, mentors and events, they meet investors, buyers and experienced guides. And when their work shines, we celebrate it through the Fempreneur Awards.
             </p>
 
-            {/* Core Objectives Box (Matching Greenpreneur Core Objectives) */}
-            <div style={{ background: '#FFFFFF', padding: '1.75rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)', marginTop: '0.75rem' }}>
-              <h4 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.05rem', marginBottom: '1rem' }}>
-                Our Core Objectives:
-              </h4>
-
-              <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.9rem', fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <Award size={18} color="var(--color-gold-rich)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Celebrate Excellence:</strong> Felicitating women entrepreneurs who demonstrate visionary leadership and measurable economic impact.</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <Users size={18} color="var(--color-burgundy)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Build Networks:</strong> Bridging the gap between women founders, MSMEs, corporate ESG procurement, and investor circles.</span>
-                </li>
-                <li style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem' }}>
-                  <Globe size={18} color="var(--color-gold-rich)" style={{ flexShrink: 0, marginTop: '2px' }} />
-                  <span><strong style={{ color: 'var(--color-plum-deep)' }}>Amplify Voice:</strong> Generating national visibility for women’s entrepreneurial journeys via VyapaarJagat.com and collector’s books.</span>
-                </li>
-              </ul>
+            <div style={{ marginTop: '0.75rem' }}>
+              <Link
+                to="/membership"
+                style={{
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.55rem',
+                  background: 'linear-gradient(135deg, #6A1B9A 0%, #9C27B0 45%, #E91E63 100%)',
+                  color: '#FFFFFF',
+                  padding: '0.85rem 1.85rem',
+                  borderRadius: '999px',
+                  fontWeight: 700,
+                  fontSize: '0.9rem',
+                  textDecoration: 'none',
+                  boxShadow: '0 8px 22px rgba(156, 39, 176, 0.28)',
+                }}
+              >
+                <span>Join Fempreneur</span>
+                <ArrowRight size={16} />
+              </Link>
             </div>
           </div>
 
-          {/* Right Column: Two Organizer & Media Partner Cards (5 cols) */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-            {/* Card 1: 1MEIF NGO Organizer */}
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)' }}>
+          {/* Right Column: Backed By Partner Cards */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1.35rem' }}>
+            <span style={{ color: '#7B1FA2', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.18em', fontSize: '0.72rem', display: 'block', marginBottom: '-0.5rem' }}>
+              BACKED BY
+            </span>
+
+            {/* Card 1: MEIF NGO Partner */}
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '18px', border: '1px solid #EFE4F4', boxShadow: '0 10px 30px rgba(46, 8, 72, 0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', marginBottom: '1rem' }}>
-                <div style={{ width: '46px', height: '46px', background: 'var(--color-plum-deep)', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Building2 size={24} color="var(--color-gold-rich)" />
+                <div style={{ width: '46px', height: '46px', background: 'linear-gradient(135deg, #4A126D 0%, #6A1B9A 100%)', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Building2 size={22} color="#FFFFFF" />
                 </div>
                 <div>
-                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.2rem', margin: 0 }}>MEIF</h3>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--color-gold-rich)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    NGO Organizer
+                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.15rem', margin: 0 }}>MEIF</h3>
+                  <span style={{ fontSize: '0.68rem', color: '#7B1FA2', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    OUR NGO PARTNER
                   </span>
                 </div>
               </div>
 
-              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6, marginBottom: '1.25rem' }}>
-                <strong>1 Million Entrepreneurs International Forum (MEIF)</strong> is a registered Section 8 Company in India (NGO) with active <strong>80G &amp; 12A</strong> certifications. They are fully certified under CSR (CSR00106194) and NITI Aayog Darpan to implement impactful national development initiatives.
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.65, marginBottom: '1.25rem' }}>
+                1 Million Entrepreneurs International Forum (MEIF) is a registered Section 8 non-profit company in India. It holds 80G and 12A certificates and is registered under CSR (CSR00106194) and NITI Aayog Darpan, so it can run social impact programs.
               </p>
 
-              <div style={{ fontSize: '0.72rem', borderTop: '1px solid #F0E5F5', paddingTop: '0.75rem', color: 'var(--text-muted)', display: 'flex', justifyContent: 'space-between', fontWeight: 600 }}>
-                <span>PAN: AACCZ1279M</span>
-                <span>Founding Dir: Dr. Pravin Parmar</span>
+              <div style={{ fontSize: '0.78rem', borderTop: '1px solid #F0E5F5', paddingTop: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>
+                Founding Director: Dr. Pravin Parmar
               </div>
             </div>
 
-            {/* Card 2: VyapaarJagat.com Media & Tech Partner */}
-            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '16px', border: '1px solid #EFE4F4', boxShadow: '0 4px 16px rgba(46, 8, 72, 0.04)' }}>
+            {/* Card 2: VyapaarJagat.com Media Partner */}
+            <div style={{ background: '#FFFFFF', padding: '2rem', borderRadius: '18px', border: '1px solid #EFE4F4', boxShadow: '0 10px 30px rgba(46, 8, 72, 0.06)' }}>
               <div style={{ display: 'flex', alignItems: 'center', gap: '0.9rem', marginBottom: '1rem' }}>
-                <div style={{ width: '46px', height: '46px', background: '#3D0E54', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <Globe size={24} color="var(--color-gold-rich)" />
+                <div style={{ width: '46px', height: '46px', background: 'linear-gradient(135deg, #4A126D 0%, #6A1B9A 100%)', color: '#FFFFFF', borderRadius: '12px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <Globe size={22} color="#FFFFFF" />
                 </div>
                 <div>
-                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.2rem', margin: 0 }}>VyapaarJagat.com</h3>
-                  <span style={{ fontSize: '0.7rem', color: 'var(--color-burgundy)', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
-                    Media &amp; Tech Partner
+                  <h3 style={{ fontWeight: 800, color: 'var(--color-plum-deep)', fontSize: '1.15rem', margin: 0 }}>VyapaarJagat.com</h3>
+                  <span style={{ fontSize: '0.68rem', color: '#7B1FA2', fontWeight: 800, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+                    OUR MEDIA PARTNER
                   </span>
                 </div>
               </div>
 
-              <p style={{ fontSize: '0.84rem', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-                VyapaarJagat.com is one of India’s leading business platforms documenting entrepreneur stories. It serves as the primary media engine for Fempreneur, archiving and publishing editorial features on women-led businesses to drive organic reach and national recognition.
+              <p style={{ fontSize: '0.88rem', color: 'var(--text-secondary)', lineHeight: 1.65, margin: 0 }}>
+                VyapaarJagat.com shares the stories of entrepreneurs. As the media partner of Fempreneur, it publishes stories of women-led businesses so that more people can discover them.
               </p>
             </div>
           </div>

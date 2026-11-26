@@ -20,7 +20,25 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { PageHeader } from '../components';
-import { submitGeneralInquiry, fetchPublicSpeakers } from '../services/api';
+import { submitGeneralInquiry, fetchPublicSpeakers, resolveAdminAssetUrl } from '../services/api';
+
+const FALLBACK_SPEAKERS = [
+  { id: 'sp-1', name: 'Pabiben Rabari', role: 'Founder & Entrepreneur – Pabiben.com', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/pabiben-rabari.png' },
+  { id: 'sp-2', name: 'Beena Handa', role: 'Founder & Director, Poiesis Achievement Foundation', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/beena-handa.png' },
+  { id: 'sp-3', name: 'Kalpana Rao', role: 'Actress, Motivational Speaker & TEDx Speaker', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/kalpana-rao.png' },
+  { id: 'sp-4', name: 'Dr. Manisha Gaur', role: 'Speaker | Life Coach | NLP Master Trainer | Content Creator | Peace Activist', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/dr-manisha-gaur.png' },
+  { id: 'sp-5', name: 'Shraddha Musale', role: 'Founder - FutureTayari | Actress, Model & Entrepreneur', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/shraddha-musale.png' },
+  { id: 'sp-6', name: 'Suhani Shah', role: 'Mentalist, Magician & YouTuber', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/suhani-shah.png' },
+  { id: 'sp-7', name: 'Sapna Vyas Patel', role: 'Health & Life Coach, Fitness Influencer, Actress & Motivational Speaker', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/sapna-vyas-patel.png' },
+  { id: 'sp-8', name: 'Aarya Chavda', role: 'Author, Illustrator, Speaker & Heritage and Environment Crusader', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/aarya-chavda.png' },
+  { id: 'sp-9', name: 'Ananya Maloo', role: 'Co-Founder, Nuutjob', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/ananya-maloo.png' },
+  { id: 'sp-10', name: 'Dr. Hina Shah', role: 'Founder-Director, ICECD – International Centre for Entrepreneurship and Career Development', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/dr-hina-shah.png' },
+  { id: 'sp-11', name: 'Tanvvi Rathod', role: 'Image Consultant | Personal Branding Expert', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/tanvvi-rathod.png' },
+  { id: 'sp-12', name: 'Dr. Ruby Bakshi Khurdi', role: 'Founder & Educator, RBK Academy Swiss', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/dr-ruby-bakshi-khurdi.png' },
+  { id: 'sp-13', name: 'Namrata Thakker', role: 'Founder & Business Coach, Entrepreneur Excel', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/namrata-thakker.png' },
+  { id: 'sp-14', name: 'Neha Lal', role: 'Associate Vice President, Adani Group', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/neha-lal.png' },
+  { id: 'sp-15', name: 'Tanya Singh', role: 'Founder/Partner @30minuteUniversity', company: '', category: 'Keynote Speaker', description: '', eventEdition: 'Fempreneur 2027', image: '/images/speakers/tanya-singh.png' },
+];
 
 export default function SpeakersPage() {
   const [searchTerm, setSearchTerm] = useState('');
@@ -49,9 +67,9 @@ export default function SpeakersPage() {
           category: row.category || '',
           description: row.description || '',
           eventEdition: row.event_edition || 'Fempreneur 2027',
-          image: row.photo_url || '/images/speakers/speakers-keynote-real.png',
+          image: row.photo_url ? resolveAdminAssetUrl(row.photo_url) : '',
         }));
-        setSpeakersList(normalized);
+        setSpeakersList(normalized.length > 0 ? normalized : FALLBACK_SPEAKERS);
       })
       .finally(() => {
         if (mounted) setSpeakersLoading(false);
@@ -797,17 +815,27 @@ export default function SpeakersPage() {
               }}
             >
               <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden' }}>
-                <img
-                  src={member.image}
-                  alt={member.name}
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    objectPosition: 'top center',
-                    display: 'block',
-                  }}
-                />
+                {member.image ? (
+                  <img
+                    src={member.image}
+                    alt={member.name}
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      objectFit: 'cover',
+                      objectPosition: 'top center',
+                      display: 'block',
+                    }}
+                  />
+                ) : (
+                  <div
+                    style={{
+                      width: '100%',
+                      height: '100%',
+                      background: 'linear-gradient(180deg, #5E178C 0%, #360A54 60%, #1F0433 100%)',
+                    }}
+                  />
+                )}
 
                 <div
                   style={{

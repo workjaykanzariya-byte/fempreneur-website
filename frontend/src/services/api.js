@@ -88,6 +88,14 @@ export const fetchVoteCounts = async () => {
 
 // 3. Memberships
 export const enrollMembership = async (membershipData) => {
+  if (membershipData instanceof FormData) {
+    const token = localStorage.getItem('fem_token');
+    return safeFetch(`${API_BASE_URL}/memberships`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : {},
+      body: membershipData,
+    });
+  }
   return safeFetch(`${API_BASE_URL}/memberships`, {
     method: 'POST',
     headers: getAuthHeaders(),
