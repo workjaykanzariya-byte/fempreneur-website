@@ -924,18 +924,14 @@ export default function AdminDashboard() {
                       <ExternalLink size={13} />
                     </a>
                   </div>
-                  <iframe
-                    key={`${currentAppItem.id}-${appIframeKey}`}
-                    src={externalUrl}
-                    title={`Fempreneur App Admin - ${currentAppItem.label}`}
-                    style={{
-                      width: '100%',
-                      flex: 1,
-                      minHeight: 'calc(100vh - 108px)',
-                      border: 'none',
-                      background: '#FFFFFF'
-                    }}
-                  />
+                  <div className="fem-app-iframe-wrap">
+                    <iframe
+                      key={`${currentAppItem.id}-${appIframeKey}`}
+                      src={externalUrl}
+                      title={`Fempreneur App Admin - ${currentAppItem.label}`}
+                      className="fem-app-iframe"
+                    />
+                  </div>
                 </>
               );
             })()}
