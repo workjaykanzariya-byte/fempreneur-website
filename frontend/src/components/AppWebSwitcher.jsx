@@ -2,7 +2,7 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Smartphone, Globe } from 'lucide-react';
 
-const APP_ADMIN_URL = import.meta.env.VITE_APP_ADMIN_URL || 'https://dev.fempreneur.club/admin/dashboard';
+const APP_ADMIN_URL = import.meta.env.VITE_APP_ADMIN_URL || 'https://unity.fempreneur.club/admin/dashboard';
 
 export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' }) {
   const navigate = useNavigate();
