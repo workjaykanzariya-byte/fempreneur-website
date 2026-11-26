@@ -144,14 +144,6 @@ export default function AdminDashboard() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const navigate = useNavigate();
 
-  // Require login permission before accessing Admin Panel
-  const adminToken = getAdminToken();
-  useEffect(() => {
-    if (!adminToken) {
-      navigate('/login', { replace: true, state: { from: location.pathname } });
-    }
-  }, [adminToken, navigate, location.pathname]);
-
   const user = JSON.parse(localStorage.getItem('adminUser') || localStorage.getItem('fem_user') || '{"name":"Trushali","email":"worktrushalijambukiya@gmail.com","role":"superadmin"}');
 
   const [selectedIds, setSelectedIds] = useState([]);
@@ -730,10 +722,6 @@ export default function AdminDashboard() {
       alert('Save operation encountered an error.');
     }
   };
-
-  if (!adminToken) {
-    return null;
-  }
 
   return (
     <div className="fem-admin-wrapper">
