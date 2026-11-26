@@ -218,3 +218,14 @@ export const mergeWinnersWithStatic = (dbRows = [], staticWinners = []) => {
 
   return merged;
 };
+
+// 12. Public Speakers (Synced with Admin Panel & Backend DB)
+export const fetchPublicSpeakers = async () => {
+  try {
+    const res = await safeFetch(`${API_BASE_URL}/web/speakers/public`);
+    return Array.isArray(res?.data) ? res.data : [];
+  } catch (err) {
+    console.warn('Public speakers fetch error:', err?.message || err);
+    return [];
+  }
+};

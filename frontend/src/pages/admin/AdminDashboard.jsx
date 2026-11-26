@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Trophy, Handshake, Calendar, LogOut, Loader2, Menu, X, 
   FileText, PlusCircle, Award, Users, Video, Search,
-  Download, Eye, Edit, Trash2, CheckCircle, Star, RefreshCw
+  Download, Eye, Edit, Trash2, CheckCircle, Star, RefreshCw, Mic
 } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
 import AppWebSwitcher from '../../components/AppWebSwitcher';
@@ -39,6 +39,15 @@ export default function AdminDashboard() {
   });
   const [winnerSubmitting, setWinnerSubmitting] = useState(false);
   const [winnerPreview, setWinnerPreview] = useState(null);
+  const [newSpeakerForm, setNewSpeakerForm] = useState({
+    name: '', designation: '', company: '', category: 'Keynote & Jury', description: '', event_edition: 'Fempreneur 2027', display_order: 0, is_active: 1, profilePicture: null
+  });
+  const [speakerSubmitting, setSpeakerSubmitting] = useState(false);
+  const [speakerPreview, setSpeakerPreview] = useState(null);
+  const [editingSpeaker, setEditingSpeaker] = useState(null);
+  const [editSpeakerPreview, setEditSpeakerPreview] = useState(null);
+  const [previewSpeaker, setPreviewSpeaker] = useState(null);
+  const [speakerStatusFilter, setSpeakerStatusFilter] = useState('all');
   const [newEntityForm, setNewEntityForm] = useState({
     name: '', role: '', org: '', tags: '', bio: ''
   });
@@ -88,7 +97,7 @@ export default function AdminDashboard() {
 
   // Fetch Data for Active Tab with resilient fallback
   const fetchData = async (tabId) => {
-    if (['add-winner', 'add-blog', 'add-voice-video', 'add-gallery-sponsor', 'add-partner', 'add-jury'].includes(tabId)) {
+    if (['add-winner', 'add-speaker', 'add-blog', 'add-voice-video', 'add-gallery-sponsor', 'add-partner', 'add-jury'].includes(tabId)) {
       setIsLoading(false);
       return;
     }
@@ -100,12 +109,13 @@ export default function AdminDashboard() {
       let endpoint = '';
       if (tabId === 'nominations') endpoint = 'nominations';
       else if (tabId === 'winners') endpoint = 'winners';
+      else if (tabId === 'speakers') endpoint = 'speakers';
       else if (tabId === 'events') endpoint = 'event-registrations';
       else if (tabId === 'sponsorships') endpoint = 'sponsorships';
       else if (tabId === 'membership' || tabId === 'community-members') endpoint = 'community-applications';
       else if (tabId === 'gallery-sponsors') endpoint = 'gallery-sponsors';
       else if (tabId === 'partners') endpoint = 'partners';
-      else if (tabId === 'jury') endpoint = 'jury';
+      else if (tabId === 'jury') endpoint = 'speakers';
       else if (tabId === 'blogs') endpoint = 'blogs';
       else if (tabId === 'voice-videos') endpoint = 'voice-videos';
       else endpoint = `inquiries?type=${tabId}`;
@@ -154,6 +164,8 @@ export default function AdminDashboard() {
     { id: 'nominations', label: 'Award Nominations', icon: <Trophy size={18} /> },
     { id: 'winners', label: 'Winners List', icon: <Award size={18} /> },
     { id: 'add-winner', label: '+ Add New Winner', icon: <PlusCircle size={18} /> },
+    { id: 'speakers', label: 'Manage Speakers', icon: <Mic size={18} /> },
+    { id: 'add-speaker', label: '+ Add New Speaker', icon: <PlusCircle size={18} /> },
     { id: 'gallery-sponsors', label: 'Manage Sponsors', icon: <Handshake size={18} /> },
     { id: 'add-gallery-sponsor', label: '+ Add Sponsor', icon: <PlusCircle size={18} /> },
     { id: 'jury', label: 'Manage Speakers & Jury', icon: <Users size={18} /> },
@@ -337,6 +349,136 @@ export default function AdminDashboard() {
       alert('Error adding winner. Please verify backend connection.');
     } finally {
       setWinnerSubmitting(false);
+    }
+  };
+
+  const handleAddSpeaker = async (e) => {
+    e.preventDefault();
+    if (!newSpeakerForm.name.trim() || !newSpeakerForm.designation.trim() || !newSpeakerForm.company.trim()) {
+      alert('Speaker Name, Designation, and Company/Organization are required.');
+      return;
+    }
+    setSpeakerSubmitting(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('name', newSpeakerForm.name.trim());
+      formData.append('designation', newSpeakerForm.designation.trim());
+      formData.append('company', newSpeakerForm.company.trim());
+      formData.append('category', newSpeakerForm.category.trim());
+      formData.append('description', newSpeakerForm.description.trim());
+      formData.append('event_edition', newSpeakerForm.event_edition.trim() || 'Fempreneur 2027');
+      formData.append('display_order', String(newSpeakerForm.display_order || 0));
+      formData.append('is_active', String(newSpeakerForm.is_active ?? 1));
+      if (newSpeakerForm.profilePicture) {
+        formData.append('profilePicture', newSpeakerForm.profilePicture);
+      }
+
+      const res = await fetch(`${API_PREFIX}/api/admin/speakers`, {
+        method: 'POST',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Speaker added and synced to the public website!');
+        setNewSpeakerForm({
+          name: '', designation: '', company: '', category: 'Keynote & Jury', description: '', event_edition: 'Fempreneur 2027', display_order: 0, is_active: 1, profilePicture: null
+        });
+        setSpeakerPreview(null);
+        setActiveTab('speakers');
+      } else {
+        alert(result.message || 'Failed to add speaker.');
+      }
+    } catch (err) {
+      console.error('Add speaker error:', err);
+      alert('Error adding speaker. Please verify backend connection.');
+    } finally {
+      setSpeakerSubmitting(false);
+    }
+  };
+
+  const handleUpdateSpeaker = async (e) => {
+    e.preventDefault();
+    if (!editingSpeaker?.id) return;
+    setSpeakerSubmitting(true);
+    try {
+      const token = localStorage.getItem('adminToken');
+      const formData = new FormData();
+      formData.append('name', (editingSpeaker.name || '').trim());
+      formData.append('designation', (editingSpeaker.designation || '').trim());
+      formData.append('company', (editingSpeaker.company || '').trim());
+      formData.append('category', (editingSpeaker.category || '').trim());
+      formData.append('description', (editingSpeaker.description || '').trim());
+      formData.append('event_edition', (editingSpeaker.event_edition || 'Fempreneur 2027').trim());
+      formData.append('display_order', String(editingSpeaker.display_order ?? 0));
+      formData.append('is_active', String(editingSpeaker.is_active ?? 1));
+      if (editingSpeaker.newProfilePicture) {
+        formData.append('profilePicture', editingSpeaker.newProfilePicture);
+      }
+
+      const res = await fetch(`${API_PREFIX}/api/admin/speakers/${editingSpeaker.id}`, {
+        method: 'PATCH',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {},
+        body: formData
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Speaker updated and synced to the website!');
+        setEditingSpeaker(null);
+        setEditSpeakerPreview(null);
+        fetchData('speakers');
+      } else {
+        alert(result.message || 'Failed to update speaker.');
+      }
+    } catch (err) {
+      console.error('Update speaker error:', err);
+      alert('Error updating speaker.');
+    } finally {
+      setSpeakerSubmitting(false);
+    }
+  };
+
+  const handleToggleSpeakerStatus = async (speaker) => {
+    const nextStatus = Number(speaker.is_active) === 1 ? 0 : 1;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${API_PREFIX}/api/admin/speakers/${speaker.id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          ...(token ? { 'Authorization': `Bearer ${token}` } : {})
+        },
+        body: JSON.stringify({ is_active: nextStatus })
+      });
+      const result = await res.json();
+      if (result.success) {
+        setData((prev) => prev.map((item) => (item.id === speaker.id ? { ...item, is_active: nextStatus } : item)));
+      } else {
+        alert(result.message || 'Unable to update status.');
+      }
+    } catch (err) {
+      alert('Failed to update speaker status.');
+    }
+  };
+
+  const handleDeleteSpeaker = async (id) => {
+    if (!window.confirm('Are you sure you want to delete this speaker? This will also remove them from the public website.')) return;
+    try {
+      const token = localStorage.getItem('adminToken');
+      const res = await fetch(`${API_PREFIX}/api/admin/speakers/${id}`, {
+        method: 'DELETE',
+        headers: token ? { 'Authorization': `Bearer ${token}` } : {}
+      });
+      const result = await res.json();
+      if (result.success) {
+        alert('Speaker deleted successfully.');
+        fetchData('speakers');
+      } else {
+        alert('Notice: ' + (result.message || 'Unable to delete speaker.'));
+      }
+    } catch (err) {
+      alert('Delete speaker operation failed.');
     }
   };
 
@@ -926,8 +1068,334 @@ export default function AdminDashboard() {
             </div>
           )}
 
+          {/* Manage Speakers Tab */}
+          {(activeTab === 'speakers' || activeTab === 'jury') && (
+            <div className="fem-table-container">
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '12px', padding: '16px 20px', borderBottom: '1px solid #E5E7EB' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontSize: '1.05rem', fontWeight: 700, color: '#111827' }}>
+                    Manage Speakers ({data.length})
+                  </h3>
+                  <p style={{ margin: '2px 0 0', fontSize: '0.8rem', color: '#6B7280' }}>
+                    Active speakers appear automatically on the public Speakers &amp; Jury page
+                  </p>
+                </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '10px', flexWrap: 'wrap' }}>
+                  <input
+                    type="text"
+                    placeholder="Search speakers..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '0.85rem', minWidth: '210px' }}
+                  />
+                  <select
+                    value={speakerStatusFilter}
+                    onChange={(e) => setSpeakerStatusFilter(e.target.value)}
+                    style={{ padding: '8px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', fontSize: '0.85rem', background: '#FFFFFF' }}
+                  >
+                    <option value="all">All Status</option>
+                    <option value="active">Active Only</option>
+                    <option value="inactive">Inactive Only</option>
+                  </select>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('add-speaker')}
+                    className="fem-btn fem-btn-gold"
+                  >
+                    + Add New Speaker
+                  </button>
+                </div>
+              </div>
+
+              {isLoading ? (
+                <div style={{ padding: '60px 0', textAlign: 'center', color: '#6B7280' }}>
+                  <Loader2 className="animate-spin" size={32} style={{ margin: '0 auto 12px', color: '#9C27B0' }} />
+                  <p style={{ fontWeight: 600 }}>Loading Speakers...</p>
+                </div>
+              ) : (() => {
+                const filteredSpeakers = data.filter((sp) => {
+                  if (speakerStatusFilter === 'active' && Number(sp.is_active) !== 1) return false;
+                  if (speakerStatusFilter === 'inactive' && Number(sp.is_active) === 1) return false;
+                  if (searchQuery.trim()) {
+                    const q = searchQuery.toLowerCase().trim();
+                    return (
+                      (sp.name || '').toLowerCase().includes(q) ||
+                      (sp.designation || '').toLowerCase().includes(q) ||
+                      (sp.company || '').toLowerCase().includes(q) ||
+                      (sp.category || '').toLowerCase().includes(q) ||
+                      (sp.event_edition || '').toLowerCase().includes(q)
+                    );
+                  }
+                  return true;
+                });
+
+                if (filteredSpeakers.length === 0) {
+                  return (
+                    <div style={{ padding: '60px 0', textAlign: 'center', color: '#6B7280' }}>
+                      <Mic size={36} style={{ margin: '0 auto 12px', color: '#9C27B0' }} />
+                      <h3 style={{ fontSize: '1.1rem', fontWeight: 700, color: '#111827', margin: 0 }}>No Speakers Found</h3>
+                      <p style={{ fontSize: '0.85rem', marginTop: '4px' }}>Add a new speaker or adjust your search/status filter.</p>
+                    </div>
+                  );
+                }
+
+                return (
+                  <table className="fem-clean-table">
+                    <thead>
+                      <tr>
+                        <th>PHOTO</th>
+                        <th>SPEAKER &amp; EDITION</th>
+                        <th>DESIGNATION &amp; COMPANY</th>
+                        <th>CATEGORY &amp; BIO</th>
+                        <th>ORDER</th>
+                        <th>STATUS</th>
+                        <th style={{ textAlign: 'right' }}>ACTIONS</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {filteredSpeakers.map((sp) => {
+                        const isActive = Number(sp.is_active) === 1;
+                        const resolvedImg = sp.photo_url
+                          ? (sp.photo_url.startsWith('http') || sp.photo_url.startsWith('/images/')
+                            ? sp.photo_url
+                            : `${API_PREFIX}${sp.photo_url}`)
+                          : null;
+
+                        return (
+                          <tr key={sp.id}>
+                            <td>
+                              {resolvedImg ? (
+                                <img
+                                  src={resolvedImg}
+                                  alt={sp.name}
+                                  style={{ width: '48px', height: '56px', objectFit: 'cover', objectPosition: 'top center', borderRadius: '8px', border: '1px solid #E5E7EB' }}
+                                />
+                              ) : (
+                                <div style={{ width: '48px', height: '56px', borderRadius: '8px', background: '#F3E8FF', color: '#6A1B9A', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700 }}>
+                                  {(sp.name || 'S').charAt(0).toUpperCase()}
+                                </div>
+                              )}
+                            </td>
+                            <td>
+                              <div className="nominee-title">{sp.name}</div>
+                              <div className="nominee-email">{sp.event_edition || 'Fempreneur 2027'}</div>
+                            </td>
+                            <td>
+                              <div className="company-title">{sp.designation || '—'}</div>
+                              <div className="company-city">{sp.company || '—'}</div>
+                            </td>
+                            <td style={{ maxWidth: '240px' }}>
+                              <div className="category-text">{sp.category || 'Keynote & Jury'}</div>
+                              {sp.description && (
+                                <div style={{ fontSize: '0.75rem', color: '#6B7280', marginTop: '2px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
+                                  {sp.description}
+                                </div>
+                              )}
+                            </td>
+                            <td>
+                              <span style={{ fontWeight: 700, color: '#374151' }}>{sp.display_order ?? 0}</span>
+                            </td>
+                            <td>
+                              <button
+                                type="button"
+                                onClick={() => handleToggleSpeakerStatus(sp)}
+                                style={{
+                                  border: 'none',
+                                  borderRadius: '999px',
+                                  padding: '4px 10px',
+                                  fontSize: '0.74rem',
+                                  fontWeight: 700,
+                                  cursor: 'pointer',
+                                  background: isActive ? '#DCFCE7' : '#FEE2E2',
+                                  color: isActive ? '#166534' : '#991B1B',
+                                }}
+                                title="Click to toggle Active / Inactive"
+                              >
+                                {isActive ? 'ACTIVE' : 'INACTIVE'}
+                              </button>
+                            </td>
+                            <td style={{ textAlign: 'right' }}>
+                              <div style={{ display: 'inline-flex', gap: '6px' }}>
+                                <button
+                                  type="button"
+                                  onClick={() => setPreviewSpeaker(sp)}
+                                  className="fem-btn fem-btn-outline"
+                                  style={{ padding: '6px 8px' }}
+                                  title="Preview Speaker"
+                                >
+                                  <Eye size={14} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    setEditingSpeaker({ ...sp, newProfilePicture: null });
+                                    setEditSpeakerPreview(null);
+                                  }}
+                                  className="fem-btn fem-btn-outline"
+                                  style={{ padding: '6px 8px' }}
+                                  title="Edit Speaker"
+                                >
+                                  <Edit size={14} />
+                                </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteSpeaker(sp.id)}
+                                  className="fem-btn fem-btn-danger"
+                                  style={{ padding: '6px 8px', background: '#EF4444' }}
+                                  title="Delete Speaker"
+                                >
+                                  <Trash2 size={14} />
+                                </button>
+                              </div>
+                            </td>
+                          </tr>
+                        );
+                      })}
+                    </tbody>
+                  </table>
+                );
+              })()}
+            </div>
+          )}
+
+          {/* Add New Speaker Form */}
+          {(activeTab === 'add-speaker' || activeTab === 'add-jury') && (
+            <div style={{ background: '#FFFFFF', padding: '28px 32px', borderRadius: '12px', border: '1px solid #E5E7EB', maxWidth: '780px' }}>
+              <h3 style={{ margin: '0 0 6px', color: '#111827', fontWeight: 700 }}>Add New Speaker</h3>
+              <p style={{ margin: '0 0 22px', color: '#6B7280', fontSize: '0.88rem' }}>
+                Add a keynote speaker or jury panelist. Active speakers automatically sync to the public Speakers page.
+              </p>
+              <form onSubmit={handleAddSpeaker} style={{ display: 'grid', gap: '16px' }}>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Speaker Name *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newSpeakerForm.name}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, name: e.target.value })}
+                      placeholder="e.g. Dr. Meera Nambiar"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Designation *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newSpeakerForm.designation}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, designation: e.target.value })}
+                      placeholder="e.g. Founder & MD"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Company / Organization *</label>
+                    <input
+                      type="text"
+                      required
+                      value={newSpeakerForm.company}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, company: e.target.value })}
+                      placeholder="e.g. Ankur Capital"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Category / Domain</label>
+                    <input
+                      type="text"
+                      value={newSpeakerForm.category}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, category: e.target.value })}
+                      placeholder="e.g. Venture Capital & Growth"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                </div>
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '16px' }}>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Event / Edition</label>
+                    <input
+                      type="text"
+                      value={newSpeakerForm.event_edition}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, event_edition: e.target.value })}
+                      placeholder="e.g. Fempreneur 2027"
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Display Order</label>
+                    <input
+                      type="number"
+                      min="0"
+                      value={newSpeakerForm.display_order}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, display_order: Number(e.target.value) })}
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                  <div>
+                    <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Visibility Status</label>
+                    <select
+                      value={newSpeakerForm.is_active}
+                      onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, is_active: Number(e.target.value) })}
+                      style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB', background: '#FFFFFF' }}
+                    >
+                      <option value={1}>Active (Visible on Website)</option>
+                      <option value={0}>Inactive (Hidden)</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Speaker Description / Bio</label>
+                  <textarea
+                    rows={3}
+                    value={newSpeakerForm.description}
+                    onChange={(e) => setNewSpeakerForm({ ...newSpeakerForm, description: e.target.value })}
+                    placeholder="Short speaker bio, achievements, or keynote topic..."
+                    style={{ width: '100%', padding: '10px 12px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.82rem', fontWeight: 600, marginBottom: '6px', color: '#374151' }}>Profile Image Upload</label>
+                  <input
+                    type="file"
+                    accept="image/*"
+                    onChange={(e) => {
+                      const file = e.target.files?.[0] || null;
+                      setNewSpeakerForm({ ...newSpeakerForm, profilePicture: file });
+                      setSpeakerPreview(file ? URL.createObjectURL(file) : null);
+                    }}
+                  />
+                  {speakerPreview && (
+                    <div style={{ marginTop: '10px' }}>
+                      <img src={speakerPreview} alt="Speaker preview" style={{ width: '96px', height: '112px', objectFit: 'cover', objectPosition: 'top center', borderRadius: '10px', border: '1px solid #D1D5DB' }} />
+                    </div>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: '12px', marginTop: '6px' }}>
+                  <button
+                    type="submit"
+                    disabled={speakerSubmitting}
+                    className="fem-btn fem-btn-gold"
+                    style={{ minWidth: '160px' }}
+                  >
+                    {speakerSubmitting ? 'Saving Speaker...' : 'Publish Speaker'}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveTab('speakers')}
+                    className="fem-btn fem-btn-outline"
+                  >
+                    Cancel
+                  </button>
+                </div>
+              </form>
+            </div>
+          )}
+
           {/* Simple Tab Switcher notification if other tabs clicked */}
-          {!['nominations', 'winners', 'add-winner'].includes(activeTab) && (
+          {!['nominations', 'winners', 'add-winner', 'speakers', 'add-speaker', 'jury', 'add-jury'].includes(activeTab) && (
             <div style={{ background: '#FFFFFF', padding: '40px', borderRadius: '12px', border: '1px solid #E5E7EB', textAlign: 'center' }}>
               <h3 style={{ margin: 0, color: '#111827', fontWeight: 700 }}>
                 {mainNavItems.find(i => i.id === activeTab)?.label || 'Module Active'}
@@ -947,6 +1415,186 @@ export default function AdminDashboard() {
           )}
         </div>
       </main>
+
+      {/* Speaker Preview Modal */}
+      {previewSpeaker && (
+        <div className="fem-modal-backdrop" onClick={() => setPreviewSpeaker(null)}>
+          <div className="fem-modal-box record-details-modal" style={{ maxWidth: '460px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="record-details-header">
+              <h3 className="record-details-title">Speaker Profile Preview</h3>
+              <button type="button" onClick={() => setPreviewSpeaker(null)} className="record-details-close-btn" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <div style={{ padding: '20px' }}>
+              <div style={{ display: 'flex', gap: '16px', alignItems: 'center', marginBottom: '16px' }}>
+                <img
+                  src={
+                    previewSpeaker.photo_url
+                      ? (previewSpeaker.photo_url.startsWith('http') || previewSpeaker.photo_url.startsWith('/images/')
+                        ? previewSpeaker.photo_url
+                        : `${API_PREFIX}${previewSpeaker.photo_url}`)
+                      : '/images/speakers/speakers-keynote-real.png'
+                  }
+                  alt={previewSpeaker.name}
+                  style={{ width: '88px', height: '104px', objectFit: 'cover', objectPosition: 'top center', borderRadius: '12px', border: '1px solid #E5E7EB' }}
+                />
+                <div>
+                  <h4 style={{ margin: 0, fontSize: '1.15rem', fontWeight: 700, color: '#111827' }}>{previewSpeaker.name}</h4>
+                  <div style={{ fontSize: '0.88rem', fontWeight: 600, color: '#6A1B9A', marginTop: '2px' }}>{previewSpeaker.designation}</div>
+                  <div style={{ fontSize: '0.85rem', color: '#4B5563' }}>{previewSpeaker.company}</div>
+                  <div style={{ marginTop: '6px', display: 'flex', gap: '6px', flexWrap: 'wrap' }}>
+                    <span className="badge-track-honorary">{previewSpeaker.event_edition || 'Fempreneur 2027'}</span>
+                    <span style={{ fontSize: '0.72rem', fontWeight: 700, padding: '2px 8px', borderRadius: '999px', background: Number(previewSpeaker.is_active) === 1 ? '#DCFCE7' : '#FEE2E2', color: Number(previewSpeaker.is_active) === 1 ? '#166534' : '#991B1B' }}>
+                      {Number(previewSpeaker.is_active) === 1 ? 'Active' : 'Inactive'}
+                    </span>
+                  </div>
+                </div>
+              </div>
+              {previewSpeaker.category && (
+                <div style={{ fontSize: '0.82rem', color: '#6B7280', marginBottom: '8px' }}>
+                  <strong>Category:</strong> {previewSpeaker.category} &nbsp;|&nbsp; <strong>Order:</strong> {previewSpeaker.display_order ?? 0}
+                </div>
+              )}
+              <p style={{ fontSize: '0.88rem', color: '#374151', lineHeight: 1.55, margin: 0 }}>
+                {previewSpeaker.description || 'No description provided.'}
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Speaker Modal */}
+      {editingSpeaker && (
+        <div className="fem-modal-backdrop" onClick={() => setEditingSpeaker(null)}>
+          <div className="fem-modal-box record-details-modal" style={{ maxWidth: '640px' }} onClick={(e) => e.stopPropagation()}>
+            <div className="record-details-header">
+              <h3 className="record-details-title">Edit Speaker</h3>
+              <button type="button" onClick={() => setEditingSpeaker(null)} className="record-details-close-btn" aria-label="Close">
+                <X size={18} />
+              </button>
+            </div>
+            <form onSubmit={handleUpdateSpeaker} style={{ padding: '20px', display: 'grid', gap: '14px' }}>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Speaker Name *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingSpeaker.name || ''}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, name: e.target.value })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Designation *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingSpeaker.designation || ''}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, designation: e.target.value })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Company / Organization *</label>
+                  <input
+                    type="text"
+                    required
+                    value={editingSpeaker.company || ''}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, company: e.target.value })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Category</label>
+                  <input
+                    type="text"
+                    value={editingSpeaker.category || ''}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, category: e.target.value })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+              </div>
+              <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px' }}>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Event / Edition</label>
+                  <input
+                    type="text"
+                    value={editingSpeaker.event_edition || ''}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, event_edition: e.target.value })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Display Order</label>
+                  <input
+                    type="number"
+                    min="0"
+                    value={editingSpeaker.display_order ?? 0}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, display_order: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                  />
+                </div>
+                <div>
+                  <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Status</label>
+                  <select
+                    value={Number(editingSpeaker.is_active) === 1 ? 1 : 0}
+                    onChange={(e) => setEditingSpeaker({ ...editingSpeaker, is_active: Number(e.target.value) })}
+                    style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB', background: '#FFFFFF' }}
+                  >
+                    <option value={1}>Active</option>
+                    <option value={0}>Inactive</option>
+                  </select>
+                </div>
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Description / Bio</label>
+                <textarea
+                  rows={3}
+                  value={editingSpeaker.description || ''}
+                  onChange={(e) => setEditingSpeaker({ ...editingSpeaker, description: e.target.value })}
+                  style={{ width: '100%', padding: '9px 11px', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                />
+              </div>
+              <div>
+                <label style={{ display: 'block', fontSize: '0.8rem', fontWeight: 600, marginBottom: '4px' }}>Replace Profile Image (optional)</label>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={(e) => {
+                    const file = e.target.files?.[0] || null;
+                    setEditingSpeaker({ ...editingSpeaker, newProfilePicture: file });
+                    setEditSpeakerPreview(file ? URL.createObjectURL(file) : null);
+                  }}
+                />
+                {(editSpeakerPreview || editingSpeaker.photo_url) && (
+                  <div style={{ marginTop: '8px' }}>
+                    <img
+                      src={
+                        editSpeakerPreview ||
+                        (editingSpeaker.photo_url.startsWith('http') || editingSpeaker.photo_url.startsWith('/images/')
+                          ? editingSpeaker.photo_url
+                          : `${API_PREFIX}${editingSpeaker.photo_url}`)
+                      }
+                      alt="Speaker preview"
+                      style={{ width: '76px', height: '88px', objectFit: 'cover', objectPosition: 'top center', borderRadius: '8px', border: '1px solid #D1D5DB' }}
+                    />
+                  </div>
+                )}
+              </div>
+              <div style={{ display: 'flex', gap: '10px', justifyContent: 'flex-end' }}>
+                <button type="button" onClick={() => setEditingSpeaker(null)} className="fem-btn fem-btn-outline">Cancel</button>
+                <button type="submit" disabled={speakerSubmitting} className="fem-btn fem-btn-gold">
+                  {speakerSubmitting ? 'Saving...' : 'Save Changes'}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
 
       {/* Greenpreneur 1:1 Record Details Modal */}
       {selectedRecord && !isEditing && (

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users,
@@ -20,12 +20,14 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { PageHeader } from '../components';
-import { submitGeneralInquiry } from '../services/api';
+import { submitGeneralInquiry, fetchPublicSpeakers } from '../services/api';
 
 export default function SpeakersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [speakersLoading, setSpeakersLoading] = useState(true);
+  const [speakersList, setSpeakersList] = useState([]);
   const [error, setError] = useState(null);
   const [speakerData, setSpeakerData] = useState({
     name: '',
@@ -33,92 +35,45 @@ export default function SpeakersPage() {
     topic: '',
   });
 
-  // Master List of Speakers & Jury Panelists for Fempreneur 2027
-  const juryMembers = [
-    {
-      name: 'Samir Sinha',
-      role: 'Founder & MD',
-      company: 'Savvy Group',
-      image: '/images/speakers/speakers-hero-showcase.jpg',
-      category: 'Real Estate & Infrastructure',
-    },
-    {
-      name: 'Dr. Meera Nambiar',
-      role: 'Venture Partner & Director',
-      company: 'Ankur Capital',
-      image: '/images/speakers/speakers-keynote-real.png',
-      category: 'Venture Capital & Growth',
-    },
-    {
-      name: 'Pravin Parmar',
-      role: 'Founder & CEO',
-      company: 'VyapaarJagat.com | 1MEIF',
-      image: '/images/about/pravin-parmar-founder.jpg',
-      category: 'MSME Ecosystem & Media',
-    },
-    {
-      name: 'Dr. Sunita Sharma',
-      role: 'Senior Advisor & Dean',
-      company: 'AMA Ahmedabad',
-      image: '/images/nominate/nominate-awards-application.jpg',
-      category: 'Governance & Education',
-    },
-    {
-      name: 'Nilesh Priyadarshi',
-      role: 'Founder & CEO',
-      company: 'Kaarigar Clinic',
-      image: '/images/partners/corporate-partner-signing.jpg',
-      category: 'Rural Enterprise & Crafts',
-    },
-    {
-      name: 'Radhika Merchant',
-      role: 'Managing Director',
-      company: 'Encore Healthcare & Bio',
-      image: '/images/categories/award-categories-real.png',
-      category: 'Healthcare & Biotech',
-    },
-    {
-      name: 'Ananya Birla',
-      role: 'Founder & Chairperson',
-      company: 'Svatantra Microfin',
-      image: '/images/speakers/speakers-hero-showcase.png',
-      category: 'Financial Inclusion',
-    },
-    {
-      name: 'Dr. Sachin Shigwan',
-      role: 'The Solar Man of India',
-      company: 'Green Innovation Labs',
-      image: '/images/events/awards-stage-ceremony.jpg',
-      category: 'CleanTech & ESG',
-    },
-    {
-      name: 'Vinod Malviya',
-      role: 'Co-Founder & Director',
-      company: 'Shubham Aquavitro Pvt Ltd',
-      image: '/images/about/who-we-are-real-event.jpg',
-      category: 'Manufacturing & Exports',
-    },
-    {
-      name: 'Dr. Akshay Kumar',
-      role: 'Founder & Director',
-      company: 'BroGhar Realty Pvt. Ltd.',
-      image: '/images/awards/awards-stage-winners-clean.png',
-      category: 'Commercial Scaling',
-    },
-  ];
+  useEffect(() => {
+    let mounted = true;
+    setSpeakersLoading(true);
+    fetchPublicSpeakers()
+      .then((rows) => {
+        if (!mounted) return;
+        const normalized = (Array.isArray(rows) ? rows : []).map((row) => ({
+          id: row.id,
+          name: row.name || '',
+          role: row.designation || row.role || '',
+          company: row.company || '',
+          category: row.category || '',
+          description: row.description || '',
+          eventEdition: row.event_edition || 'Fempreneur 2027',
+          image: row.photo_url || '/images/speakers/speakers-keynote-real.png',
+        }));
+        setSpeakersList(normalized);
+      })
+      .finally(() => {
+        if (mounted) setSpeakersLoading(false);
+      });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
-  // Filter jury members based on search
+  // Filter speakers based on search
   const filteredJury = useMemo(() => {
-    return juryMembers.filter((m) => {
+    return speakersList.filter((m) => {
       const q = searchTerm.toLowerCase();
       return (
         m.name.toLowerCase().includes(q) ||
         m.role.toLowerCase().includes(q) ||
         m.company.toLowerCase().includes(q) ||
-        m.category.toLowerCase().includes(q)
+        m.category.toLowerCase().includes(q) ||
+        m.description.toLowerCase().includes(q)
       );
     });
-  }, [searchTerm, juryMembers]);
+  }, [searchTerm, speakersList]);
 
   return (
     <div style={{ background: '#FAF6FC', minHeight: '100vh', color: '#1C1224' }}>
@@ -801,6 +756,15 @@ export default function SpeakersPage() {
         </div>
 
         {/* 5-Column Photo Cards Grid */}
+        {speakersLoading ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#6A1B9A', fontWeight: 600 }}>
+            Loading Speakers &amp; Panelists...
+          </div>
+        ) : filteredJury.length === 0 ? (
+          <div style={{ textAlign: 'center', padding: '3rem 1rem', color: '#5C4E65', fontWeight: 600 }}>
+            No speakers match your search criteria.
+          </div>
+        ) : (
         <div
           style={{
             display: 'grid',
@@ -811,7 +775,7 @@ export default function SpeakersPage() {
         >
           {filteredJury.map((member, idx) => (
             <div
-              key={idx}
+              key={member.id || idx}
               style={{
                 borderRadius: '20px',
                 overflow: 'hidden',
@@ -891,6 +855,7 @@ export default function SpeakersPage() {
             </div>
           ))}
         </div>
+        )}
 
         {/* SECTION 5: "Will You Be Our Next Fempreneur?" CTA Card */}
         {false && (

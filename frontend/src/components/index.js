@@ -25,5 +25,6 @@ export { default as RecognitionHubModal } from './RecognitionHubModal';
 export { default as FempreneurAwardCreative } from './FempreneurAwardCreative';
 export { default as SponsorShowcase } from './SponsorShowcase';
 export { default as HallOfFameSection } from './HallOfFameSection';
+export { default as FempreneurAppSection } from './FempreneurAppSection';
 
 

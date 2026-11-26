@@ -232,7 +232,48 @@ export const initializeDatabase = async () => {
         created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
         updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+
+      -- 15. Speakers & Evaluation Panelists
+      CREATE TABLE IF NOT EXISTS web_speakers (
+        id SERIAL PRIMARY KEY,
+        name VARCHAR(255) NOT NULL,
+        designation VARCHAR(255) NOT NULL,
+        company VARCHAR(255) NOT NULL,
+        category VARCHAR(255) DEFAULT 'Keynote & Jury',
+        description TEXT,
+        event_edition VARCHAR(120) DEFAULT 'Fempreneur 2027',
+        photo_url VARCHAR(500),
+        display_order INTEGER DEFAULT 0,
+        is_active INTEGER DEFAULT 1,
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+      );
     `);
+
+    // Seed existing website speakers into web_speakers only if table is empty (prevents duplicates)
+    const speakerCountRes = await query(`SELECT COUNT(*)::int AS cnt FROM web_speakers`);
+    if ((speakerCountRes.rows[0]?.cnt || 0) === 0) {
+      const initialSpeakers = [
+        ['Samir Sinha', 'Founder & MD', 'Savvy Group', 'Real Estate & Infrastructure', 'Distinguished keynote speaker and real estate industry leader.', 'Fempreneur 2027', '/images/speakers/speakers-hero-showcase.jpg', 1],
+        ['Dr. Meera Nambiar', 'Venture Partner & Director', 'Ankur Capital', 'Venture Capital & Growth', 'Early-stage venture investor supporting women-led startups.', 'Fempreneur 2027', '/images/speakers/speakers-keynote-real.png', 2],
+        ['Pravin Parmar', 'Founder & CEO', 'VyapaarJagat.com | 1MEIF', 'MSME Ecosystem & Media', 'Founder of VyapaarJagat.com & 1MEIF driving MSME visibility across India.', 'Fempreneur 2027', '/images/about/pravin-parmar-founder.jpg', 3],
+        ['Dr. Sunita Sharma', 'Senior Advisor & Dean', 'AMA Ahmedabad', 'Governance & Education', 'Academic leader and governance advisor for emerging entrepreneurs.', 'Fempreneur 2027', '/images/nominate/nominate-awards-application.jpg', 4],
+        ['Nilesh Priyadarshi', 'Founder & CEO', 'Kaarigar Clinic', 'Rural Enterprise & Crafts', 'Championing artisan-led rural enterprises and sustainable crafts.', 'Fempreneur 2027', '/images/partners/corporate-partner-signing.jpg', 5],
+        ['Radhika Merchant', 'Managing Director', 'Encore Healthcare & Bio', 'Healthcare & Biotech', 'Healthcare and biotechnology executive driving clinical innovation.', 'Fempreneur 2027', '/images/categories/award-categories-real.png', 6],
+        ['Ananya Birla', 'Founder & Chairperson', 'Svatantra Microfin', 'Financial Inclusion', 'Pioneering financial inclusion for women micro-entrepreneurs.', 'Fempreneur 2027', '/images/speakers/speakers-hero-showcase.png', 7],
+        ['Dr. Sachin Shigwan', 'The Solar Man of India', 'Green Innovation Labs', 'CleanTech & ESG', 'Clean energy innovator and ESG mentor.', 'Fempreneur 2027', '/images/events/awards-stage-ceremony.jpg', 8],
+        ['Vinod Malviya', 'Co-Founder & Director', 'Shubham Aquavitro Pvt Ltd', 'Manufacturing & Exports', 'Manufacturing and export scale-up leader.', 'Fempreneur 2027', '/images/about/who-we-are-real-event.jpg', 9],
+        ['Dr. Akshay Kumar', 'Founder & Director', 'BroGhar Realty Pvt. Ltd.', 'Commercial Scaling', 'Commercial real estate and venture scaling mentor.', 'Fempreneur 2027', '/images/awards/awards-stage-winners-clean.png', 10],
+      ];
+      for (const sp of initialSpeakers) {
+        await query(
+          `INSERT INTO web_speakers (name, designation, company, category, description, event_edition, photo_url, display_order, is_active)
+           VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 1)`,
+          sp
+        );
+      }
+      console.log('✓ Seeded 10 initial website speakers into web_speakers');
+    }
     console.log('✓ Verified and initialized all web_* tables in PostgreSQL');
   } catch (err) {
     console.warn('Database connection / initialization check warning:', err.message);

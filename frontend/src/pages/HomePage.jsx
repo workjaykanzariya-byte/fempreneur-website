@@ -36,6 +36,7 @@ import {
   FempreneurMovementStage,
   SponsorShowcase,
   HallOfFameSection,
+  FempreneurAppSection,
 } from '../components';
 
 import { fetchPlatformStats } from '../services/api';
@@ -751,6 +752,9 @@ export default function HomePage() {
           </div>
         </div>
       </section>
+
+      {/* 13B. FEMPRENEUR APP SECTION */}
+      <FempreneurAppSection />
 
       {/* 14. JOIN THE COMMUNITY CTA */}
       <section className="section-spacing" style={{ background: '#FFFFFF', borderTop: '1px solid var(--border-subtle)', textAlign: 'center' }}>

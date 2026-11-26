@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Mic } from 'lucide-react';
 import CTAButton from './CTAButton';
+import { fetchPublicSpeakers } from '../services/api';
 
 const PAST_SPEAKERS = [
   {
@@ -72,6 +73,33 @@ const PAST_SPEAKERS = [
  */
 export default function SponsorShowcase() {
   const navigate = useNavigate();
+  const [speakers, setSpeakers] = useState(PAST_SPEAKERS);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchPublicSpeakers().then((rows) => {
+      if (!mounted || !Array.isArray(rows) || rows.length === 0) return;
+      const bgs = [
+        'linear-gradient(155deg, #4A126D 0%, #6A1B9A 100%)',
+        'linear-gradient(155deg, #7B1FA2 0%, #9C27B0 100%)',
+        'linear-gradient(155deg, #AD1457 0%, #D81B60 100%)',
+        'linear-gradient(155deg, #3B0447 0%, #5E1B7A 100%)',
+        'linear-gradient(155deg, #5E35B1 0%, #7E57C2 100%)',
+        'linear-gradient(155deg, #880E4F 0%, #C2185B 100%)',
+      ];
+      setSpeakers(
+        rows.map((row, idx) => ({
+          name: row.name,
+          designation: row.designation ? `${row.designation}${row.company ? ` • ${row.company}` : ''}` : row.company || '',
+          bg: bgs[idx % bgs.length],
+          src: row.photo_url || '/images/speakers/speakers-keynote-real.png',
+        }))
+      );
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
 
   return (
     <section
@@ -204,14 +232,14 @@ export default function SponsorShowcase() {
             </h3>
           </div>
           <CTAButton to="/speakers" variant="primary" size="md" icon={ArrowRight}>
-            All Winners
+            All Speakers
           </CTAButton>
         </div>
       </div>
 
       <div className="fem-speakers-marquee-wrap">
         <div className="fem-speakers-marquee-track">
-          {[...PAST_SPEAKERS, ...PAST_SPEAKERS].map((speaker, idx) => (
+          {[...speakers, ...speakers].map((speaker, idx) => (
             <div
               key={idx}
               className="fem-speaker-large-card"

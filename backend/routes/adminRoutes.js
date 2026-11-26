@@ -14,11 +14,15 @@ const JWT_SECRET = process.env.JWT_SECRET || 'fempreneur_super_secret_jwt_key_20
 // Ensure upload directory exists
 const uploadDir = path.join(process.cwd(), 'uploads', 'nominations');
 const blogUploadDir = path.join(process.cwd(), 'uploads', 'blogs');
+const speakerUploadDir = path.join(process.cwd(), 'uploads', 'speakers');
 if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir, { recursive: true });
 }
 if (!fs.existsSync(blogUploadDir)) {
   fs.mkdirSync(blogUploadDir, { recursive: true });
+}
+if (!fs.existsSync(speakerUploadDir)) {
+  fs.mkdirSync(speakerUploadDir, { recursive: true });
 }
 
 const storage = multer.diskStorage({
@@ -42,6 +46,17 @@ const blogStorage = multer.diskStorage({
   }
 });
 const uploadBlog = multer({ storage: blogStorage });
+
+const speakerStorage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, speakerUploadDir);
+  },
+  filename: function (req, file, cb) {
+    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
+    cb(null, 'speaker-' + uniqueSuffix + path.extname(file.originalname));
+  }
+});
+const uploadSpeaker = multer({ storage: speakerStorage });
 
 // Helper middleware for admin verification (supports unity admin & web admin tokens)
 const verifyAdmin = (req, res, next) => {
@@ -620,6 +635,174 @@ router.delete('/jury/:id', verifyAdmin, async (req, res) => {
     res.json({ success: true, message: 'Jury member deleted successfully' });
   } catch (error) {
     res.status(500).json({ success: false, message: 'Error deleting jury' });
+  }
+});
+
+// =============================================================================
+// 4B. SPEAKERS MANAGEMENT (Admin & Public Website Sync)
+// =============================================================================
+
+// GET /api/web/speakers/public (Public endpoint for /speakers page)
+router.get('/speakers/public', async (req, res) => {
+  try {
+    const result = await query(
+      `SELECT id, name, designation, company, category, description, event_edition, photo_url, display_order, is_active
+       FROM web_speakers
+       WHERE COALESCE(is_active, 1) = 1
+       ORDER BY COALESCE(display_order, 0) ASC, id ASC`
+    );
+    res.json({ success: true, data: result.rows });
+  } catch (error) {
+    console.error('Error fetching public speakers:', error);
+    res.status(500).json({ success: false, message: 'Error fetching public speakers' });
+  }
+});
+
+// GET /api/admin/speakers (Admin list - all active & inactive speakers)
+router.get('/speakers', verifyAdmin, async (req, res) => {
+  try {
+    const { search = '' } = req.query;
+    const result = await query(
+      `SELECT * FROM web_speakers ORDER BY COALESCE(display_order, 0) ASC, id ASC`
+    );
+    let rows = result.rows || [];
+    if (search && String(search).trim()) {
+      const q = String(search).toLowerCase().trim();
+      rows = rows.filter(
+        (r) =>
+          (r.name || '').toLowerCase().includes(q) ||
+          (r.designation || '').toLowerCase().includes(q) ||
+          (r.company || '').toLowerCase().includes(q) ||
+          (r.category || '').toLowerCase().includes(q) ||
+          (r.event_edition || '').toLowerCase().includes(q)
+      );
+    }
+    res.json({ success: true, data: rows });
+  } catch (error) {
+    console.error('Error fetching admin speakers:', error);
+    res.status(500).json({ success: false, message: 'Error fetching speakers' });
+  }
+});
+
+// POST /api/admin/speakers
+router.post('/speakers', verifyAdmin, uploadSpeaker.single('profilePicture'), async (req, res) => {
+  try {
+    const { name, designation, company, category, description, event_edition, display_order, is_active } = req.body;
+    if (!name || !designation || !company) {
+      return res.status(400).json({ success: false, message: 'Speaker Name, Designation, and Company/Organization are required' });
+    }
+
+    const dupCheck = await query(
+      `SELECT id FROM web_speakers WHERE LOWER(TRIM(name)) = LOWER(TRIM($1)) AND LOWER(TRIM(company)) = LOWER(TRIM($2)) LIMIT 1`,
+      [name, company]
+    );
+    if (dupCheck.rows.length > 0) {
+      return res.status(409).json({ success: false, message: 'A speaker with this name and organization already exists.' });
+    }
+
+    const photoUrl = req.file ? `/uploads/speakers/${req.file.filename}` : null;
+    const orderNum = Number.isFinite(Number(display_order)) ? Number(display_order) : 0;
+    const activeFlag = String(is_active) === '0' || is_active === false || is_active === 'false' ? 0 : 1;
+
+    const inserted = await query(
+      `INSERT INTO web_speakers (name, designation, company, category, description, event_edition, photo_url, display_order, is_active)
+       VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+       RETURNING *`,
+      [
+        name.trim(),
+        designation.trim(),
+        company.trim(),
+        category?.trim() || 'Keynote & Jury',
+        description?.trim() || '',
+        event_edition?.trim() || 'Fempreneur 2027',
+        photoUrl,
+        orderNum,
+        activeFlag,
+      ]
+    );
+    res.json({ success: true, message: 'Speaker added successfully!', data: inserted.rows[0] });
+  } catch (error) {
+    console.error('Error adding speaker:', error);
+    res.status(500).json({ success: false, message: 'Error adding speaker' });
+  }
+});
+
+// PATCH /api/admin/speakers/:id
+router.patch('/speakers/:id', verifyAdmin, uploadSpeaker.single('profilePicture'), async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { name, designation, company, category, description, event_edition, display_order, is_active } = req.body;
+    if (!name || !designation || !company) {
+      return res.status(400).json({ success: false, message: 'Speaker Name, Designation, and Company/Organization are required' });
+    }
+
+    const existing = await query(`SELECT * FROM web_speakers WHERE id = $1`, [id]);
+    if (existing.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Speaker not found' });
+    }
+
+    const photoUrl = req.file ? `/uploads/speakers/${req.file.filename}` : existing.rows[0].photo_url;
+    const orderNum = Number.isFinite(Number(display_order)) ? Number(display_order) : (existing.rows[0].display_order || 0);
+    const activeFlag =
+      is_active === undefined || is_active === null || is_active === ''
+        ? existing.rows[0].is_active
+        : (String(is_active) === '0' || is_active === false || is_active === 'false' ? 0 : 1);
+
+    const updated = await query(
+      `UPDATE web_speakers
+       SET name = $1, designation = $2, company = $3, category = $4, description = $5,
+           event_edition = $6, photo_url = $7, display_order = $8, is_active = $9,
+           updated_at = CURRENT_TIMESTAMP
+       WHERE id = $10
+       RETURNING *`,
+      [
+        name.trim(),
+        designation.trim(),
+        company.trim(),
+        category?.trim() || 'Keynote & Jury',
+        description?.trim() || '',
+        event_edition?.trim() || 'Fempreneur 2027',
+        photoUrl,
+        orderNum,
+        activeFlag,
+        id,
+      ]
+    );
+    res.json({ success: true, message: 'Speaker updated successfully!', data: updated.rows[0] });
+  } catch (error) {
+    console.error('Error updating speaker:', error);
+    res.status(500).json({ success: false, message: 'Error updating speaker' });
+  }
+});
+
+// PATCH /api/admin/speakers/:id/status
+router.patch('/speakers/:id/status', verifyAdmin, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { is_active } = req.body;
+    const activeFlag = String(is_active) === '0' || is_active === false || is_active === 'false' ? 0 : 1;
+    const updated = await query(
+      `UPDATE web_speakers SET is_active = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2 RETURNING *`,
+      [activeFlag, id]
+    );
+    if (updated.rows.length === 0) {
+      return res.status(404).json({ success: false, message: 'Speaker not found' });
+    }
+    res.json({ success: true, message: 'Speaker status updated', data: updated.rows[0] });
+  } catch (error) {
+    console.error('Error toggling speaker status:', error);
+    res.status(500).json({ success: false, message: 'Error updating speaker status' });
+  }
+});
+
+// DELETE /api/admin/speakers/:id
+router.delete('/speakers/:id', verifyAdmin, async (req, res) => {
+  try {
+    await query(`DELETE FROM web_speakers WHERE id = $1`, [req.params.id]);
+    res.json({ success: true, message: 'Speaker deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting speaker:', error);
+    res.status(500).json({ success: false, message: 'Error deleting speaker' });
   }
 });
 
