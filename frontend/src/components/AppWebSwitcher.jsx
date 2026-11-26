@@ -2,13 +2,15 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Smartphone, Globe } from 'lucide-react';
 
-const APP_ADMIN_URL = import.meta.env.VITE_APP_ADMIN_URL || '/admin/dashboard';
+const APP_ADMIN_URL = import.meta.env.VITE_APP_ADMIN_URL || '/admin/app/dashboard';
 
-export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' }) {
+export default function AppWebSwitcher({ collapsed = false, currentMode, onModeChange }) {
   const navigate = useNavigate();
   const location = useLocation();
 
-  const isWebActive = currentMode ? currentMode === 'web' : location.pathname.startsWith('/admin/web');
+  const isWebActive = currentMode
+    ? currentMode === 'web'
+    : !location.pathname.startsWith('/admin/app');
 
   return (
     <div style={{
@@ -23,7 +25,13 @@ export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' 
     }}>
       <button
         type="button"
-        onClick={() => navigate('/admin/web')}
+        onClick={() => {
+          if (onModeChange) {
+            onModeChange('web');
+          } else {
+            navigate('/admin/web');
+          }
+        }}
         style={{
           flex: 1,
           display: 'flex',
@@ -33,7 +41,7 @@ export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' 
           padding: '6px 8px',
           borderRadius: '7px',
           fontSize: '0.78rem',
-          fontWeight: 700,
+          fontWeight: isWebActive ? 700 : 600,
           cursor: 'pointer',
           border: 'none',
           transition: 'all 0.2s ease',
@@ -49,7 +57,13 @@ export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' 
       <button
         type="button"
         onClick={() => {
-          window.location.href = APP_ADMIN_URL;
+          if (onModeChange) {
+            onModeChange('app');
+          } else if (APP_ADMIN_URL.startsWith('http')) {
+            window.location.href = APP_ADMIN_URL;
+          } else {
+            navigate(APP_ADMIN_URL);
+          }
         }}
         style={{
           flex: 1,
@@ -60,7 +74,7 @@ export default function AppWebSwitcher({ collapsed = false, currentMode = 'web' 
           padding: '6px 8px',
           borderRadius: '7px',
           fontSize: '0.78rem',
-          fontWeight: 600,
+          fontWeight: !isWebActive ? 700 : 600,
           cursor: 'pointer',
           border: 'none',
           transition: 'all 0.2s ease',

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Trophy, Handshake, Calendar, LogOut, Loader2, Menu, X, 
   FileText, PlusCircle, Award, Users, Video, Search,
@@ -11,6 +11,8 @@ import './AdminDashboard.css';
 
 const isProduction = window.location.hostname !== 'localhost' && window.location.hostname !== '127.0.0.1';
 const API_PREFIX = isProduction ? '' : `http://${window.location.hostname}:5000`;
+
+const getAdminToken = () => localStorage.getItem('adminToken') || localStorage.getItem('fem_token') || localStorage.getItem('token') || localStorage.getItem('authToken') || '';
 
 export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('nominations');
@@ -104,7 +106,7 @@ export default function AdminDashboard() {
 
     setIsLoading(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
 
       let endpoint = '';
       if (tabId === 'nominations') endpoint = 'nominations';
@@ -270,7 +272,7 @@ export default function AdminDashboard() {
   const handleDeleteItem = async (id) => {
     if (!window.confirm('Are you sure you want to delete this record?')) return;
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const res = await fetch(`${API_PREFIX}/api/admin/nominations/${id}`, {
         method: 'DELETE',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -290,7 +292,7 @@ export default function AdminDashboard() {
   const handleDeleteWinner = async (id, source = 'legacy') => {
     if (!window.confirm('Are you sure you want to remove this winner?')) return;
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const res = await fetch(`${API_PREFIX}/api/admin/winners/${id}?source=${encodeURIComponent(source)}`, {
         method: 'DELETE',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -315,7 +317,7 @@ export default function AdminDashboard() {
     }
     setWinnerSubmitting(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const formData = new FormData();
       formData.append('nominee_name', newWinnerForm.nominee_name.trim());
       formData.append('business_name', newWinnerForm.business_name.trim());
@@ -360,7 +362,7 @@ export default function AdminDashboard() {
     }
     setSpeakerSubmitting(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const formData = new FormData();
       formData.append('name', newSpeakerForm.name.trim());
       formData.append('designation', newSpeakerForm.designation.trim());
@@ -403,7 +405,7 @@ export default function AdminDashboard() {
     if (!editingSpeaker?.id) return;
     setSpeakerSubmitting(true);
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const formData = new FormData();
       formData.append('name', (editingSpeaker.name || '').trim());
       formData.append('designation', (editingSpeaker.designation || '').trim());
@@ -442,7 +444,7 @@ export default function AdminDashboard() {
   const handleToggleSpeakerStatus = async (speaker) => {
     const nextStatus = Number(speaker.is_active) === 1 ? 0 : 1;
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const res = await fetch(`${API_PREFIX}/api/admin/speakers/${speaker.id}/status`, {
         method: 'PATCH',
         headers: {
@@ -465,7 +467,7 @@ export default function AdminDashboard() {
   const handleDeleteSpeaker = async (id) => {
     if (!window.confirm('Are you sure you want to delete this speaker? This will also remove them from the public website.')) return;
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const res = await fetch(`${API_PREFIX}/api/admin/speakers/${id}`, {
         method: 'DELETE',
         headers: token ? { 'Authorization': `Bearer ${token}` } : {}
@@ -484,7 +486,7 @@ export default function AdminDashboard() {
 
   const handleUpdateStatus = async (id, newStatus) => {
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const res = await fetch(`${API_PREFIX}/api/admin/nominations/${id}/status`, {
         method: 'PATCH',
         headers: {
@@ -515,7 +517,7 @@ export default function AdminDashboard() {
     e.preventDefault();
     if (!editForm.id) return;
     try {
-      const token = localStorage.getItem('adminToken');
+      const token = getAdminToken();
       const formData = new FormData();
       formData.append('nominee_name', editForm.nominee_name || '');
       formData.append('business_name', editForm.business_name || '');
@@ -621,12 +623,12 @@ export default function AdminDashboard() {
             <span className="bc-parent">Dashboard</span>
             <span className="bc-sep">›</span>
             <span className="bc-active">
-              {activeTab === 'nominations' ? 'Award Nominations' : mainNavItems.find(i => i.id === activeTab)?.label || 'Admin Panel'}
+              {adminModule === 'app' ? (findAppItemById(activeAppTab)?.label || 'App Dashboard') : (activeTab === 'nominations' ? 'Award Nominations' : mainNavItems.find(i => i.id === activeTab)?.label || 'Admin Panel')}
             </span>
           </div>
 
           <div className="fem-admin-topbar-actions">
-            {processedData.length > 0 && activeTab === 'nominations' && (
+            {adminModule === 'web' && processedData.length > 0 && activeTab === 'nominations' && (
               <button
                 type="button"
                 onClick={exportToCSV}
@@ -639,7 +641,7 @@ export default function AdminDashboard() {
             )}
             <button
               type="button"
-              onClick={() => fetchData(activeTab)}
+              onClick={() => adminModule === 'web' ? fetchData(activeTab) : navigate(findAppItemById(activeAppTab)?.route || '/admin/app/dashboard')}
               className="fem-btn fem-btn-outline"
               style={{ padding: '6px 12px', fontSize: '0.82rem' }}
               title="Refresh Data"

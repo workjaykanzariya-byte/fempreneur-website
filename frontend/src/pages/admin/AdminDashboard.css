@@ -121,6 +121,53 @@
   color: #18181B !important;
 }
 
+.fem-admin-nav-item.has-children {
+  justify-content: space-between;
+}
+
+.fem-admin-nav-item-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.fem-admin-submenu {
+  list-style: none;
+  margin: 2px 0 6px 18px;
+  padding: 2px 0 2px 12px;
+  border-left: 1px solid rgba(212, 175, 55, 0.2);
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.fem-admin-subitem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  border-radius: 7px;
+  color: #CBD5E1;
+  font-size: 0.83rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  user-select: none;
+}
+
+.fem-admin-subitem:hover {
+  background: rgba(255, 255, 255, 0.06);
+  color: #FFFFFF;
+}
+
+.fem-admin-subitem.active {
+  background: #c99738 !important;
+  color: #18181B !important;
+  font-weight: 700 !important;
+  box-shadow: 0 2px 8px rgba(201, 151, 56, 0.35);
+}
+
 .fem-admin-sidebar-scroll {
   flex: 1;
   overflow-y: auto;
