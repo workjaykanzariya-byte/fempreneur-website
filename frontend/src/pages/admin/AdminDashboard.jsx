@@ -27,7 +27,6 @@ const APP_NAV_ITEMS = [
     icon: <Activity size={18} />,
     children: [
       { id: 'app-activities-all', label: 'All Activities', route: '/admin/app/activities', extPath: '/admin/activities' },
-      { id: 'app-activities-log', label: 'Activity Logs', route: '/admin/app/activity-logs', extPath: '/admin/activity-logs' },
     ],
   },
   { id: 'app-referral-report', label: 'Referral Report', route: '/admin/app/referral-report', extPath: '/admin/referral-report', icon: <Share2 size={18} /> },
@@ -37,8 +36,8 @@ const APP_NAV_ITEMS = [
     icon: <MessageSquare size={18} />,
     children: [
       { id: 'app-posts-all', label: 'All Posts', route: '/admin/app/posts', extPath: '/admin/posts' },
-      { id: 'app-timeline', label: 'Timeline Feed', route: '/admin/app/timeline', extPath: '/admin/timeline' },
-      { id: 'app-reported-posts', label: 'Reported Posts', route: '/admin/app/reported-posts', extPath: '/admin/reported-posts' },
+      { id: 'app-timeline', label: 'Timeline Feed', route: '/admin/app/timeline', extPath: '/admin/posts/timeline' },
+      { id: 'app-reported-posts', label: 'Reported Posts', route: '/admin/app/reported-posts', extPath: '/admin/posts/reported' },
     ],
   },
   {
@@ -47,7 +46,6 @@ const APP_NAV_ITEMS = [
     icon: <Clock size={18} />,
     children: [
       { id: 'app-peer-requests', label: 'Peer Registration Requests', route: '/admin/app/pending-requests', extPath: '/admin/pending-requests' },
-      { id: 'app-circle-requests', label: 'Circle Requests', route: '/admin/app/circle-requests', extPath: '/admin/circle-requests' },
     ],
   },
   { id: 'app-support-tickets', label: 'Support Tickets', route: '/admin/app/support-tickets', extPath: '/admin/support-tickets', icon: <Ticket size={18} /> },
@@ -57,7 +55,7 @@ const APP_NAV_ITEMS = [
     icon: <Calendar size={18} />,
     children: [
       { id: 'app-events-all', label: 'All App Events', route: '/admin/app/events', extPath: '/admin/events' },
-      { id: 'app-events-reg', label: 'Event Registrations', route: '/admin/app/event-registrations', extPath: '/admin/event-registrations' },
+      { id: 'app-events-create', label: '+ Create Event', route: '/admin/app/events/create', extPath: '/admin/events/create' },
     ],
   },
   {
@@ -66,13 +64,13 @@ const APP_NAV_ITEMS = [
     icon: <Briefcase size={18} />,
     children: [
       { id: 'app-brand-partners-list', label: 'All Brand Partners', route: '/admin/app/brand-partners', extPath: '/admin/brand-partners' },
-      { id: 'app-brand-partners-add', label: '+ Add Brand Partner', route: '/admin/app/brand-partners/add', extPath: '/admin/brand-partners/add' },
+      { id: 'app-brand-partners-add', label: '+ Add Brand Partner', route: '/admin/app/brand-partners/create', extPath: '/admin/brand-partners/create' },
     ],
   },
-  { id: 'app-peers', label: 'Peers', route: '/admin/app/peers', extPath: '/admin/peers', icon: <Users size={18} /> },
-  { id: 'app-unity-contacts', label: 'Unity Contacts', route: '/admin/app/unity-contacts', extPath: '/admin/unity-contacts', icon: <BookUser size={18} /> },
-  { id: 'app-leadership', label: 'Leadership', route: '/admin/app/leadership', extPath: '/admin/leadership', icon: <Shield size={18} /> },
-  { id: 'app-industries', label: 'Industries', route: '/admin/app/industries', extPath: '/admin/industries', icon: <Building2 size={18} /> },
+  { id: 'app-peers', label: 'Peers', route: '/admin/app/peers', extPath: '/admin/users', icon: <Users size={18} /> },
+  { id: 'app-unity-contacts', label: 'Unity Contacts', route: '/admin/app/unity-contacts', extPath: '/admin/contacts', icon: <BookUser size={18} /> },
+  { id: 'app-leadership', label: 'Leadership', route: '/admin/app/leadership', extPath: '/admin/users', icon: <Shield size={18} /> },
+  { id: 'app-industries', label: 'Industries', route: '/admin/app/industries', extPath: '/admin/categories', icon: <Building2 size={18} /> },
   { id: 'app-login-history', label: 'Login History', route: '/admin/app/login-history', extPath: '/admin/login-history', icon: <History size={18} /> },
   { id: 'app-circles', label: 'Circles', route: '/admin/app/circles', extPath: '/admin/circles', icon: <Network size={18} /> },
   { id: 'app-circulars', label: 'Circulars', route: '/admin/app/circulars', extPath: '/admin/circulars', icon: <Megaphone size={18} /> },
@@ -83,11 +81,10 @@ const APP_NAV_ITEMS = [
     label: 'Notifications & Email',
     icon: <Bell size={18} />,
     children: [
-      { id: 'app-notifications', label: 'Push Notifications', route: '/admin/app/notifications', extPath: '/admin/notifications' },
-      { id: 'app-emails', label: 'Email Broadcasts', route: '/admin/app/emails', extPath: '/admin/emails' },
+      { id: 'app-notifications', label: 'Circulars & Notifications', route: '/admin/app/notifications', extPath: '/admin/circulars' },
     ],
   },
-  { id: 'app-circle-categories', label: 'Circle Categories', route: '/admin/app/circle-categories', extPath: '/admin/circle-categories', icon: <Tag size={18} /> },
+  { id: 'app-circle-categories', label: 'Circle Categories', route: '/admin/app/circle-categories', extPath: '/admin/categories', icon: <Tag size={18} /> },
   { id: 'app-ads', label: 'Ads', route: '/admin/app/ads', extPath: '/admin/ads', icon: <Megaphone size={18} /> },
 ];
 
