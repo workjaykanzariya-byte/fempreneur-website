@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
   Users,
@@ -20,92 +20,128 @@ import {
   ArrowRight
 } from 'lucide-react';
 import { PageHeader } from '../components';
-import { submitGeneralInquiry } from '../services/api';
+import { submitGeneralInquiry, fetchPublicJury } from '../services/api';
+
+const STATIC_JURY_MEMBERS = [
+  {
+    name: 'Samir Sinha',
+    role: 'Founder & MD',
+    company: 'Savvy Group',
+    image: '/images/speakers/speakers-hero-showcase.jpg',
+    category: 'Real Estate & Infrastructure',
+  },
+  {
+    name: 'Dr. Meera Nambiar',
+    role: 'Venture Partner & Director',
+    company: 'Ankur Capital',
+    image: '/images/speakers/speakers-keynote-real.png',
+    category: 'Venture Capital & Growth',
+  },
+  {
+    name: 'Pravin Parmar',
+    role: 'Founder & CEO',
+    company: 'VyapaarJagat.com | 1MEIF',
+    image: '/images/about/pravin-parmar-founder.jpg',
+    category: 'MSME Ecosystem & Media',
+  },
+  {
+    name: 'Dr. Sunita Sharma',
+    role: 'Senior Advisor & Dean',
+    company: 'AMA Ahmedabad',
+    image: '/images/nominate/nominate-awards-application.jpg',
+    category: 'Governance & Education',
+  },
+  {
+    name: 'Nilesh Priyadarshi',
+    role: 'Founder & CEO',
+    company: 'Kaarigar Clinic',
+    image: '/images/partners/corporate-partner-signing.jpg',
+    category: 'Rural Enterprise & Crafts',
+  },
+  {
+    name: 'Radhika Merchant',
+    role: 'Managing Director',
+    company: 'Encore Healthcare & Bio',
+    image: '/images/categories/award-categories-real.png',
+    category: 'Healthcare & Biotech',
+  },
+  {
+    name: 'Ananya Birla',
+    role: 'Founder & Chairperson',
+    company: 'Svatantra Microfin',
+    image: '/images/speakers/speakers-hero-showcase.png',
+    category: 'Financial Inclusion',
+  },
+  {
+    name: 'Dr. Sachin Shigwan',
+    role: 'The Solar Man of India',
+    company: 'Green Innovation Labs',
+    image: '/images/events/awards-stage-ceremony.jpg',
+    category: 'CleanTech & ESG',
+  },
+  {
+    name: 'Vinod Malviya',
+    role: 'Co-Founder & Director',
+    company: 'Shubham Aquavitro Pvt Ltd',
+    image: '/images/about/who-we-are-real-event.jpg',
+    category: 'Manufacturing & Exports',
+  },
+  {
+    name: 'Dr. Akshay Kumar',
+    role: 'Founder & Director',
+    company: 'BroGhar Realty Pvt. Ltd.',
+    image: '/images/awards/awards-stage-winners-clean.png',
+    category: 'Commercial Scaling',
+  },
+];
 
 export default function SpeakersPage() {
   const [searchTerm, setSearchTerm] = useState('');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [dbJury, setDbJury] = useState([]);
   const [speakerData, setSpeakerData] = useState({
     name: '',
     email: '',
     topic: '',
   });
 
-  // Master List of Speakers & Jury Panelists for Fempreneur 2027
-  const juryMembers = [
-    {
-      name: 'Samir Sinha',
-      role: 'Founder & MD',
-      company: 'Savvy Group',
-      image: '/images/speakers/speakers-hero-showcase.jpg',
-      category: 'Real Estate & Infrastructure',
-    },
-    {
-      name: 'Dr. Meera Nambiar',
-      role: 'Venture Partner & Director',
-      company: 'Ankur Capital',
-      image: '/images/speakers/speakers-keynote-real.png',
-      category: 'Venture Capital & Growth',
-    },
-    {
-      name: 'Pravin Parmar',
-      role: 'Founder & CEO',
-      company: 'VyapaarJagat.com | 1MEIF',
-      image: '/images/about/pravin-parmar-founder.jpg',
-      category: 'MSME Ecosystem & Media',
-    },
-    {
-      name: 'Dr. Sunita Sharma',
-      role: 'Senior Advisor & Dean',
-      company: 'AMA Ahmedabad',
-      image: '/images/nominate/nominate-awards-application.jpg',
-      category: 'Governance & Education',
-    },
-    {
-      name: 'Nilesh Priyadarshi',
-      role: 'Founder & CEO',
-      company: 'Kaarigar Clinic',
-      image: '/images/partners/corporate-partner-signing.jpg',
-      category: 'Rural Enterprise & Crafts',
-    },
-    {
-      name: 'Radhika Merchant',
-      role: 'Managing Director',
-      company: 'Encore Healthcare & Bio',
-      image: '/images/categories/award-categories-real.png',
-      category: 'Healthcare & Biotech',
-    },
-    {
-      name: 'Ananya Birla',
-      role: 'Founder & Chairperson',
-      company: 'Svatantra Microfin',
-      image: '/images/speakers/speakers-hero-showcase.png',
-      category: 'Financial Inclusion',
-    },
-    {
-      name: 'Dr. Sachin Shigwan',
-      role: 'The Solar Man of India',
-      company: 'Green Innovation Labs',
-      image: '/images/events/awards-stage-ceremony.jpg',
-      category: 'CleanTech & ESG',
-    },
-    {
-      name: 'Vinod Malviya',
-      role: 'Co-Founder & Director',
-      company: 'Shubham Aquavitro Pvt Ltd',
-      image: '/images/about/who-we-are-real-event.jpg',
-      category: 'Manufacturing & Exports',
-    },
-    {
-      name: 'Dr. Akshay Kumar',
-      role: 'Founder & Director',
-      company: 'BroGhar Realty Pvt. Ltd.',
-      image: '/images/awards/awards-stage-winners-clean.png',
-      category: 'Commercial Scaling',
-    },
-  ];
+  useEffect(() => {
+    let mounted = true;
+    fetchPublicJury().then((rows) => {
+      if (mounted && Array.isArray(rows)) {
+        setDbJury(rows);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  // Merge live admin Speakers & Jury with static list (deduplicated by name, live entries first)
+  const juryMembers = useMemo(() => {
+    const normalizedDb = dbJury
+      .filter((row) => row && row.name)
+      .map((row) => ({
+        name: String(row.name).trim(),
+        role: row.role ? String(row.role).trim() : 'Speaker & Jury',
+        company: row.org ? String(row.org).trim() : '',
+        image: row.photo_url || '/images/speakers/speakers-keynote-real.png',
+        category: row.tags ? String(row.tags).trim() : 'Speaker & Jury',
+      }));
+
+    const seen = new Set();
+    const merged = [];
+    for (const member of [...normalizedDb, ...STATIC_JURY_MEMBERS]) {
+      const key = member.name.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(member);
+      }
+    }
+    return merged;
+  }, [dbJury]);
 
   // Filter jury members based on search
   const filteredJury = useMemo(() => {

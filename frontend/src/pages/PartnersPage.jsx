@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   Handshake,
   Check,
@@ -21,13 +21,15 @@ import {
   Store
 } from 'lucide-react';
 import { PageHeader } from '../components';
-import { submitGeneralInquiry } from '../services/api';
+import { submitGeneralInquiry, fetchPublicSponsors, fetchPublicPartners } from '../services/api';
 
 export default function PartnersPage() {
   const [selectedTier, setSelectedTier] = useState('Title Sponsor (₹2,00,000)');
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
+  const [dbSponsors, setDbSponsors] = useState([]);
+  const [dbPartners, setDbPartners] = useState([]);
   const [formData, setFormData] = useState({
     fullName: '',
     company: '',
@@ -37,8 +39,19 @@ export default function PartnersPage() {
     requirements: '',
   });
 
-  // Master List of Supporters & Corporate Partners (Using original logo assets)
-  const supporters = [
+  useEffect(() => {
+    let mounted = true;
+    Promise.all([fetchPublicSponsors(), fetchPublicPartners()]).then(([sponsorsRows, partnersRows]) => {
+      if (!mounted) return;
+      if (Array.isArray(sponsorsRows)) setDbSponsors(sponsorsRows);
+      if (Array.isArray(partnersRows)) setDbPartners(partnersRows);
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const staticSupporters = [
     // Row 1
     {
       tier: 'TITLE SPONSOR',
@@ -134,6 +147,33 @@ export default function PartnersPage() {
       logo: '/images/sponsors/AequitasInfotech.png',
     },
   ];
+
+  const supporters = useMemo(() => {
+    const normalize = (rows, defaultTier) =>
+      rows
+        .filter((row) => row && (row.org || row.name))
+        .map((row) => ({
+          tier: String(row.role || defaultTier).toUpperCase(),
+          name: String(row.org || row.name).trim(),
+          logo: row.photo_url || '',
+        }));
+
+    const dynamicItems = [
+      ...normalize(dbSponsors, 'SPONSOR'),
+      ...normalize(dbPartners, 'PARTNER'),
+    ];
+
+    const seen = new Set();
+    const merged = [];
+    for (const item of [...dynamicItems, ...staticSupporters]) {
+      const key = item.name.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(item);
+      }
+    }
+    return merged;
+  }, [dbSponsors, dbPartners]);
 
   // 4 Core Value Propositions
   const valueProps = [
@@ -363,16 +403,35 @@ export default function PartnersPage() {
                     padding: '0.25rem 0.5rem',
                   }}
                 >
-                  <img
-                    src={item.logo}
-                    alt={item.name}
-                    style={{
-                      maxHeight: '100%',
-                      maxWidth: '100%',
-                      objectFit: 'contain',
-                    }}
-                    loading="lazy"
-                  />
+                  {item.logo ? (
+                    <img
+                      src={item.logo}
+                      alt={item.name}
+                      style={{
+                        maxHeight: '100%',
+                        maxWidth: '100%',
+                        objectFit: 'contain',
+                      }}
+                      loading="lazy"
+                    />
+                  ) : (
+                    <div
+                      style={{
+                        width: '56px',
+                        height: '56px',
+                        borderRadius: '14px',
+                        background: 'linear-gradient(135deg, #4A126D 0%, #7B1FA2 100%)',
+                        color: '#FFFFFF',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontWeight: 800,
+                        fontSize: '1.25rem',
+                      }}
+                    >
+                      {item.name.charAt(0).toUpperCase()}
+                    </div>
+                  )}
                 </div>
 
                 {/* 3. PARTNER NAME AT BOTTOM */}

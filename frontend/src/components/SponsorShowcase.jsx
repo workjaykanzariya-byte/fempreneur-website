@@ -1,7 +1,17 @@
-import React from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ArrowRight, Mic } from 'lucide-react';
 import CTAButton from './CTAButton';
+import { fetchPublicJury } from '../services/api';
+
+const SPEAKER_GRADIENTS = [
+  'linear-gradient(155deg, #4A126D 0%, #6A1B9A 100%)',
+  'linear-gradient(155deg, #7B1FA2 0%, #9C27B0 100%)',
+  'linear-gradient(155deg, #AD1457 0%, #D81B60 100%)',
+  'linear-gradient(155deg, #3B0447 0%, #5E1B7A 100%)',
+  'linear-gradient(155deg, #5E35B1 0%, #7E57C2 100%)',
+  'linear-gradient(155deg, #880E4F 0%, #C2185B 100%)',
+];
 
 const PAST_SPEAKERS = [
   {
@@ -72,6 +82,41 @@ const PAST_SPEAKERS = [
  */
 export default function SponsorShowcase() {
   const navigate = useNavigate();
+  const [dbJury, setDbJury] = useState([]);
+
+  useEffect(() => {
+    let mounted = true;
+    fetchPublicJury().then((rows) => {
+      if (mounted && Array.isArray(rows)) {
+        setDbJury(rows);
+      }
+    });
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  const speakers = useMemo(() => {
+    const normalizedDb = dbJury
+      .filter((row) => row && row.name)
+      .map((row, idx) => ({
+        name: String(row.name).trim(),
+        designation: [row.role, row.org].filter(Boolean).join(' • ') || 'Speaker & Jury',
+        bg: SPEAKER_GRADIENTS[idx % SPEAKER_GRADIENTS.length],
+        src: row.photo_url || '/images/entrepreneurs/ananya-sharma.png',
+      }));
+
+    const seen = new Set();
+    const merged = [];
+    for (const s of [...normalizedDb, ...PAST_SPEAKERS]) {
+      const key = s.name.toLowerCase();
+      if (!seen.has(key)) {
+        seen.add(key);
+        merged.push(s);
+      }
+    }
+    return merged;
+  }, [dbJury]);
 
   return (
     <section
@@ -211,7 +256,7 @@ export default function SponsorShowcase() {
 
       <div className="fem-speakers-marquee-wrap">
         <div className="fem-speakers-marquee-track">
-          {[...PAST_SPEAKERS, ...PAST_SPEAKERS].map((speaker, idx) => (
+          {[...speakers, ...speakers].map((speaker, idx) => (
             <div
               key={idx}
               className="fem-speaker-large-card"
