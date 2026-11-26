@@ -861,6 +861,17 @@ export default function AdminDashboard() {
           </div>
 
           <div className="fem-admin-topbar-actions">
+            {!getAdminToken() && (
+              <button
+                type="button"
+                onClick={() => navigate('/login', { state: { from: location.pathname } })}
+                className="fem-btn fem-btn-gold"
+                style={{ padding: '6px 12px', fontSize: '0.82rem' }}
+                title="Sign in to save changes"
+              >
+                <span>Sign In to Save</span>
+              </button>
+            )}
             {adminModule === 'web' && processedData.length > 0 && activeTab === 'nominations' && (
               <button
                 type="button"
