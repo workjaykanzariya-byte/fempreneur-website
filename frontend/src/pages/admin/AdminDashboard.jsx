@@ -126,16 +126,8 @@ export default function AdminDashboard() {
     return matched ? matched.item.id : (localStorage.getItem('fem_admin_app_tab') || 'app-dashboard');
   });
   const [expandedAppMenus, setExpandedAppMenus] = useState(() => {
-    try {
-      const saved = JSON.parse(localStorage.getItem('fem_admin_app_expanded') || '[]');
-      const matched = findAppItemByPath(location.pathname);
-      if (matched?.parentId && !saved.includes(matched.parentId)) {
-        return [...saved, matched.parentId];
-      }
-      return Array.isArray(saved) ? saved : [];
-    } catch {
-      return [];
-    }
+    const matched = findAppItemByPath(location.pathname);
+    return matched?.parentId ? [matched.parentId] : [];
   });
   const [appIframeKey, setAppIframeKey] = useState(0);
   const [data, setData] = useState([]);
@@ -726,7 +718,7 @@ export default function AdminDashboard() {
   return (
     <div className="fem-admin-wrapper">
       {/* Sidebar with Fempreneur Branding & Greenpreneur Layout */}
-      <aside className={`fem-admin-sidebar ${!isSidebarOpen ? 'collapsed' : ''} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
+      <aside className={`fem-admin-sidebar ${adminModule === 'app' ? 'app-mode' : ''} ${!isSidebarOpen ? 'collapsed' : ''} ${mobileMenuOpen ? 'mobile-open' : ''}`}>
         <div className="fem-admin-sidebar-header">
           <div className="fem-admin-brand">
             <span className="fem-admin-brand-text">FEMPRENEUR</span>

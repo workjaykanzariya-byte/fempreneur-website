@@ -121,6 +121,21 @@
   color: #18181B !important;
 }
 
+/* App Mode Active Menu item matching dev.fempreneur.club sidebar */
+.fem-admin-sidebar.app-mode .fem-admin-nav-item.active,
+.fem-admin-sidebar.app-mode .fem-admin-subitem.active {
+  background: linear-gradient(90deg, rgba(139, 92, 246, 0.30) 0%, rgba(139, 92, 246, 0.12) 100%) !important;
+  color: #FFFFFF !important;
+  font-weight: 600 !important;
+  border-left: 3px solid #8B5CF6;
+  box-shadow: none;
+}
+
+.fem-admin-sidebar.app-mode .fem-admin-nav-item.active svg,
+.fem-admin-sidebar.app-mode .fem-admin-subitem.active svg {
+  color: #A78BFA !important;
+}
+
 .fem-admin-nav-item.has-children {
   justify-content: space-between;
 }
