@@ -3,7 +3,9 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import { 
   Trophy, Handshake, Calendar, LogOut, Loader2, Menu, X, 
   FileText, PlusCircle, Award, Users, Video, Search,
-  Download, Eye, Edit, Trash2, CheckCircle, Star, RefreshCw, Mic
+  Download, Eye, Edit, Trash2, CheckCircle, Star, RefreshCw, Mic,
+  LayoutDashboard, Activity, Share2, MessageSquare, Clock, Ticket, Briefcase,
+  BookUser, Shield, Building2, ChevronRight, ChevronDown, ExternalLink
 } from 'lucide-react';
 import RichTextEditor from '../../components/RichTextEditor';
 import AppWebSwitcher from '../../components/AppWebSwitcher';
@@ -14,8 +16,111 @@ const API_PREFIX = isProduction ? '' : `http://${window.location.hostname}:5000`
 
 const getAdminToken = () => localStorage.getItem('adminToken') || localStorage.getItem('fem_token') || localStorage.getItem('token') || localStorage.getItem('authToken') || '';
 
+const APP_ADMIN_ORIGIN = (import.meta.env.VITE_APP_ADMIN_ORIGIN || 'https://dev.fempreneur.club').replace(/\/$/, '');
+
+const APP_NAV_ITEMS = [
+  { id: 'app-dashboard', label: 'Dashboard', route: '/admin/app/dashboard', extPath: '/admin/dashboard', icon: <LayoutDashboard size={18} /> },
+  {
+    id: 'app-activities',
+    label: 'Activities',
+    icon: <Activity size={18} />,
+    children: [
+      { id: 'app-activities-all', label: 'All Activities', route: '/admin/app/activities', extPath: '/admin/activities' },
+      { id: 'app-circles', label: 'Circles & Hubs', route: '/admin/app/circles', extPath: '/admin/circles' },
+      { id: 'app-coins', label: 'Coins & Rewards', route: '/admin/app/coins', extPath: '/admin/coins' },
+    ],
+  },
+  { id: 'app-referral-report', label: 'Referral Report', route: '/admin/app/referral-report', extPath: '/admin/referral-report', icon: <Share2 size={18} /> },
+  {
+    id: 'app-posts',
+    label: 'Posts & Timeline',
+    icon: <MessageSquare size={18} />,
+    children: [
+      { id: 'app-posts-all', label: 'All Posts', route: '/admin/app/posts', extPath: '/admin/posts' },
+      { id: 'app-timeline', label: 'Timeline Feed', route: '/admin/app/timeline', extPath: '/admin/timeline' },
+      { id: 'app-reported-posts', label: 'Reported Posts', route: '/admin/app/reported-posts', extPath: '/admin/reported-posts' },
+    ],
+  },
+  {
+    id: 'app-pending-requests',
+    label: 'Pending Requests',
+    icon: <Clock size={18} />,
+    children: [
+      { id: 'app-peer-requests', label: 'Peer Registration Requests', route: '/admin/app/pending-requests', extPath: '/admin/pending-requests' },
+      { id: 'app-circle-requests', label: 'Circle Join Requests', route: '/admin/app/circle-requests', extPath: '/admin/circle-requests' },
+    ],
+  },
+  { id: 'app-support-tickets', label: 'Support Tickets', route: '/admin/app/support-tickets', extPath: '/admin/support-tickets', icon: <Ticket size={18} /> },
+  {
+    id: 'app-events-mgmt',
+    label: 'Events Management',
+    icon: <Calendar size={18} />,
+    children: [
+      { id: 'app-events-all', label: 'All App Events', route: '/admin/app/events', extPath: '/admin/events' },
+      { id: 'app-events-reg', label: 'Event Registrations', route: '/admin/app/event-registrations', extPath: '/admin/event-registrations' },
+    ],
+  },
+  {
+    id: 'app-brand-partners',
+    label: 'Brand Partners',
+    icon: <Briefcase size={18} />,
+    children: [
+      { id: 'app-brand-partners-list', label: 'All Brand Partners', route: '/admin/app/brand-partners', extPath: '/admin/brand-partners' },
+      { id: 'app-brand-partners-add', label: '+ Add Brand Partner', route: '/admin/app/brand-partners/add', extPath: '/admin/brand-partners/add' },
+    ],
+  },
+  { id: 'app-peers', label: 'Peers', route: '/admin/app/peers', extPath: '/admin/peers', icon: <Users size={18} /> },
+  { id: 'app-unity-contacts', label: 'Unity Contacts', route: '/admin/app/unity-contacts', extPath: '/admin/unity-contacts', icon: <BookUser size={18} /> },
+  { id: 'app-leadership', label: 'Leadership', route: '/admin/app/leadership', extPath: '/admin/leadership', icon: <Shield size={18} /> },
+  { id: 'app-industries', label: 'Industries', route: '/admin/app/industries', extPath: '/admin/industries', icon: <Building2 size={18} /> },
+];
+
+const findAppItemById = (id) => {
+  for (const item of APP_NAV_ITEMS) {
+    if (item.id === id) return item;
+    if (item.children) {
+      const child = item.children.find((ch) => ch.id === id);
+      if (child) return { ...child, parentLabel: item.label };
+    }
+  }
+  return APP_NAV_ITEMS[0];
+};
+
+const findAppItemByPath = (pathname) => {
+  for (const item of APP_NAV_ITEMS) {
+    if (item.route && pathname === item.route) return { item, parentId: null };
+    if (item.children) {
+      const child = item.children.find((ch) => ch.route === pathname);
+      if (child) return { item: child, parentId: item.id };
+    }
+  }
+  return null;
+};
+
 export default function AdminDashboard() {
-  const [activeTab, setActiveTab] = useState('nominations');
+  const location = useLocation();
+  const [adminModule, setAdminModule] = useState(() => {
+    if (location.pathname.startsWith('/admin/app')) return 'app';
+    if (location.pathname.startsWith('/admin/web')) return 'web';
+    return localStorage.getItem('fem_admin_module') || 'web';
+  });
+  const [activeTab, setActiveTab] = useState(() => localStorage.getItem('fem_admin_web_tab') || 'nominations');
+  const [activeAppTab, setActiveAppTab] = useState(() => {
+    const matched = findAppItemByPath(location.pathname);
+    return matched ? matched.item.id : (localStorage.getItem('fem_admin_app_tab') || 'app-dashboard');
+  });
+  const [expandedAppMenus, setExpandedAppMenus] = useState(() => {
+    try {
+      const saved = JSON.parse(localStorage.getItem('fem_admin_app_expanded') || '[]');
+      const matched = findAppItemByPath(location.pathname);
+      if (matched?.parentId && !saved.includes(matched.parentId)) {
+        return [...saved, matched.parentId];
+      }
+      return Array.isArray(saved) ? saved : [];
+    } catch {
+      return [];
+    }
+  });
   const [data, setData] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [isSidebarOpen, setIsSidebarOpen] = useState(true);
@@ -158,8 +263,59 @@ export default function AdminDashboard() {
   };
 
   useEffect(() => {
-    fetchData(activeTab);
+    localStorage.setItem('fem_admin_module', adminModule);
+  }, [adminModule]);
+
+  useEffect(() => {
+    localStorage.setItem('fem_admin_web_tab', activeTab);
   }, [activeTab]);
+
+  useEffect(() => {
+    localStorage.setItem('fem_admin_app_tab', activeAppTab);
+  }, [activeAppTab]);
+
+  useEffect(() => {
+    localStorage.setItem('fem_admin_app_expanded', JSON.stringify(expandedAppMenus));
+  }, [expandedAppMenus]);
+
+  useEffect(() => {
+    if (location.pathname.startsWith('/admin/app')) {
+      setAdminModule('app');
+      const matched = findAppItemByPath(location.pathname);
+      if (matched) {
+        setActiveAppTab(matched.item.id);
+        if (matched.parentId) {
+          setExpandedAppMenus((prev) => (prev.includes(matched.parentId) ? prev : [...prev, matched.parentId]));
+        }
+      }
+    } else if (location.pathname.startsWith('/admin/web')) {
+      setAdminModule('web');
+    }
+  }, [location.pathname]);
+
+  const handleModuleSwitch = (mode) => {
+    setAdminModule(mode);
+    localStorage.setItem('fem_admin_module', mode);
+    if (mode === 'web') {
+      navigate('/admin/web');
+    } else {
+      const target = findAppItemById(activeAppTab);
+      navigate(target?.route || '/admin/app/dashboard');
+    }
+    setMobileMenuOpen(false);
+  };
+
+  const toggleAppSubmenu = (menuId) => {
+    setExpandedAppMenus((prev) =>
+      prev.includes(menuId) ? prev.filter((id) => id !== menuId) : [...prev, menuId]
+    );
+  };
+
+  useEffect(() => {
+    if (adminModule === 'web') {
+      fetchData(activeTab);
+    }
+  }, [activeTab, adminModule]);
 
   // Main Navigation Sections matching Greenpreneur Sidebar Structure
   const mainNavItems = [
@@ -574,27 +730,93 @@ export default function AdminDashboard() {
         )}
 
         {/* App / Web Platform Switcher */}
-        <AppWebSwitcher collapsed={!isSidebarOpen} currentMode="web" />
+        <AppWebSwitcher
+          collapsed={!isSidebarOpen}
+          currentMode={adminModule}
+          onModeChange={handleModuleSwitch}
+        />
 
         {/* Navigation Menu */}
         <div className="fem-admin-sidebar-scroll">
-          <div className="fem-admin-nav-group">MAIN RECORDS</div>
-          <ul className="fem-admin-nav-list">
-            {mainNavItems.map(item => (
-              <li
-                key={item.id}
-                className={`fem-admin-nav-item ${activeTab === item.id ? 'active' : ''}`}
-                onClick={() => {
-                  setActiveTab(item.id);
-                  setMobileMenuOpen(false);
-                }}
-                title={!isSidebarOpen ? item.label : undefined}
-              >
-                {item.icon}
-                {isSidebarOpen && <span>{item.label}</span>}
-              </li>
-            ))}
-          </ul>
+          {adminModule === 'web' ? (
+            <>
+              <div className="fem-admin-nav-group">MAIN RECORDS</div>
+              <ul className="fem-admin-nav-list">
+                {mainNavItems.map(item => (
+                  <li
+                    key={item.id}
+                    className={`fem-admin-nav-item ${activeTab === item.id ? 'active' : ''}`}
+                    onClick={() => {
+                      setActiveTab(item.id);
+                      setMobileMenuOpen(false);
+                    }}
+                    title={!isSidebarOpen ? item.label : undefined}
+                  >
+                    {item.icon}
+                    {isSidebarOpen && <span>{item.label}</span>}
+                  </li>
+                ))}
+              </ul>
+            </>
+          ) : (
+            <>
+              <div className="fem-admin-nav-group">APP ADMIN</div>
+              <ul className="fem-admin-nav-list">
+                {APP_NAV_ITEMS.map((item) => {
+                  const hasChildren = Array.isArray(item.children) && item.children.length > 0;
+                  const isExpanded = expandedAppMenus.includes(item.id);
+                  const isParentActive = hasChildren
+                    ? item.children.some((ch) => ch.id === activeAppTab)
+                    : activeAppTab === item.id;
+
+                  return (
+                    <li key={item.id}>
+                      <div
+                        className={`fem-admin-nav-item ${hasChildren ? 'has-children' : ''} ${!hasChildren && isParentActive ? 'active' : ''}`}
+                        onClick={() => {
+                          if (hasChildren) {
+                            toggleAppSubmenu(item.id);
+                            if (!isSidebarOpen) setIsSidebarOpen(true);
+                          } else {
+                            setActiveAppTab(item.id);
+                            navigate(item.route);
+                            setMobileMenuOpen(false);
+                          }
+                        }}
+                        title={!isSidebarOpen ? item.label : undefined}
+                      >
+                        <span className="fem-admin-nav-item-label">
+                          {item.icon}
+                          {isSidebarOpen && <span>{item.label}</span>}
+                        </span>
+                        {hasChildren && isSidebarOpen && (
+                          isExpanded ? <ChevronDown size={15} /> : <ChevronRight size={15} />
+                        )}
+                      </div>
+
+                      {hasChildren && isExpanded && isSidebarOpen && (
+                        <ul className="fem-admin-submenu">
+                          {item.children.map((child) => (
+                            <li
+                              key={child.id}
+                              className={`fem-admin-subitem ${activeAppTab === child.id ? 'active' : ''}`}
+                              onClick={() => {
+                                setActiveAppTab(child.id);
+                                navigate(child.route);
+                                setMobileMenuOpen(false);
+                              }}
+                            >
+                              <span>{child.label}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      )}
+                    </li>
+                  );
+                })}
+              </ul>
+            </>
+          )}
         </div>
 
         {/* Logout */}
@@ -652,6 +874,96 @@ export default function AdminDashboard() {
           </div>
         </header>
 
+        {adminModule === 'app' ? (
+          <div className="fem-admin-content" style={{ padding: '24px 32px' }}>
+            {(() => {
+              const currentAppItem = findAppItemById(activeAppTab);
+              const externalUrl = `${APP_ADMIN_ORIGIN}${currentAppItem.extPath || '/admin/dashboard'}`;
+              return (
+                <div style={{ display: 'grid', gap: '20px' }}>
+                  <div style={{
+                    background: 'linear-gradient(135deg, #24073B 0%, #5E178C 100%)',
+                    color: '#FFFFFF',
+                    borderRadius: '14px',
+                    padding: '24px 28px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    flexWrap: 'wrap',
+                    gap: '16px',
+                    boxShadow: '0 8px 24px rgba(36, 7, 59, 0.14)'
+                  }}>
+                    <div>
+                      <div style={{ fontSize: '0.78rem', textTransform: 'uppercase', letterSpacing: '0.08em', color: '#D4AF37', fontWeight: 700, marginBottom: '4px' }}>
+                        {currentAppItem.parentLabel ? `App Admin › ${currentAppItem.parentLabel}` : 'App Admin Module'}
+                      </div>
+                      <h2 style={{ margin: 0, fontSize: '1.45rem', fontWeight: 700, color: '#FFFFFF' }}>
+                        {currentAppItem.label}
+                      </h2>
+                      <p style={{ margin: '6px 0 0', fontSize: '0.88rem', color: 'rgba(255,255,255,0.82)' }}>
+                        Route: <code style={{ background: 'rgba(255,255,255,0.12)', padding: '2px 7px', borderRadius: '5px' }}>{currentAppItem.route}</code>
+                      </p>
+                    </div>
+                    <a
+                      href={externalUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="fem-btn fem-btn-gold"
+                      style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '8px' }}
+                    >
+                      <span>Open in App Admin Portal</span>
+                      <ExternalLink size={15} />
+                    </a>
+                  </div>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(210px, 1fr))', gap: '16px' }}>
+                    {APP_NAV_ITEMS.filter((i) => !i.children && i.id !== 'app-dashboard').map((card) => (
+                      <button
+                        key={card.id}
+                        type="button"
+                        onClick={() => {
+                          setActiveAppTab(card.id);
+                          navigate(card.route);
+                        }}
+                        style={{
+                          textAlign: 'left',
+                          background: activeAppTab === card.id ? '#FDF8EC' : '#FFFFFF',
+                          border: activeAppTab === card.id ? '1.5px solid #C99738' : '1px solid #E5E7EB',
+                          borderRadius: '12px',
+                          padding: '16px 18px',
+                          cursor: 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '12px',
+                          transition: 'all 0.15s ease'
+                        }}
+                      >
+                        <div style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '10px',
+                          background: 'rgba(94, 23, 140, 0.08)',
+                          color: '#5E178C',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          flexShrink: 0
+                        }}>
+                          {card.icon}
+                        </div>
+                        <div>
+                          <div style={{ fontWeight: 700, fontSize: '0.92rem', color: '#111827' }}>{card.label}</div>
+                          <div style={{ fontSize: '0.76rem', color: '#6B7280' }}>{card.route}</div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              );
+            })()}
+          </div>
+        ) : (
+        <>
         {/* Compact Filter Toolbar matching Greenpreneur reference */}
         {activeTab === 'nominations' && (
           <div className="fem-filter-toolbar">
@@ -1416,6 +1728,8 @@ export default function AdminDashboard() {
             </div>
           )}
         </div>
+        </>
+        )}
       </main>
 
       {/* Speaker Preview Modal */}
