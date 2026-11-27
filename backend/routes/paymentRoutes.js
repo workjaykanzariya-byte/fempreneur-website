@@ -6,12 +6,11 @@ import pool, { query } from '../config/db.js';
 
 const router = express.Router();
 
-// Helper to initialize Razorpay instance with dynamic env reload & fallback
-const getRazorpayInstance = () => {
-  try {
-    dotenv.config({ override: true });
-  } catch (e) {}
+let cachedRazorpay = null;
+let cachedKeyPair = '';
 
+// Helper to initialize Razorpay instance (cached to avoid disk I/O per request)
+const getRazorpayInstance = () => {
   const keyId = (process.env.RAZORPAY_KEY_ID || 'rzp_live_S4Z79D9OR4XfXY')?.trim();
   const keySecret = (process.env.RAZORPAY_KEY_SECRET || 'NVINWtrWJr3abLtnorn475q9')?.trim();
 
@@ -19,10 +18,16 @@ const getRazorpayInstance = () => {
     throw new Error('Razorpay API Key ID or Secret is missing.');
   }
 
-  return new Razorpay({
-    key_id: keyId,
-    key_secret: keySecret,
-  });
+  const pair = `${keyId}:${keySecret}`;
+  if (!cachedRazorpay || cachedKeyPair !== pair) {
+    cachedRazorpay = new Razorpay({
+      key_id: keyId,
+      key_secret: keySecret,
+    });
+    cachedKeyPair = pair;
+  }
+
+  return cachedRazorpay;
 };
 
 /**
@@ -361,10 +366,6 @@ router.post('/verify', async (req, res) => {
       return res.status(400).json({ success: false, message: 'Missing Razorpay verification parameters (order_id, payment_id, signature).' });
     }
 
-    try {
-      dotenv.config({ override: true });
-    } catch (e) {}
-
     const secret = (process.env.RAZORPAY_KEY_SECRET || 'NVINWtrWJr3abLtnorn475q9')?.trim();
     if (!secret) {
       return res.status(500).json({ success: false, message: 'Razorpay secret key not configured on server.' });
@@ -382,8 +383,10 @@ router.post('/verify', async (req, res) => {
     }
 
     // Update database record immediately upon verified signature
+    // Skip DB lookup for brand-new nominations (record_id null) since submitNomination inserts immediately after verify
     let syncResult = { isUpdated: false, updatedRecord: null };
-    if (module) {
+    const isNewNomination = (module === 'nomination' || module === 'nominations') && !record_id;
+    if (module && !isNewNomination) {
       syncResult = await syncPaymentToDatabase({
         module,
         recordId: record_id,

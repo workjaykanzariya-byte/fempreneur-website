@@ -23,8 +23,13 @@ const getAuthHeaders = () => {
 };
 
 const safeFetch = async (url, options = {}) => {
+  const controller = new AbortController();
+  const timeoutMs = options.timeoutMs || 25000;
+  const timeoutId = setTimeout(() => controller.abort(), timeoutMs);
+
   try {
-    const response = await fetch(url, options);
+    const response = await fetch(url, { ...options, signal: controller.signal });
+    clearTimeout(timeoutId);
     let data;
     try {
       data = await response.json();
@@ -37,6 +42,10 @@ const safeFetch = async (url, options = {}) => {
     }
     return data;
   } catch (err) {
+    clearTimeout(timeoutId);
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out. Please check your internet connection and try again.');
+    }
     if (err.name === 'TypeError' && err.message.includes('fetch')) {
       throw new Error('Unable to connect to the backend server. Please verify your connection.');
     }

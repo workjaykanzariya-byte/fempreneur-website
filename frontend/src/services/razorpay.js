@@ -12,13 +12,26 @@
 
 const API_BASE = import.meta.env.VITE_API_URL || '/api';
 
+let razorpayScriptPromise = null;
+
 /**
  * Dynamically loads the official Razorpay checkout script if not already present.
  */
 export const loadRazorpayScript = () => {
-  return new Promise((resolve) => {
-    if (window.Razorpay) {
-      resolve(true);
+  if (window.Razorpay) {
+    return Promise.resolve(true);
+  }
+  if (razorpayScriptPromise) {
+    return razorpayScriptPromise;
+  }
+  razorpayScriptPromise = new Promise((resolve) => {
+    const existing = document.querySelector('script[src="https://checkout.razorpay.com/v1/checkout.js"]');
+    if (existing) {
+      existing.addEventListener('load', () => resolve(true), { once: true });
+      existing.addEventListener('error', () => {
+        razorpayScriptPromise = null;
+        resolve(false);
+      }, { once: true });
       return;
     }
     const script = document.createElement('script');
@@ -27,10 +40,12 @@ export const loadRazorpayScript = () => {
     script.onload = () => resolve(true);
     script.onerror = () => {
       console.error('Failed to load official Razorpay SDK');
+      razorpayScriptPromise = null;
       resolve(false);
     };
     document.body.appendChild(script);
   });
+  return razorpayScriptPromise;
 };
 
 /**
@@ -45,25 +60,38 @@ export const initiateRazorpayPayment = async ({
   prefill = {},
   notes = {},
 }) => {
-  // 1. Create order on backend
+  // 1. Create order on backend & load Razorpay SDK in parallel for instant modal open
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 20000);
+
   let orderRes;
+  let isScriptLoaded;
   try {
-    orderRes = await fetch(`${API_BASE}/payment/create-order`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        amount: Number(amount),
-        module,
-        recordId,
-        notes: {
-          ...notes,
-          description,
-        },
+    [orderRes, isScriptLoaded] = await Promise.all([
+      fetch(`${API_BASE}/payment/create-order`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        signal: controller.signal,
+        body: JSON.stringify({
+          amount: Number(amount),
+          module,
+          recordId,
+          notes: {
+            ...notes,
+            description,
+          },
+        }),
       }),
-    });
+      loadRazorpayScript(),
+    ]);
   } catch (netErr) {
+    clearTimeout(timeoutId);
+    if (netErr.name === 'AbortError') {
+      throw new Error('Payment server took too long to respond. Please try again.');
+    }
     throw new Error('Unable to connect to the backend server. Please ensure the backend is running.');
   }
+  clearTimeout(timeoutId);
 
   let orderData;
   try {
@@ -79,8 +107,6 @@ export const initiateRazorpayPayment = async ({
 
   const { order, key_id, currency, test_mode, charged_amount_inr } = orderData;
 
-  // 2. Load official Razorpay SDK script
-  const isScriptLoaded = await loadRazorpayScript();
   if (!isScriptLoaded) {
     throw new Error('Could not load Razorpay payment gateway. Please check your internet connection.');
   }

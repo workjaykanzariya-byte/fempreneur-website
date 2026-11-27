@@ -18,8 +18,41 @@ import {
   AlertCircle
 } from 'lucide-react';
 import { submitNomination, checkDuplicateNomination } from '../services/api';
-import { initiateRazorpayPayment } from '../services/razorpay';
+import { initiateRazorpayPayment, loadRazorpayScript } from '../services/razorpay';
 import { FempreneurAwardCreative } from '../components';
+
+// Compress uploaded images client-side (~40-80KB instead of 3-5MB) for instant submission
+const compressImageFile = (file, maxDimension = 800, quality = 0.82) =>
+  new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Failed to read image file'));
+    reader.onload = () => {
+      const img = new Image();
+      img.onerror = () => resolve(reader.result);
+      img.onload = () => {
+        try {
+          let { width, height } = img;
+          if (width > maxDimension || height > maxDimension) {
+            const ratio = Math.min(maxDimension / width, maxDimension / height);
+            width = Math.round(width * ratio);
+            height = Math.round(height * ratio);
+          }
+          const canvas = document.createElement('canvas');
+          canvas.width = width;
+          canvas.height = height;
+          const ctx = canvas.getContext('2d');
+          ctx.drawImage(img, 0, 0, width, height);
+          const outType = file.type === 'image/png' ? 'image/webp' : 'image/jpeg';
+          const compressed = canvas.toDataURL(outType, quality);
+          resolve(compressed.length < reader.result.length ? compressed : reader.result);
+        } catch {
+          resolve(reader.result);
+        }
+      };
+      img.src = reader.result;
+    };
+    reader.readAsDataURL(file);
+  });
 
 
 export const ALL_CATEGORIES = [
@@ -70,11 +103,13 @@ const PACKAGES = [
     id: 'identity',
     name: 'Identity Package',
     price: 2000,
-    tagline: 'Your first step to shine in the Fempreneur journey.',
+    tagline: 'Your first step to shine.',
     features: [
-      'Free entry pass to Fempreneur Gala 2027 (Worth ₹2,000)',
-      'Vyapaar Jagat Story Publication (worth ₹25,000+) & Business Listing (worth ₹10,000+)',
-      'Positioning: For those who want recognition and visibility.'
+      { text: 'Award nomination', included: true },
+      { text: 'Event entry ticket (Fempreneur Gala 2027)', included: true },
+      { text: 'Your Story Published on VyapaarJagat.com', included: false },
+      { text: '1-year Fempreneur community subscription + app', included: false },
+      { text: 'Story in Digital Fempreneur Magazine', included: false },
     ]
   },
   {
@@ -83,34 +118,37 @@ const PACKAGES = [
     price: 3000,
     tagline: 'Join the tribe of changemakers.',
     features: [
-      'Free entry pass to Fempreneur Gala 2027 (Worth ₹2,000)',
-      'Verified Badge & Featured Public Voting Profile',
-      'Vyapaar Jagat Story Publication & Business Listing',
-      'Positioning: For ambitious disruptors looking to rally public votes.'
+      { text: 'Award nomination', included: true },
+      { text: 'Event entry ticket (Fempreneur Gala 2027)', included: true },
+      { text: 'Your Story Published on VyapaarJagat.com', included: true },
+      { text: '1-year Fempreneur community subscription + app', included: false },
+      { text: 'Story in Digital Fempreneur Magazine', included: false },
     ]
   },
   {
     id: 'fame_india',
     name: 'Fame of India',
     price: 5000,
-    tagline: 'National spotlight for your enterprise.',
+    tagline: 'Get noticed by many more people.',
     features: [
-      '2 VIP Passes to Fempreneur Gala 2027',
-      'Exclusive Video Feature & Digital Social Blitz',
-      'Priority Jury Dossier Review & Official Certificate',
-      'Positioning: For scaling brands seeking national credibility.'
+      { text: 'Award nomination', included: true },
+      { text: 'Event entry ticket (Fempreneur Gala 2027)', included: true },
+      { text: 'Your Story Published on VyapaarJagat.com', included: true },
+      { text: '1-year Fempreneur community subscription + app', included: true },
+      { text: 'Story in Digital Fempreneur Magazine', included: false },
     ]
   },
   {
     id: 'impact_creator',
     name: 'Impact Creator',
     price: 10000,
-    tagline: 'Ultimate authority and leadership package.',
+    tagline: 'The complete package for leaders.',
     features: [
-      '3 VIP Passes with Stage Felicitation & Red Carpet',
-      'Dedicated Press Release across 50+ News Outlets',
-      'Permanent Hall of Fame Directory Placement & Memento',
-      'Positioning: For established women leaders and enterprise founders.'
+      { text: 'Award nomination', included: true },
+      { text: 'Event entry ticket (Fempreneur Gala 2027)', included: true },
+      { text: 'Your Story Published on VyapaarJagat.com', included: true },
+      { text: '1-year Fempreneur community subscription + app', included: true },
+      { text: 'Story in Digital Fempreneur Magazine', included: true },
     ]
   }
 ];
@@ -177,6 +215,8 @@ export default function ApplyPage() {
   }, [searchParams]);
 
   useEffect(() => {
+    // Preload Razorpay SDK in background so payment modal opens instantly on submit
+    loadRazorpayScript();
     return () => {
       if (checkDupTimerRef.current) clearTimeout(checkDupTimerRef.current);
     };
@@ -239,7 +279,7 @@ export default function ApplyPage() {
     });
   };
 
-  const handleFileChange = (field, file) => {
+  const handleFileChange = async (field, file) => {
     if (!file) return;
 
     // Check size (< 5MB)
@@ -248,9 +288,13 @@ export default function ApplyPage() {
       return;
     }
 
-    const reader = new FileReader();
-    reader.onload = () => {
-      const dataUrl = reader.result;
+    if (stepErrors[field]) {
+      setStepErrors((prev) => ({ ...prev, [field]: '' }));
+    }
+
+    try {
+      const maxDim = field === 'businessLogo' ? 600 : 800;
+      const dataUrl = await compressImageFile(file, maxDim, 0.82);
       if (field === 'profilePicture') {
         setFormData((prev) => ({
           ...prev,
@@ -264,11 +308,8 @@ export default function ApplyPage() {
           businessLogoPreview: dataUrl,
         }));
       }
-    };
-    reader.readAsDataURL(file);
-
-    if (stepErrors[field]) {
-      setStepErrors((prev) => ({ ...prev, [field]: '' }));
+    } catch {
+      setStepErrors((prev) => ({ ...prev, [field]: 'Could not process image. Please try another file.' }));
     }
   };
 
@@ -405,42 +446,25 @@ export default function ApplyPage() {
         paymentRef = payRes.paymentId;
       }
 
-      // Submit nomination payload to backend
+      // Submit lean nomination payload to backend (no duplicated base64 image keys)
       const payload = {
         track: formData.track,
         name: formData.name,
-        nomineeName: formData.name,
-        founderName: formData.name,
         business: formData.business,
-        businessName: formData.business,
-        companyName: formData.business,
-        ventureName: formData.business,
         designation: 'Founder & CEO',
         email: formData.email,
         phone: formData.phone,
         city: formData.city,
         category: formData.category,
-        categoryName: formData.category,
-        category_name: formData.category,
         description: formData.description,
-        pitch: formData.description,
         operationalYears: '1-3 years',
-        operational_years: '1-3 years',
         link: formData.link || null,
-        websiteUrl: formData.link || null,
-        websiteLink: formData.link || null,
-        website_link: formData.link || null,
         profilePicture: formData.profilePicturePreview || null,
-        profile_picture: formData.profilePicturePreview || null,
         businessLogo: formData.businessLogoPreview || null,
-        business_logo: formData.businessLogoPreview || null,
         package: formData.package,
         packageAmount,
-        package_amount: packageAmount,
         paymentRef: paymentRef || (formData.track === 'rated' ? 'PAID_VERIFIED' : null),
-        payment_ref: paymentRef || (formData.track === 'rated' ? 'PAID_VERIFIED' : null),
         paymentStatus: formData.track === 'rated' ? (paymentRef ? 'paid' : 'pending') : 'not_applicable',
-        payment_status: formData.track === 'rated' ? (paymentRef ? 'paid' : 'pending') : 'not_applicable',
       };
 
       const res = await submitNomination(payload);
@@ -493,7 +517,7 @@ export default function ApplyPage() {
     if (currentStep === 1) return 'Continue to Details';
     if (currentStep === 2) return 'Continue to Impact';
     if (currentStep === 3) return 'Final Step: Review';
-    return formData.track === 'honorary' ? 'Submit Nomination' : 'Pay & Submit';
+    return formData.track === 'honorary' ? 'Submit Nomination' : 'Continue with this package';
   };
 
   const stepTitles = [
@@ -754,48 +778,6 @@ export default function ApplyPage() {
               boxShadow: '0 12px 36px rgba(46, 8, 72, 0.05)',
             }}
           >
-            {/* STEP HEADER & PROGRESS BAR (Matching Screenshot 2) */}
-            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '1.25rem' }}>
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span
-                  style={{
-                    display: 'inline-block',
-                    padding: '0.35rem 0.85rem',
-                    borderRadius: '6px',
-                    background: '#2E0848',
-                    color: '#FFFFFF',
-                    fontWeight: 800,
-                    fontSize: '0.72rem',
-                    letterSpacing: '0.08em',
-                    textTransform: 'uppercase',
-                  }}
-                >
-                  STEP {currentStep} OF 4
-                </span>
-              </div>
-
-              {/* Progress Tracker Pill */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#72627C', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  START
-                </span>
-                <div style={{ width: '100px', height: '6px', background: '#F0E6F4', borderRadius: '9999px', overflow: 'hidden' }}>
-                  <div
-                    style={{
-                      height: '100%',
-                      width: `${(currentStep / 4) * 100}%`,
-                      background: 'linear-gradient(90deg, #6A1B9A, #E91E63)',
-                      borderRadius: '9999px',
-                      transition: 'width 0.3s ease',
-                    }}
-                  />
-                </div>
-                <span style={{ fontSize: '0.72rem', fontWeight: 800, color: currentStep === 4 ? '#6A1B9A' : '#72627C', textTransform: 'uppercase', letterSpacing: '0.08em' }}>
-                  REVIEW
-                </span>
-              </div>
-            </div>
-
             {/* Breadcrumb Steps Bar */}
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.85rem', paddingBottom: '1.25rem', marginBottom: '1.75rem', borderBottom: '1px solid #F0E6F4' }}>
               {stepTitles.map((st, idx) => {
@@ -850,7 +832,7 @@ export default function ApplyPage() {
               {currentStep === 1 && 'Award Track'}
               {currentStep === 2 && 'Enter Nominee Information'}
               {currentStep === 3 && 'Define Your Impact Sector'}
-              {currentStep === 4 && (formData.track === 'rated' ? 'Select Challenge Entry Package' : 'Review & Submit')}
+              {currentStep === 4 && (formData.track === 'rated' ? 'Choose Your Package' : 'Review & Submit')}
             </h2>
 
             {/* ========================================================================= */}
@@ -1009,8 +991,8 @@ export default function ApplyPage() {
                       color: '#FFFFFF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      textTransform: formData.track === 'rated' ? 'none' : 'uppercase',
+                      letterSpacing: formData.track === 'rated' ? '0.02em' : '0.08em',
                       border: 'none',
                       cursor: 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
@@ -1438,8 +1420,8 @@ export default function ApplyPage() {
                       color: '#FFFFFF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      textTransform: formData.track === 'rated' ? 'none' : 'uppercase',
+                      letterSpacing: formData.track === 'rated' ? '0.02em' : '0.08em',
                       border: 'none',
                       cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
@@ -1640,8 +1622,8 @@ export default function ApplyPage() {
                       color: '#FFFFFF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      textTransform: formData.track === 'rated' ? 'none' : 'uppercase',
+                      letterSpacing: formData.track === 'rated' ? '0.02em' : '0.08em',
                       border: 'none',
                       cursor: checkingDuplicate ? 'not-allowed' : 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
@@ -1677,7 +1659,7 @@ export default function ApplyPage() {
                 {formData.track === 'rated' ? (
                   <div>
                     <p style={{ fontSize: '0.92rem', color: '#5C4E65', marginBottom: '1.5rem', lineHeight: 1.5 }}>
-                      Our Rated Challenge helps you garner public votes & jury prestige. Choose your validation tier:
+                      Every package includes your award nomination and a ticket to the Fempreneur Gala 2027. Pick the one that gives you the visibility you need.
                     </p>
 
                     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(280px, 1fr))', gap: '1.25rem', marginBottom: '2rem' }}>
@@ -1710,14 +1692,26 @@ export default function ApplyPage() {
                                 </span>
                               </div>
                               <p style={{ fontSize: '0.78rem', color: '#6B7280', fontStyle: 'italic', margin: '0 0 1rem 0' }}>
-                                "{pkg.tagline}"
+                                {pkg.tagline}
                               </p>
 
                               <ul style={{ listStyle: 'none', padding: 0, margin: 0, display: 'flex', flexDirection: 'column', gap: '0.5rem', fontSize: '0.78rem', color: '#4B5563' }}>
                                 {pkg.features.map((feat, fIdx) => (
-                                  <li key={fIdx} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.45rem' }}>
-                                    <Check size={13} style={{ color: '#059669', flexShrink: 0, marginTop: '2px' }} />
-                                    <span>{feat}</span>
+                                  <li
+                                    key={fIdx}
+                                    style={{
+                                      display: 'flex',
+                                      alignItems: 'flex-start',
+                                      gap: '0.45rem',
+                                      color: feat.included ? '#1C1224' : '#9CA3AF',
+                                    }}
+                                  >
+                                    {feat.included ? (
+                                      <Check size={13} style={{ color: '#6A1B9A', flexShrink: 0, marginTop: '2px' }} />
+                                    ) : (
+                                      <span style={{ color: '#9CA3AF', flexShrink: 0, width: '13px', textAlign: 'center', lineHeight: 1.2 }}>–</span>
+                                    )}
+                                    <span>{feat.text}</span>
                                   </li>
                                 ))}
                               </ul>
@@ -1881,8 +1875,8 @@ export default function ApplyPage() {
                       color: '#FFFFFF',
                       fontWeight: 800,
                       fontSize: '0.88rem',
-                      textTransform: 'uppercase',
-                      letterSpacing: '0.08em',
+                      textTransform: formData.track === 'rated' ? 'none' : 'uppercase',
+                      letterSpacing: formData.track === 'rated' ? '0.02em' : '0.08em',
                       border: 'none',
                       cursor: submitting ? 'wait' : 'pointer',
                       boxShadow: '0 8px 24px rgba(106, 27, 154, 0.32)',
@@ -1908,7 +1902,7 @@ export default function ApplyPage() {
                       <>
                         <span>
                           {formData.track === 'rated'
-                            ? `PAY & SUBMIT (₹${(PACKAGES.find((p) => p.id === formData.package)?.price || 2000).toLocaleString('en-IN')})`
+                            ? 'Continue with this package'
                             : 'SUBMIT NOMINATION'}
                         </span>
                         <ArrowRight size={16} />

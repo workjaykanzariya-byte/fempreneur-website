@@ -896,6 +896,12 @@
 
 /* Responsive Table & Mobile Admin Layout */
 @media (max-width: 1024px) {
+  .fem-admin-main {
+    min-width: 0;
+    max-width: 100%;
+    overflow-x: clip;
+  }
+
   .fem-admin-sidebar {
     position: fixed;
     top: 0;
@@ -906,6 +912,12 @@
   .fem-admin-sidebar.mobile-open {
     left: 0;
   }
+
+  .fem-table-container {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    max-width: 100%;
+  }
 }
 
 @media (max-width: 768px) {
@@ -915,16 +927,41 @@
     gap: 10px;
   }
 
+  .fem-admin-topbar-actions {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+
   .fem-admin-content {
     padding: 14px 12px !important;
   }
 
+  .fem-filter-toolbar {
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .fem-filter-group {
+    flex: 1 1 100%;
+    min-width: 0;
+  }
+
+  .fem-filter-select {
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fem-table-container,
   .fem-admin-table-wrapper,
   .fem-admin-table-card {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+    max-width: 100%;
   }
 
+  .fem-clean-table th,
+  .fem-clean-table td,
   .fem-admin-table th,
   .fem-admin-table td {
     padding: 10px 12px;

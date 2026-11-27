@@ -1586,3 +1586,52 @@ h6 {
   }
 }
 
+/* ==========================================================================
+   SAFE TABLET & MOBILE OVERFLOW GUARD (<= 1024px & <= 600px)
+   Pure CSS media queries only — desktop (> 1024px) remains 100% unchanged.
+   ========================================================================== */
+@media (max-width: 1024px) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+
+  img,
+  video,
+  iframe {
+    max-width: 100%;
+  }
+
+  .container,
+  .container-narrow {
+    max-width: 100%;
+  }
+}
+
+@media (max-width: 600px) {
+  /* Stack inline 2/3/4-column form & content grids cleanly on phones */
+  div[style*="grid-template-columns: 1fr 1fr"],
+  div[style*="grid-template-columns: repeat(2, 1fr)"],
+  div[style*="grid-template-columns: repeat(3"],
+  div[style*="grid-template-columns: repeat(4"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Prevent button rows (e.g., Previous + Submit) from overflowing narrow screens */
+  div[style*="justify-content: space-between"][style*="display: flex"] {
+    flex-wrap: wrap;
+    gap: 0.75rem;
+  }
+
+  /* Prevent long emails, URLs, or category titles from breaking mobile width */
+  p,
+  li,
+  a,
+  span,
+  td,
+  th {
+    overflow-wrap: break-word;
+  }
+}
+
+
