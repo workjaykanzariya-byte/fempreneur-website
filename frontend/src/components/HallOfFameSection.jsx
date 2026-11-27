@@ -6,7 +6,7 @@ import { allWinners } from '../data/winnersData';
 import { getWinnerPhoto } from '../data/winnerPhotos';
 import { fetchPublicWinners, mergeWinnersWithStatic } from '../services/api';
 
-const ALLOWED_YEARS = ['2022'];
+const ALLOWED_YEARS = ['2025', '2024', '2023', '2022'];
 
 /**
  * HallOfFameSection Component
@@ -35,24 +35,26 @@ export default function HallOfFameSection() {
 
   const allAllowedWinners = useMemo(() => {
     const merged = mergeWinnersWithStatic(dbWinners, allWinners);
+    const yearRank = { '2027': 0, '2026': 1, '2025': 2, '2024': 3, '2023': 4, '2022': 5 };
     return merged
       .filter((winner) => winner.isDynamic || ALLOWED_YEARS.includes(winner.year))
       .map((winner) => ({
         ...winner,
         image: winner.image || getWinnerPhoto(winner.name),
       }))
-      .filter((winner) => winner.isDynamic || Boolean(winner.image));
+      .filter((winner) => winner.isDynamic || Boolean(winner.image))
+      .sort((a, b) => (yearRank[a.year] ?? 9) - (yearRank[b.year] ?? 9));
   }, [dbWinners]);
 
   const total = allAllowedWinners.length;
 
-  // Reliable automatic carousel advance across all 2022 winners
+  // Smooth automatic carousel advance across all 2025, 2024, 2023 & 2022 winners
   useEffect(() => {
     if (isDragging || total <= 1) return undefined;
     const timer = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % total);
-  }, 1800);
-  return () => clearInterval(timer);
+    }, 2200);
+    return () => clearInterval(timer);
   }, [isDragging, total]);
 
 const goPrev = () => {
@@ -285,12 +287,29 @@ return (
           .fem-hof-card-slot.slot-1 { transform: translateX(240px) scale(0.84); }
         }
         @media (max-width: 680px) {
-          .fem-hof-track-3d { height: 470px; }
-          .fem-hof-card-slot { width: 280px; }
-          .fem-hof-card-slot.slot--1 { transform: translateX(-160px) scale(0.8); opacity: 0.35; }
-          .fem-hof-card-slot.slot-1 { transform: translateX(160px) scale(0.8); opacity: 0.35; }
-          .fem-hof-arrow-prev { left: 0.35rem; }
-          .fem-hof-arrow-next { right: 0.35rem; }
+          .fem-hof-header-row {
+            justify-content: center;
+            text-align: center;
+          }
+          .fem-hof-subtitle {
+            margin-left: auto;
+            margin-right: auto;
+          }
+          .fem-hof-track-3d { height: 455px; }
+          .fem-hof-card-slot { width: min(270px, calc(100vw - 88px)); }
+          .fem-hof-card-slot.slot--1 { transform: translateX(-150px) scale(0.78); opacity: 0.3; }
+          .fem-hof-card-slot.slot-1 { transform: translateX(150px) scale(0.78); opacity: 0.3; }
+          .fem-hof-arrow-btn { width: 38px; height: 38px; }
+          .fem-hof-arrow-prev { left: 0.15rem; }
+          .fem-hof-arrow-next { right: 0.15rem; }
+        }
+        @media (max-width: 420px) {
+          .fem-hof-track-3d { height: 425px; }
+          .fem-hof-card-slot.slot--1,
+          .fem-hof-card-slot.slot-1 {
+            opacity: 0;
+            pointer-events: none;
+          }
         }
       `}</style>
 
@@ -306,7 +325,7 @@ return (
             Celebrating Previous <span className="fem-hof-heading-accent">Honorees</span>
           </h2>
           <p className="fem-hof-subtitle">
-            Spotlighting women founders recognized in our 2022 edition.
+            Spotlighting women founders recognized across our 2022–2025 editions.
           </p>
         </div>
 

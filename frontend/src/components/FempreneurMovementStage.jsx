@@ -410,22 +410,23 @@ export default function FempreneurMovementStage() {
           .fem-stage-grid {
             grid-template-columns: 1fr;
             text-align: center;
-            gap: 3rem;
-            padding: 0 1.5rem;
+            gap: 2.5rem;
+            padding: 0 1.25rem;
           }
           .fem-stage-left {
             text-align: center;
           }
           .fem-stage-desc {
-            margin: 0 auto 2.2rem auto;
+            margin: 0 auto 2rem auto;
           }
+          .fem-stage-hero-ctas,
           .fem-stage-stats-bar,
           .fem-stage-actions,
           .fem-stage-proof {
             justify-content: center;
           }
           .fem-stage-trophy-wrapper {
-            max-width: 540px;
+            max-width: 480px;
             margin: 0 auto;
             margin-bottom: -4.5rem;
           }
@@ -436,23 +437,35 @@ export default function FempreneurMovementStage() {
             display: none;
           }
           .fem-stage-stats-bar {
-            gap: 1.25rem;
+            gap: 1.15rem;
           }
           .fem-stage-title br {
             display: none;
           }
-        
+          .fem-stage-trophy-wrapper {
+            max-width: 340px;
+            margin-bottom: -3.25rem;
+          }
         }
 
         @media (max-width: 480px) {
+          .fem-stage-hero-ctas,
           .fem-stage-actions {
             flex-direction: column;
             width: 100%;
           }
+          .fem-stage-hero-ctas > *,
           .fem-stage-btn-gradient,
           .fem-stage-btn-outline {
             width: 100%;
             justify-content: center;
+          }
+          .fem-stage-proof {
+            flex-direction: column;
+            text-align: center;
+          }
+          .fem-stage-proof-meta {
+            text-align: center;
           }
         }
       `}</style>

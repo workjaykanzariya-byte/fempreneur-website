@@ -62,13 +62,7 @@ export default function Navbar() {
       label: 'Event & Awards',
       id: 'event-awards',
       children: [
-        { label: 'Event Overview', path: '/events' },
-        { label: 'Award Categories', path: '/categories' },
-        { label: 'How to Nominate', path: '/nominate' },
-        { label: 'Speakers & Jury Panel 2027', path: '/speakers' },
-        { label: 'Why Attend', path: '/events' },
-        { label: 'Sponsors', path: '/partners' },
-        { label: 'The Book', path: '/coffee-table-book' },
+        { label: 'Award Overview', path: '/award-overview' },
       ],
     },
     { label: 'Winners', path: '/winners' },
@@ -84,12 +78,12 @@ export default function Navbar() {
       label: 'More',
       id: 'more',
       children: [
-        { label: 'Speakers & Jury', path: '/speakers' },
+        { label: 'Speakers & Jury', path: '/speakers-jury' },
         { label: 'Partners', path: '/partners' },
-        { label: 'Blogs', path: '/blog' },
+        { label: 'Blogs', path: '/blogs' },
       ],
     },
-    { label: 'FAQs', path: '/faq' },
+    { label: 'FAQs', path: '/faqs' },
     { label: 'Contact', path: '/contact' },
   ];
 
@@ -285,25 +279,64 @@ export default function Navbar() {
           </div>
         </div>
 
-        {/* Mobile Navigation Drawer */}
+        {/* Mobile Navigation Drawer (Full-Screen Overlay) */}
         {mobileMenuOpen && (
           <div
             style={{
               position: 'fixed',
-              top: 'var(--header-height)',
-              left: 0,
-              right: 0,
-              bottom: 0,
+              inset: 0,
+              width: '100%',
+              height: '100dvh',
               background: '#FFFFFF',
-              zIndex: 99,
+              zIndex: 9999,
               overflowY: 'auto',
-              padding: '1.5rem',
               display: 'flex',
               flexDirection: 'column',
               boxShadow: 'var(--shadow-xl)',
             }}
           >
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem', marginBottom: '1.5rem' }}>
+            {/* Drawer Header */}
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                padding: '0.85rem 1.25rem',
+                borderBottom: '1px solid var(--border-subtle)',
+                position: 'sticky',
+                top: 0,
+                background: '#FFFFFF',
+                zIndex: 2,
+              }}
+            >
+              <Link
+                to="/"
+                className="fem-brand"
+                aria-label="Fempreneur Home"
+                onClick={() => {
+                  setMobileMenuOpen(false);
+                  setOpenDropdown(null);
+                }}
+              >
+                <img
+                  src="/fempreneur-logo.png"
+                  alt="Fempreneur"
+                  className="fem-brand-img"
+                />
+              </Link>
+              <button
+                type="button"
+                className="fem-mobile-toggle"
+                style={{ display: 'flex' }}
+                onClick={() => setMobileMenuOpen(false)}
+                aria-label="Close menu"
+              >
+                <X size={24} />
+              </button>
+            </div>
+
+            <div style={{ padding: '1.25rem 1.25rem 2rem', display: 'flex', flexDirection: 'column', flex: 1 }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginBottom: '1.5rem' }}>
               {navigationItems.map((item) => {
                 if (item.children) {
                   return (
@@ -320,17 +353,18 @@ export default function Navbar() {
                       >
                         {item.label}
                       </div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', paddingLeft: '0.5rem' }}>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', paddingLeft: '0.5rem' }}>
                         {item.children.map((child) => (
                           <Link
-                            key={child.path}
+                            key={child.path + child.label}
                             to={child.path}
                             onClick={() => setMobileMenuOpen(false)}
                             style={{
-                              fontSize: '0.92rem',
+                              fontSize: '0.94rem',
                               fontWeight: 600,
                               color: location.pathname === child.path ? 'var(--color-burgundy)' : 'var(--text-secondary)',
-                              padding: '0.4rem 0',
+                              padding: '0.55rem 0',
+                              minHeight: '42px',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'space-between',
@@ -354,7 +388,8 @@ export default function Navbar() {
                       fontSize: '1rem',
                       fontWeight: 700,
                       color: location.pathname === item.path ? 'var(--color-burgundy)' : 'var(--text-primary)',
-                      padding: '0.65rem 0',
+                      padding: '0.7rem 0',
+                      minHeight: '44px',
                       borderBottom: '1px solid var(--border-subtle)',
                       display: 'flex',
                       alignItems: 'center',
@@ -372,7 +407,7 @@ export default function Navbar() {
               <Link
                 to="/events"
                 className="fem-btn-getpass"
-                style={{ textAlign: 'center', padding: '0.65rem 1rem', justifyContent: 'center' }}
+                style={{ textAlign: 'center', padding: '0.75rem 1rem', justifyContent: 'center' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 GET PASS
@@ -380,11 +415,12 @@ export default function Navbar() {
               <Link
                 to="/awards/apply"
                 className="fem-btn-nominate"
-                style={{ textAlign: 'center', padding: '0.65rem 1rem', justifyContent: 'center' }}
+                style={{ textAlign: 'center', padding: '0.75rem 1rem', justifyContent: 'center' }}
                 onClick={() => setMobileMenuOpen(false)}
               >
                 NOMINATE
               </Link>
+            </div>
             </div>
           </div>
         )}

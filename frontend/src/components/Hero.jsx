@@ -62,12 +62,16 @@ export default function Hero({
         @media (max-width: 960px) {
           .hero-main-grid {
             grid-template-columns: 1fr;
-            gap: 3rem;
+            gap: 2.25rem;
           }
           .hero-left-content {
             text-align: center !important;
             max-width: 720px;
             margin: 0 auto;
+          }
+          .hero-left-content p {
+            margin-left: auto;
+            margin-right: auto;
           }
           .hero-pills-row {
             justify-content: center !important;
@@ -81,36 +85,41 @@ export default function Hero({
           }
         }
         @media (max-width: 600px) {
-          .hero-collage-box {
-            transform: scale(0.72);
-            transform-origin: center top;
-            margin-top: -20px;
-            margin-bottom: -70px;
-          }
           .hero-right-visual {
             overflow: hidden;
             max-width: 100%;
           }
+          .hero-collage-box {
+            width: 540px !important;
+            max-width: none !important;
+            flex-shrink: 0;
+            transform: scale(0.64);
+            transform-origin: center top;
+            margin-top: -8px;
+            margin-bottom: -155px;
+          }
           .hero-trust-bar {
             flex-direction: column;
             align-items: flex-start !important;
-            gap: 1.25rem !important;
+            gap: 1.15rem !important;
           }
         }
-        @media (max-width: 440px) {
+        @media (max-width: 460px) {
           .hero-collage-box {
-            transform: scale(0.60);
-            transform-origin: center top;
-            margin-top: -15px;
-            margin-bottom: -110px;
+            transform: scale(0.56);
+            margin-bottom: -195px;
           }
         }
-        @media (max-width: 370px) {
+        @media (max-width: 390px) {
           .hero-collage-box {
             transform: scale(0.50);
-            transform-origin: center top;
-            margin-top: -10px;
-            margin-bottom: -150px;
+            margin-bottom: -225px;
+          }
+        }
+        @media (max-width: 340px) {
+          .hero-collage-box {
+            transform: scale(0.44);
+            margin-bottom: -255px;
           }
         }
       `}</style>

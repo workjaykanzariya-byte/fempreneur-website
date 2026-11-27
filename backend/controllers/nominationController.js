@@ -52,7 +52,8 @@ export const createNomination = async (req, res, next) => {
     const finalPhone = (phone || '').trim();
     const finalCity = (city || (state ? `${city}, ${state}` : '') || '').trim();
     const finalCategory = (category || categoryName || categoryCode || 'Woman Entrepreneur of the Year').trim();
-    const finalCategoryId = categoryId || category_id || null;
+    const parsedCategoryId = parseInt(categoryId || category_id, 10);
+    const finalCategoryId = Number.isInteger(parsedCategoryId) ? parsedCategoryId : null;
     const finalDescription = (description || pitch || impactSummary || '').trim();
     const finalOperationalYears = operationalYears || operational_years || '1-3 years';
     const finalLink = (link || websiteUrl || websiteLink || '').trim() || null;
@@ -191,26 +192,72 @@ export const createNomination = async (req, res, next) => {
         ]);
         insertedRow = fbRes.rows[0];
       } catch (fbErr) {
-        console.warn('Fallback web_nominations error:', fbErr.message);
-        const legRes = await query(`
-          INSERT INTO nominations (
-            founder_name, venture_name, designation, email, phone, city,
-            category_name, pitch, operational_years, website_url, status
-          ) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'pending')
+        console.warn('Fallback web_nominations error, ensuring missing columns:', fbErr.message);
+        await query(`
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS track VARCHAR(50) DEFAULT 'honorary';
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS founder_name VARCHAR(255);
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS venture_name VARCHAR(255);
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_id INTEGER;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_code VARCHAR(255);
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS pitch TEXT;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_url VARCHAR(500);
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS profile_picture TEXT;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_logo TEXT;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS voting_url VARCHAR(500);
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package VARCHAR(100) DEFAULT 'honorary';
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package_amount NUMERIC(10, 2) DEFAULT 0;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS jury_score NUMERIC(5, 2) DEFAULT 0;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS public_votes INTEGER DEFAULT 0;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS notes TEXT;
+          ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+          ALTER TABLE web_nominations ALTER COLUMN profile_picture TYPE TEXT;
+          ALTER TABLE web_nominations ALTER COLUMN business_logo TYPE TEXT;
+        `);
+
+        const retryRes = await query(`
+          INSERT INTO web_nominations (
+            track, nominee_name, founder_name, business_name, venture_name, designation,
+            phone, email, city, category_id, category_name, category_code,
+            description, pitch, operational_years, website_link, website_url,
+            profile_picture, business_logo, voting_url, package, package_amount,
+            status, payment_status, payment_ref, notes, award_year, created_at, updated_at
+          ) VALUES (
+            $1, $2, $3, $4, $5, $6,
+            $7, $8, $9, $10, $11, $12,
+            $13, $14, $15, $16, $17,
+            $18, $19, $20, $21, $22,
+            $23, $24, $25, $26, '2027', NOW(), NOW()
+          )
           RETURNING *
         `, [
+          finalTrack,
+          finalNomineeName,
           finalNomineeName,
           finalBusinessName,
+          finalBusinessName,
           finalDesignation,
-          finalEmail,
           finalPhone,
+          finalEmail,
           finalCity,
+          finalCategoryId,
           finalCategory,
+          finalCategory,
+          finalDescription,
           finalDescription,
           finalOperationalYears,
           finalLink,
+          finalLink,
+          finalProfilePicture,
+          finalBusinessLogo,
+          votingUrl,
+          finalPkg,
+          finalPackageAmount,
+          finalStatus,
+          finalPaymentStatus,
+          finalPaymentRef,
+          notes || null,
         ]);
-        insertedRow = legRes.rows[0];
+        insertedRow = retryRes.rows[0];
       }
     }
 

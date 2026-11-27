@@ -76,22 +76,56 @@ export const initializeDatabase = async () => {
       -- 3. Nominations
       CREATE TABLE IF NOT EXISTS web_nominations (
         id SERIAL PRIMARY KEY,
+        track VARCHAR(50) DEFAULT 'honorary',
         nominee_name VARCHAR(255) NOT NULL,
+        founder_name VARCHAR(255),
         business_name VARCHAR(255) NOT NULL,
-        designation VARCHAR(100),
+        venture_name VARCHAR(255),
+        designation VARCHAR(150),
         email VARCHAR(255) NOT NULL,
         phone VARCHAR(50) NOT NULL,
-        city VARCHAR(100),
+        city VARCHAR(150),
+        category_id INTEGER,
         category_name VARCHAR(255),
+        category_code VARCHAR(255),
         description TEXT,
+        pitch TEXT,
         operational_years VARCHAR(50),
         website_link VARCHAR(500),
-        payment_status VARCHAR(50) DEFAULT 'free',
+        website_url VARCHAR(500),
+        profile_picture TEXT,
+        business_logo TEXT,
+        voting_url VARCHAR(500),
+        package VARCHAR(100) DEFAULT 'honorary',
+        package_amount NUMERIC(10, 2) DEFAULT 0,
+        jury_score NUMERIC(5, 2) DEFAULT 0,
+        public_votes INTEGER DEFAULT 0,
+        notes TEXT,
+        payment_status VARCHAR(50) DEFAULT 'not_applicable',
         payment_ref VARCHAR(255),
         status VARCHAR(50) DEFAULT 'pending',
         award_year VARCHAR(10) DEFAULT '2027',
-        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
+        created_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
       );
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS track VARCHAR(50) DEFAULT 'honorary';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS founder_name VARCHAR(255);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS venture_name VARCHAR(255);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_id INTEGER;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS category_code VARCHAR(255);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS pitch TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS website_url VARCHAR(500);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS profile_picture TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS business_logo TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS voting_url VARCHAR(500);
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package VARCHAR(100) DEFAULT 'honorary';
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS package_amount NUMERIC(10, 2) DEFAULT 0;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS jury_score NUMERIC(5, 2) DEFAULT 0;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS public_votes INTEGER DEFAULT 0;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS notes TEXT;
+      ALTER TABLE web_nominations ADD COLUMN IF NOT EXISTS updated_at TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP;
+      ALTER TABLE web_nominations ALTER COLUMN profile_picture TYPE TEXT;
+      ALTER TABLE web_nominations ALTER COLUMN business_logo TYPE TEXT;
 
       -- 4. Nomination Votes
       CREATE TABLE IF NOT EXISTS web_nomination_votes (

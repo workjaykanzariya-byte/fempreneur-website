@@ -71,12 +71,16 @@ export default function PageHeader({
         @media (max-width: 900px) {
           .pageheader-grid {
             grid-template-columns: 1fr;
-            gap: 2.75rem;
+            gap: 2.25rem;
           }
           .pageheader-left-col {
             text-align: center !important;
             max-width: 720px;
             margin: 0 auto;
+          }
+          .pageheader-left-col p {
+            margin-left: auto;
+            margin-right: auto;
           }
           .pageheader-pills-row {
             justify-content: center !important;
@@ -98,36 +102,41 @@ export default function PageHeader({
           }
         }
         @media (max-width: 600px) {
-          .floating-collage-box {
-            transform: scale(0.72);
-            transform-origin: center top;
-            margin-top: -20px;
-            margin-bottom: -70px;
-          }
           .pageheader-right-col {
             overflow: hidden;
             max-width: 100%;
           }
+          .floating-collage-box {
+            width: 540px !important;
+            max-width: none !important;
+            flex-shrink: 0;
+            transform: scale(0.64);
+            transform-origin: center top;
+            margin-top: -8px;
+            margin-bottom: -170px;
+          }
           .pageheader-trust-bar {
             flex-direction: column;
             align-items: flex-start !important;
-            gap: 1.25rem !important;
+            gap: 1.15rem !important;
           }
         }
-        @media (max-width: 440px) {
+        @media (max-width: 460px) {
           .floating-collage-box {
-            transform: scale(0.60);
-            transform-origin: center top;
-            margin-top: -15px;
-            margin-bottom: -110px;
+            transform: scale(0.56);
+            margin-bottom: -215px;
           }
         }
-        @media (max-width: 370px) {
+        @media (max-width: 390px) {
           .floating-collage-box {
             transform: scale(0.50);
-            transform-origin: center top;
-            margin-top: -10px;
-            margin-bottom: -150px;
+            margin-bottom: -245px;
+          }
+        }
+        @media (max-width: 340px) {
+          .floating-collage-box {
+            transform: scale(0.44);
+            margin-bottom: -275px;
           }
         }
       `}</style>
@@ -256,6 +265,7 @@ export default function PageHeader({
 
             {/* Right Column: Hero Visual Card / Floating Collage */}
             <div
+              className="pageheader-right-col"
               style={{
                 position: 'relative',
                 width: '100%',

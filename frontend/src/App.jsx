@@ -120,6 +120,7 @@ function AppContent() {
 
           {/* Awards & Evaluation Track */}
           <Route path="/awards" element={<AwardsPage />} />
+          <Route path="/award-overview" element={<AwardsPage />} />
           <Route path="/awards/apply" element={<ApplyPage />} />
           <Route path="/apply" element={<ApplyPage />} />
           <Route path="/categories" element={<CategoriesPage />} />
@@ -133,6 +134,7 @@ function AppContent() {
           {/* Events & Dual-City Hubs */}
           <Route path="/events" element={<EventsPage />} />
           <Route path="/speakers" element={<SpeakersPage />} />
+          <Route path="/speakers-jury" element={<SpeakersPage />} />
           <Route path="/city-chapters" element={<CityChaptersPage />} />
 
           {/* Community & Network */}
@@ -153,6 +155,7 @@ function AppContent() {
 
           {/* Inbound & Support */}
           <Route path="/faq" element={<FaqPage />} />
+          <Route path="/faqs" element={<FaqPage />} />
           <Route path="/contact" element={<ContactPage />} />
           <Route path="/login" element={<LoginPage />} />
 

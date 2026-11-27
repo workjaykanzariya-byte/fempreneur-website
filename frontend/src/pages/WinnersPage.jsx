@@ -12,7 +12,7 @@ import { allWinners } from '../data/winnersData';
 import { fetchPublicWinners, mergeWinnersWithStatic } from '../services/api';
 
 export default function WinnersPage() {
-  const [selectedYear, setSelectedYear] = useState('2023');
+  const [selectedYear, setSelectedYear] = useState('2025');
   const [dbWinners, setDbWinners] = useState([]);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export default function WinnersPage() {
         ...winner,
         image: winner.image || getWinnerPhoto(winner.name),
       }))
-      .filter((winner) => winner.isDynamic || Boolean(winner.image));
+      .filter((winner) => winner.isDynamic || winner.year === '2025' || Boolean(winner.image));
   }, [combinedWinners, selectedYear]);
 
 
@@ -121,7 +121,7 @@ export default function WinnersPage() {
                     border: '1.5px solid #6A1B9A',
                     borderRadius: '8px',
                     padding: '1.15rem 1.4rem',
-                    display: 'flex',
+                    display: ed.year === '2026' ? 'none' : 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     gap: '0.85rem',
